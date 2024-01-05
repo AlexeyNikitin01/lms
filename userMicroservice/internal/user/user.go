@@ -1,23 +1,41 @@
 package user
 
-type Course struct {
-	ID       int
-	Name     string
-	Progress int
-}
-
-type Info struct {
-	ID   int
-	Name string
-	Text string
-}
+import "time"
 
 type User struct {
-	ID          int
-	Name        string
-	Email       string
-	Login       string
-	Password    string
-	Course      []Course
-	InfoFavorit []Info
+	Admin			bool
+	ID              int
+	Login           string
+	Password        string
+	PersonalData    PersonalStruct
+	ProgressCourse  ProgressCourseStruct
+	CompletedCourse CompletedCourseStruct
+	FavoritInfo     FavoritInfoStruct
+}
+
+type PersonalStruct struct {
+	Name      string
+	Surname   string
+	Email     string
+	Phone     string
+	PlaceWork string
+	Position  string
+}
+
+type ProgressCourseStruct struct {
+	Progress  int
+	Name      string
+	StartDate time.Time
+}
+
+type CompletedCourseStruct struct {
+	Certificat bool
+	Name       string
+	SpendTime  time.Time
+}
+
+type FavoritInfoStruct struct {
+	Text  string
+	Topic string
+	Name  string
 }
