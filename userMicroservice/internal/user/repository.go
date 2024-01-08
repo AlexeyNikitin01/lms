@@ -4,6 +4,7 @@ import (
 	"context"
 )
 
+//go:generate mockery --output ../app --name mockRepoUser
 type RepoUser interface {
 	CreateUser(ctx context.Context, user User) (int, error)
 	DeleteUser(ctx context.Context, id int) (*User, error)

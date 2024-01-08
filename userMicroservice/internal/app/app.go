@@ -16,7 +16,15 @@ type appUser struct {
 	repo user.RepoUser
 }
 
-func(a appUser) CreateUser(ctx context.Context, user user.User) (*user.User, error) {return nil, nil}
+func(a appUser) CreateUser(ctx context.Context, user user.User) (*user.User, error) {
+	id, err := a.repo.CreateUser(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+	user.ID = id
+	return &user, nil
+}
+
 func(a appUser) DeleteUser(ctx context.Context, id int) (*user.User, error) {return nil, nil} 
 func(a appUser) GetUser(ctx context.Context, id int) (*user.User, error) {return nil, nil}
 func(a appUser) UpdateUser(ctx context.Context, user user.User) (*user.User, error) {return nil, nil}
