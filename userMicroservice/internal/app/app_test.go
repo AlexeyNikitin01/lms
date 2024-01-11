@@ -5,8 +5,6 @@ import (
 	"testing"
 
 	"edu-material/userMicroservice/internal/user"
-
-	"github.com/stretchr/testify/mock"
 )
 
 func TestCreateUser(t *testing.T) {
@@ -27,11 +25,12 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestDeleteUser(t *testing.T) {
+	ctx := context.Background()
 	r := &RepoUser{}
-	r.On("DeleteUser", mock.Anything, 1).Return(user.User{ID: 1}, nil)
+	r.On("DeleteUser", ctx, 1).Return(&user.User{ID: 1}, nil)
 	a := CreateAppUser(r)
 
-	u, err := a.DeleteUser(context.Background(), 1)
+	u, err := a.DeleteUser(ctx, 1)
 
 	if u.ID != 1 {
 		t.Error("error delete - not correct id")
@@ -43,8 +42,9 @@ func TestDeleteUser(t *testing.T) {
 }
 
 func TestUpdateUser(t *testing.T) {
+	ctx := context.Background()
 	r := &RepoUser{}
-	r.On("UpdateUser", mock.Anything, user.User{ID: 2}).Return(user.User{ID: 2}, nil)
+	r.On("UpdateUser", ctx, user.User{ID: 2}).Return(&user.User{ID: 2}, nil)
 	a := CreateAppUser(r)
 
 	u, err := a.UpdateUser(context.Background(), user.User{ID: 2})
@@ -59,8 +59,9 @@ func TestUpdateUser(t *testing.T) {
 }
 
 func TestGetUser(t *testing.T) {
+	ctx := context.Background()
 	r := &RepoUser{}
-	r.On("GetUser", mock.Anything, 1).Return(user.User{ID: 1}, nil)
+	r.On("GetUser", ctx, 1).Return(&user.User{ID: 1}, nil)
 	a := CreateAppUser(r)
 
 	u, err := a.GetUser(context.Background(), 1)
