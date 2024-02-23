@@ -7,13 +7,13 @@ type User struct {
 	ID              int
 	Login           string
 	Password        string
-	PersonalData    PersonalStruct
-	ProgressCourse  ProgressCourseStruct
-	CompletedCourse CompletedCourseStruct
-	FavoritInfo     FavoritInfoStruct
+	PersonalData    Personal
+	ProgressCourse  ProgressCourse
+	CompletedCourse CompletedCourse
+	FavoritInfo     FavoritInfo
 }
 
-type PersonalStruct struct {
+type Personal struct {
 	Name      string
 	Surname   string
 	Email     string
@@ -22,19 +22,19 @@ type PersonalStruct struct {
 	Position  string
 }
 
-type ProgressCourseStruct struct {
+type ProgressCourse struct {
 	Progress  int
 	Name      string
 	StartDate time.Time
 }
 
-type CompletedCourseStruct struct {
+type CompletedCourse struct {
 	Certificat bool
 	Name       string
 	SpendTime  time.Time
 }
 
-type FavoritInfoStruct struct {
+type FavoritInfo struct {
 	Text  string
 	Topic string
 	Name  string
