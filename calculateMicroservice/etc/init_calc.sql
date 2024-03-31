@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS calculate (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    material TEXT NOT NULL,
+    volume INT NOT NULL,
+    density INT NOT NULL
+);
