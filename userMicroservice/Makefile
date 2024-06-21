@@ -12,3 +12,6 @@ sql-gen:
 
 grpc-user:
 	protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative internal/ports/grpc/user.proto
+
+pg-migrate:
+	migrate -path ./internal/migrations/ -database postgres://postgres:pass@localhost:7777/user?sslmode=disable up

@@ -1,14 +1,43 @@
 syntax = "proto3";
 
 package user;
-option go_package = "lesson9/homework/internal/ports/grpc";
+
+option go_package = "internal/ports/grpc";
+
 import "google/protobuf/empty.proto";
 
 service UserService {
-  rpc getAllUser(UserRequest) returns (google.protobuf.Empty) {}
+  rpc ping(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+  rpc getUser(UserRequest) returns (UserResponse) {}
+  rpc registerUser(UserRegisterRequest) returns (UserRegisterResponse) {}
+  rpc authByLoginPassword(UserAuthRequest) returns (UserAuthResponse) {}
 }
 
 message UserRequest {
-  int32 id = 1;
-  string name = 2;
+  string uuid = 1;
+}
+
+message UserResponse {
+  string uuid = 1;
+  string login = 2;
+}
+
+message UserRegisterRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message UserRegisterResponse {
+  string uuid = 1;
+  string login = 2;
+}
+
+message UserAuthRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message UserAuthResponse {
+  string access = 1;
+  string refresh = 2;
 }

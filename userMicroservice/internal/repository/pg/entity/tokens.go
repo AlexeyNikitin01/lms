@@ -26,7 +26,8 @@ import (
 type Token struct {
 	ID        string    `boil:"id" json:"id" toml:"id" yaml:"id"`
 	UserID    string    `boil:"userID" json:"userID" toml:"userID" yaml:"userID"`
-	Token     []byte    `boil:"token" json:"token" toml:"token" yaml:"token"`
+	Token     string    `boil:"token" json:"token" toml:"token" yaml:"token"`
+	Refresh   string    `boil:"refresh" json:"refresh" toml:"refresh" yaml:"refresh"`
 	ExpiresAt time.Time `boil:"expiresAt" json:"expiresAt" toml:"expiresAt" yaml:"expiresAt"`
 	CreatedAt time.Time `boil:"createdAt" json:"createdAt" toml:"createdAt" yaml:"createdAt"`
 	UpdatedAt time.Time `boil:"updatedAt" json:"updatedAt" toml:"updatedAt" yaml:"updatedAt"`
@@ -40,6 +41,7 @@ var TokenColumns = struct {
 	ID        string
 	UserID    string
 	Token     string
+	Refresh   string
 	ExpiresAt string
 	CreatedAt string
 	UpdatedAt string
@@ -48,6 +50,7 @@ var TokenColumns = struct {
 	ID:        "id",
 	UserID:    "user_id",
 	Token:     "token",
+	Refresh:   "refresh",
 	ExpiresAt: "expires_at",
 	CreatedAt: "created_at",
 	UpdatedAt: "updated_at",
@@ -58,6 +61,7 @@ var TokenTableColumns = struct {
 	ID        string
 	UserID    string
 	Token     string
+	Refresh   string
 	ExpiresAt string
 	CreatedAt string
 	UpdatedAt string
@@ -66,6 +70,7 @@ var TokenTableColumns = struct {
 	ID:        "tokens.id",
 	UserID:    "tokens.user_id",
 	Token:     "tokens.token",
+	Refresh:   "tokens.refresh",
 	ExpiresAt: "tokens.expires_at",
 	CreatedAt: "tokens.created_at",
 	UpdatedAt: "tokens.updated_at",
@@ -73,63 +78,6 @@ var TokenTableColumns = struct {
 }
 
 // Generated where
-
-type whereHelperstring struct{ field string }
-
-func (w whereHelperstring) EQ(x string) qm.QueryMod     { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperstring) NEQ(x string) qm.QueryMod    { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperstring) LT(x string) qm.QueryMod     { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperstring) LTE(x string) qm.QueryMod    { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperstring) GT(x string) qm.QueryMod     { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperstring) GTE(x string) qm.QueryMod    { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperstring) LIKE(x string) qm.QueryMod   { return qm.Where(w.field+" LIKE ?", x) }
-func (w whereHelperstring) NLIKE(x string) qm.QueryMod  { return qm.Where(w.field+" NOT LIKE ?", x) }
-func (w whereHelperstring) ILIKE(x string) qm.QueryMod  { return qm.Where(w.field+" ILIKE ?", x) }
-func (w whereHelperstring) NILIKE(x string) qm.QueryMod { return qm.Where(w.field+" NOT ILIKE ?", x) }
-func (w whereHelperstring) IN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
-}
-func (w whereHelperstring) NIN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
-}
-
-type whereHelper__byte struct{ field string }
-
-func (w whereHelper__byte) EQ(x []byte) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelper__byte) NEQ(x []byte) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelper__byte) LT(x []byte) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelper__byte) LTE(x []byte) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelper__byte) GT(x []byte) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelper__byte) GTE(x []byte) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-
-type whereHelpertime_Time struct{ field string }
-
-func (w whereHelpertime_Time) EQ(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.EQ, x)
-}
-func (w whereHelpertime_Time) NEQ(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.NEQ, x)
-}
-func (w whereHelpertime_Time) LT(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LT, x)
-}
-func (w whereHelpertime_Time) LTE(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LTE, x)
-}
-func (w whereHelpertime_Time) GT(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GT, x)
-}
-func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GTE, x)
-}
 
 type whereHelpernull_Time struct{ field string }
 
@@ -158,7 +106,8 @@ func (w whereHelpernull_Time) IsNotNull() qm.QueryMod { return qmhelper.WhereIsN
 var TokenWhere = struct {
 	ID        whereHelperstring
 	UserID    whereHelperstring
-	Token     whereHelper__byte
+	Token     whereHelperstring
+	Refresh   whereHelperstring
 	ExpiresAt whereHelpertime_Time
 	CreatedAt whereHelpertime_Time
 	UpdatedAt whereHelpertime_Time
@@ -166,7 +115,8 @@ var TokenWhere = struct {
 }{
 	ID:        whereHelperstring{field: "\"tokens\".\"id\""},
 	UserID:    whereHelperstring{field: "\"tokens\".\"user_id\""},
-	Token:     whereHelper__byte{field: "\"tokens\".\"token\""},
+	Token:     whereHelperstring{field: "\"tokens\".\"token\""},
+	Refresh:   whereHelperstring{field: "\"tokens\".\"refresh\""},
 	ExpiresAt: whereHelpertime_Time{field: "\"tokens\".\"expires_at\""},
 	CreatedAt: whereHelpertime_Time{field: "\"tokens\".\"created_at\""},
 	UpdatedAt: whereHelpertime_Time{field: "\"tokens\".\"updated_at\""},
@@ -201,8 +151,8 @@ func (r *tokenR) GetUser() *User {
 type tokenL struct{}
 
 var (
-	tokenAllColumns            = []string{"id", "user_id", "token", "expires_at", "created_at", "updated_at", "deleted_at"}
-	tokenColumnsWithoutDefault = []string{"user_id", "token", "expires_at"}
+	tokenAllColumns            = []string{"id", "user_id", "token", "refresh", "expires_at", "created_at", "updated_at", "deleted_at"}
+	tokenColumnsWithoutDefault = []string{"user_id", "token", "refresh", "expires_at"}
 	tokenColumnsWithDefault    = []string{"id", "created_at", "updated_at", "deleted_at"}
 	tokenPrimaryKeyColumns     = []string{"id"}
 	tokenGeneratedColumns      = []string{}
@@ -584,6 +534,7 @@ func (tokenL) LoadUser(ctx context.Context, e boil.ContextExecutor, singular boo
 	query := NewQuery(
 		qm.From(`users`),
 		qm.WhereIn(`users.id in ?`, argsSlice...),
+		qmhelper.WhereIsNull(`users.deleted_at`),
 	)
 	if mods != nil {
 		mods.Apply(query)
