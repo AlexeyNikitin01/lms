@@ -58,9 +58,9 @@ func main() {
 
 	boil.SetDB(db)
 
-	a := app.CreateAppUser(postgres.CreateRepoUser(db))
+	domainUser := app.CreateAppUser(postgres.CreateRepoUser(db))
 
-	svr := httpgin.Server(":18080", a)
+	svr := httpgin.Server(":18080", domainUser)
 
 	httpServer := &http.Server{
 		Addr:    ":18080",
@@ -75,7 +75,9 @@ func main() {
 	}
 	grpcServer := grpc.NewServer()
 
-	svc := grpcPort.NewService()
+	svc := grpcPort.NewService(
+		domainUser,
+	)
 	grpcPort.RegisterUserServiceServer(grpcServer, svc)
 
 	eg, ctx := errgroup.WithContext(context.Background())

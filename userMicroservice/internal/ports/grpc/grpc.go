@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"edu-material/userMicroservice/internal/app"
 	"edu-material/userMicroservice/internal/repository/pg/entity"
 
 	"github.com/friendsofgo/errors"
@@ -31,10 +32,11 @@ type Server interface {
 
 type gRPCServerStruct struct {
 	UnimplementedUserServiceServer
+	domainUser app.IAppUser
 }
 
 func (s gRPCServerStruct) GetUser(ctx context.Context, req *UserRequest) (*UserResponse, error) {
-	user, err := entity.Users(entity.UserWhere.ID.EQ(req.Uuid)).One(ctx, boil.GetContextDB())
+	user, err := s.domainUser.GetUser(ctx, req.Uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -50,24 +52,14 @@ func (s gRPCServerStruct) Ping(context.Context, *emptypb.Empty) (*emptypb.Empty,
 }
 
 func (s gRPCServerStruct) RegisterUser(ctx context.Context, req *UserRegisterRequest) (*UserRegisterResponse, error) {
-	user := &entity.User{
-		Login:    req.Login,
-		Password: []byte(req.Password),
-	}
-
-	err := user.Insert(ctx, boil.GetContextDB(), boil.Infer())
-	if err != nil {
-		return nil, err
-	}
-
-	err = user.Reload(ctx, boil.GetContextDB())
+	u, err := s.domainUser.Register(ctx, req.Login, req.Password)
 	if err != nil {
 		return nil, err
 	}
 
 	return &UserRegisterResponse{
-		Uuid:  user.ID,
-		Login: user.Login,
+		Uuid:  u.ID,
+		Login: u.Login,
 	}, nil
 }
 
@@ -214,6 +206,8 @@ func FromContext(ctx context.Context) *entity.User {
 	return user
 }
 
-func NewService() Server {
-	return &gRPCServerStruct{}
+func NewService(domainUser app.IAppUser) Server {
+	return &gRPCServerStruct{
+		domainUser: domainUser,
+	}
 }

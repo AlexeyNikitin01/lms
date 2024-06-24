@@ -10,6 +10,7 @@ import (
 
 var once sync.Once
 
+// UserPostgres паттерн одиночка
 type UserPostgres struct {
 	db  *sqlx.DB
 	err error
