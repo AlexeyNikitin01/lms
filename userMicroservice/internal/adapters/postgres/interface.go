@@ -9,6 +9,7 @@ import (
 type IUserPostgres interface {
 	RegisterDB(ctx context.Context, login, password string) (*entity.User, error)
 	GetUserDB(ctx context.Context, uuid string) (*entity.User, error)
+	GetUserByLogin(ctx context.Context, login, password string) (*entity.User, error)
 }
 
 /*
