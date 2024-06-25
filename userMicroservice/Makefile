@@ -17,4 +17,4 @@ pg-migrate:
 	migrate -path ./internal/migrations/ -database postgres://postgres:pass@localhost:7777/user?sslmode=disable up
 
 run:
-	go run cmd/main.go
+	go run ./cmd/main.go
