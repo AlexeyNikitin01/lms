@@ -16,7 +16,7 @@ func (r *RepoUser) GetUserDB(ctx context.Context, uuid string) (*entity.User, er
 	return u, nil
 }
 
-func (r *RepoUser) GetUserByLogin(ctx context.Context, login, password string) (*entity.User, error) {
+func (r *RepoUser) GetUserByLoginPasswordDB(ctx context.Context, login, password string) (*entity.User, error) {
 	u, err := entity.Users(
 		entity.UserWhere.Login.EQ(login),
 		entity.UserWhere.Password.EQ([]byte(password)),

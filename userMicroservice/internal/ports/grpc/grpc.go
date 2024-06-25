@@ -6,18 +6,13 @@ import (
 	"edu-material/userMicroservice/internal/repository/pg/entity"
 
 	"github.com/friendsofgo/errors"
-	"github.com/google/uuid"
 	authGrpc "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
-	"github.com/pascaldekloe/jwt"
-	"github.com/thanhpk/randstr"
-	"github.com/volatiletech/sqlboiler/v4/boil"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"strings"
-	"time"
 )
 
 type contextKey struct {
@@ -36,7 +31,7 @@ type gRPCServerStruct struct {
 }
 
 func (s gRPCServerStruct) GetUser(ctx context.Context, req *UserRequest) (*UserResponse, error) {
-	user, err := s.domainUser.GetUserDB(ctx, req.Uuid)
+	user, err := s.domainUser.GetUser(ctx, req.Uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +47,7 @@ func (s gRPCServerStruct) Ping(context.Context, *emptypb.Empty) (*emptypb.Empty,
 }
 
 func (s gRPCServerStruct) RegisterUser(ctx context.Context, req *UserRegisterRequest) (*UserRegisterResponse, error) {
-	u, err := s.domainUser.RegisterDB(ctx, req.Login, req.Password)
+	u, err := s.domainUser.Register(ctx, req.Login, req.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -64,113 +59,31 @@ func (s gRPCServerStruct) RegisterUser(ctx context.Context, req *UserRegisterReq
 }
 
 func (s gRPCServerStruct) AuthByLoginPassword(ctx context.Context, req *UserAuthRequest) (*UserAuthResponse, error) {
-	user, err := entity.Users(
-		entity.UserWhere.Login.EQ(req.Login),
-		entity.UserWhere.Password.EQ([]byte(req.Password)),
-	).One(ctx, boil.GetContextDB())
+	_, token, err := s.domainUser.AuthByLoginPassword(ctx, req.Login, req.Password)
 	if err != nil {
-		return nil, errors.Wrap(err, "AuthByLoginPassword - not found user")
-	}
-
-	tokensUser := &entity.Token{
-		ID:     uuid.New().String(),
-		UserID: user.ID,
-	}
-
-	access, err := accessToken(user, tokensUser)
-	if err != nil {
-		return nil, err
-	}
-
-	refresh, err := refreshToken(tokensUser)
-	if err != nil {
-		return nil, err
-	}
-	//todo: происходит задубливание в бд, для одного пользователя может быть много токенов
-	err = tokensUser.Insert(ctx, boil.GetContextDB(), boil.Infer())
-	if err != nil {
-		return nil, errors.Wrap(err, "AuthByLoginPassword - failed to insert token")
+		return nil, errors.Wrap(err, "auth by login password")
 	}
 
 	return &UserAuthResponse{
-		Access:  access,
-		Refresh: refresh,
+		Access:  token.Token,
+		Refresh: token.Refresh,
 	}, nil
 }
 
-func refreshToken(tokenUser *entity.Token) (string, error) {
-	refresh := randstr.String(30)
-
-	tokenUser.Refresh = refresh
-
-	return refresh, nil
-}
-
-func accessToken(user *entity.User, tokenUser *entity.Token) (string, error) {
-	now := time.Now()
-	accessExpires := now.Add(time.Hour * 1000)
-
-	claims := jwt.Claims{
-		Registered: jwt.Registered{
-			Issued:  jwt.NewNumericTime(now.Truncate(time.Second)),
-			Expires: jwt.NewNumericTime(accessExpires.Truncate(time.Second)),
-			Subject: tokenUser.ID,
-		},
-		Set: map[string]interface{}{
-			"user_id": user.ID,
-		},
-	}
-
-	token, err := claims.HMACSign(jwt.HS512, []byte("00000000"))
-	if err != nil {
-		return "", err
-	}
-
-	tokenUser.Token = string(token)
-	tokenUser.ExpiresAt = accessExpires
-
-	return string(token), nil
-}
-
-func parseToken(ctx context.Context, token string) (*entity.User, *entity.Token, error) {
-	clm, err := jwt.HMACCheck([]byte(token), []byte("00000000"))
-	if err != nil {
-		return nil, nil, err
-	}
-
-	if !clm.Valid(time.Now()) {
-		return nil, nil, err
-	}
-
-	tokenUserId := clm.Subject
-
-	tokenUser, err := entity.Tokens(entity.TokenWhere.ID.EQ(tokenUserId)).One(ctx, boil.GetContextDB())
-	if err != nil {
-		return nil, nil, err
-	}
-
-	user, err := entity.Users(entity.UserWhere.ID.EQ(tokenUser.UserID)).One(ctx, boil.GetContextDB())
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return user, tokenUser, nil
-}
-
-func Interceptor() grpc.UnaryServerInterceptor {
+func (s gRPCServerStruct) Interceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
-		return authGrpc.UnaryServerInterceptor(authFunc())(ctx, req, info, handler)
+		return authGrpc.UnaryServerInterceptor(s.authFunc())(ctx, req, info, handler)
 	}
 }
 
-func authFunc() authGrpc.AuthFunc {
+func (s gRPCServerStruct) authFunc() authGrpc.AuthFunc {
 	return func(ctx context.Context) (context.Context, error) {
 		token, err := FromMD(ctx, "bearer")
 		if err != nil {
 			return nil, errors.Wrap(err, "grpc interceptor: failed to parse bearer token")
 		}
 
-		user, _, err := parseToken(ctx, token)
+		user, _, err := s.domainUser.ParseToken(ctx, token)
 		if err != nil {
 			return nil, errors.Wrap(err, "grpc interceptor: failed to parse token")
 		}
