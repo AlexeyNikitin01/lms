@@ -6,7 +6,7 @@ import (
 	"golang.org/x/net/context"
 )
 
-func (r *RepoUser) Register(ctx context.Context, login, password string) (*entity.User, error) {
+func (r *RepoUser) RegisterDB(ctx context.Context, login, password string) (*entity.User, error) {
 	u := &entity.User{
 		Login:    login,
 		Password: []byte(password),

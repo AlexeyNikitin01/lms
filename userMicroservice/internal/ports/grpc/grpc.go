@@ -36,7 +36,7 @@ type gRPCServerStruct struct {
 }
 
 func (s gRPCServerStruct) GetUser(ctx context.Context, req *UserRequest) (*UserResponse, error) {
-	user, err := s.domainUser.GetUser(ctx, req.Uuid)
+	user, err := s.domainUser.GetUserDB(ctx, req.Uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func (s gRPCServerStruct) Ping(context.Context, *emptypb.Empty) (*emptypb.Empty,
 }
 
 func (s gRPCServerStruct) RegisterUser(ctx context.Context, req *UserRegisterRequest) (*UserRegisterResponse, error) {
-	u, err := s.domainUser.Register(ctx, req.Login, req.Password)
+	u, err := s.domainUser.RegisterDB(ctx, req.Login, req.Password)
 	if err != nil {
 		return nil, err
 	}

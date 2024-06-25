@@ -92,7 +92,7 @@ func (UnimplementedUserServiceServer) Ping(context.Context, *emptypb.Empty) (*em
 	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
 }
 func (UnimplementedUserServiceServer) GetUser(context.Context, *UserRequest) (*UserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserDB not implemented")
 }
 func (UnimplementedUserServiceServer) RegisterUser(context.Context, *UserRegisterRequest) (*UserRegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterUser not implemented")
