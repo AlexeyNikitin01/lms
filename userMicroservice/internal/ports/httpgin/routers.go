@@ -6,6 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AppRouter(r *gin.RouterGroup, a app.AppUser) {
+func AppRouter(r *gin.RouterGroup, a app.IAppUser) {
 	r.GET("all-user", getAllUser(a))
 }
