@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"context"
-	"edu-material/userMicroservice/internal/repository/pg/entity"
+	"lms-user/internal/repository/pg/entity"
 )
 
 func (r *RepoUser) GetUser(ctx context.Context, uuid string) (*entity.User, error) {

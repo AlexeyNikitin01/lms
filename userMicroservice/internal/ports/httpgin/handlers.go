@@ -1,14 +1,14 @@
 package httpgin
 
 import (
-	"edu-material/userMicroservice/internal/app"
 	"fmt"
+	"lms-user/internal/app"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-func getAllUser(a app.AppUser) gin.HandlerFunc {
+func getAllUser(a app.IAppUser) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		fmt.Printf("user")
 		time.Sleep(time.Microsecond * 100)

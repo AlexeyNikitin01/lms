@@ -1,9 +1,9 @@
 package postgres
 
 import (
-	"edu-material/userMicroservice/internal/repository/pg/entity"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"golang.org/x/net/context"
+	"lms-user/internal/repository/pg/entity"
 )
 
 func (r *RepoUser) Register(ctx context.Context, login, password string) (*entity.User, error) {

@@ -2,7 +2,7 @@ package app
 
 import (
 	"context"
-	"edu-material/userMicroservice/internal/repository/pg/entity"
+	"lms-user/internal/repository/pg/entity"
 )
 
 func (a appUser) Register(ctx context.Context, login, password string) (*entity.User, error) {

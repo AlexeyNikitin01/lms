@@ -2,8 +2,8 @@ package postgres
 
 import (
 	"context"
-	"edu-material/userMicroservice/internal/repository/pg/entity"
 	"github.com/jmoiron/sqlx"
+	"lms-user/internal/repository/pg/entity"
 )
 
 type IUserPostgres interface {

@@ -2,8 +2,8 @@ package grpc
 
 import (
 	"context"
-	"edu-material/userMicroservice/internal/app"
-	"edu-material/userMicroservice/internal/repository/pg/entity"
+	"lms-user/internal/app"
+	"lms-user/internal/repository/pg/entity"
 
 	"github.com/friendsofgo/errors"
 	"github.com/google/uuid"

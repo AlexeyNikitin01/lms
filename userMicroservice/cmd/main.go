@@ -16,10 +16,10 @@ import (
 	"syscall"
 	"time"
 
-	"edu-material/userMicroservice/internal/adapters/postgres"
-	"edu-material/userMicroservice/internal/app"
-	grpcPort "edu-material/userMicroservice/internal/ports/grpc"
-	"edu-material/userMicroservice/internal/ports/httpgin"
+	"lms-user/internal/adapters/postgres"
+	"lms-user/internal/app"
+	grpcPort "lms-user/internal/ports/grpc"
+	"lms-user/internal/ports/httpgin"
 )
 
 func main() {
