@@ -2,8 +2,8 @@ package app
 
 import (
 	"context"
-	"edu-material/userMicroservice/internal/adapters/postgres"
-	"edu-material/userMicroservice/internal/repository/pg/entity"
+	"lms-user/internal/adapters/postgres"
+	"lms-user/internal/repository/pg/entity"
 )
 
 type IAppUser interface {

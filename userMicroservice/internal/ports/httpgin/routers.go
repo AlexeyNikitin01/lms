@@ -1,7 +1,7 @@
 package httpgin
 
 import (
-	"edu-material/userMicroservice/internal/app"
+	"lms-user/internal/app"
 
 	"github.com/gin-gonic/gin"
 )

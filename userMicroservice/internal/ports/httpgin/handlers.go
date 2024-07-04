@@ -1,8 +1,8 @@
 package httpgin
 
 import (
-	"edu-material/userMicroservice/internal/app"
 	"fmt"
+	"lms-user/internal/app"
 	"time"
 
 	"github.com/gin-gonic/gin"
