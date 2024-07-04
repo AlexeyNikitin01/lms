@@ -25,21 +25,6 @@ import (
 func main() {
 	fmt.Println("init server")
 
-	//cfg := postgres.Config{
-	//	Host:     "localhost",
-	//	Port:     "7777",
-	//	User:     "postgres",
-	//	DBName:   "user",
-	//	Password: "pass",
-	//	SSLmode:  "disable",
-	//}
-
-	//a := app.CreateAppUser(postgres.CreateRepoUser(db))
-	//
-	//s := httpgin.Server(":18080", a)
-
-	//log.Fatal(s.ListenAndServe())
-
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
 	cfg := postgres.Config{
