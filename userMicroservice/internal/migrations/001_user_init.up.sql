@@ -52,3 +52,9 @@ CREATE TABLE IF NOT EXISTS roles_permissions (
     permission_id BIGINT REFERENCES permissions(id) NOT NULL,
     PRIMARY KEY (role_id, permission_id)
 );
+
+CREATE TABLE IF NOT EXISTS photo_url  (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id uuid REFERENCES users(id) NOT NULL,
+    url VARCHAR(300) NOT NULL
+);
