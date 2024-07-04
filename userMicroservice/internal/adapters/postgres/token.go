@@ -2,9 +2,9 @@ package postgres
 
 import (
 	"context"
-	"edu-material/userMicroservice/internal/repository/pg/entity"
 	"github.com/pkg/errors"
 	"github.com/volatiletech/sqlboiler/v4/boil"
+	"lms-user/internal/repository/pg/entity"
 )
 
 func (r *RepoUser) GetUserByTokenDB(ctx context.Context, tokenID string) (*entity.User, *entity.Token, error) {

@@ -2,9 +2,9 @@ package app
 
 import (
 	"context"
-	"edu-material/userMicroservice/internal/repository/pg/entity"
 	"github.com/pascaldekloe/jwt"
 	"github.com/thanhpk/randstr"
+	"lms-user/internal/repository/pg/entity"
 	"time"
 )
 

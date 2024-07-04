@@ -2,9 +2,9 @@ package app
 
 import (
 	"context"
-	"edu-material/userMicroservice/internal/repository/pg/entity"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
+	"lms-user/internal/repository/pg/entity"
 )
 
 func (a appUser) AuthByLoginPassword(ctx context.Context, login, password string) (*entity.User, *entity.Token, error) {
