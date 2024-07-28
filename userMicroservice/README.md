@@ -10,6 +10,7 @@ UC:
     2. Update user
     3. Get User
     4. Auth
+    5. Register
 ---
 
 Технологии:
