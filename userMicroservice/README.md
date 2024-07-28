@@ -18,3 +18,6 @@ UC:
     2. PostgreSQL
     3. Golang
 ---
+
+# ERD
+![user.png](..%2F..%2Fuser.png)
