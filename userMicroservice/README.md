@@ -20,4 +20,4 @@ UC:
 ---
 
 # ERD
-![user.png](..%2F..%2Fuser.png)
+![user.png](etc%2Fuser.png)
