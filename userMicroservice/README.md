@@ -15,6 +15,6 @@ UC:
 Технологии:
 --
     1. SQL-boiler
-    2. PostgresDB
+    2. PostgreSQL
     3. Golang
 ---
