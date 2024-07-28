@@ -1,10 +1,10 @@
 user-postgres:
 	docker run --name user -e POSTGRES_PASSWORD=pass -e POSTGRES_USER=postgres -e POSTGRES_DB=user -p 7777:5432 -d postgres
 
-postgres-start:
+db-run:
 	docker start user
 
-postgres-stop:
+db-stop:
 	docker stop user
 
 sql-gen:
