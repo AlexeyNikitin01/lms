@@ -5,6 +5,7 @@ package user;
 option go_package = "internal/ports/grpc";
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 service UserService {
   rpc ping(google.protobuf.Empty) returns (google.protobuf.Empty) {}
@@ -20,6 +21,13 @@ message UserRequest {
 message UserResponse {
   string uuid = 1;
   string login = 2;
+  string name = 3;
+  string surname = 4;
+  string email = 5;
+  string phone = 6;
+  string placeWork = 7;
+  string position = 8;
+  google.protobuf.Timestamp createdDate = 9;
 }
 
 message UserRegisterRequest {
