@@ -12,7 +12,7 @@ service UserService {
   rpc getUser(UserRequest) returns (UserResponse) {}
   rpc registerUser(UserRegisterRequest) returns (UserRegisterResponse) {}
   rpc authByLoginPassword(UserAuthRequest) returns (UserAuthResponse) {}
-  rpc updateUser(UserUpdateRequest) returns (UserResponse)
+  rpc updateUser(UserUpdateRequest) returns (UserResponse);
 }
 
 message UserRequest {
