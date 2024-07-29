@@ -908,7 +908,7 @@ func (o TokenSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, co
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *Token) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) error {
+func (o *Token) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
 		return errors.New("entity: no tokens provided for upsert")
 	}
@@ -962,7 +962,7 @@ func (o *Token) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnC
 	var err error
 
 	if !cached {
-		insert, _ := insertColumns.InsertColumnSet(
+		insert, ret := insertColumns.InsertColumnSet(
 			tokenAllColumns,
 			tokenColumnsWithDefault,
 			tokenColumnsWithoutDefault,
@@ -978,18 +978,12 @@ func (o *Token) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnC
 			return errors.New("entity: unable to upsert tokens, could not build update column list")
 		}
 
-		ret := strmangle.SetComplement(tokenAllColumns, strmangle.SetIntersect(insert, update))
-
 		conflict := conflictColumns
-		if len(conflict) == 0 && updateOnConflict && len(update) != 0 {
-			if len(tokenPrimaryKeyColumns) == 0 {
-				return errors.New("entity: unable to upsert tokens, could not build conflict column list")
-			}
-
+		if len(conflict) == 0 {
 			conflict = make([]string, len(tokenPrimaryKeyColumns))
 			copy(conflict, tokenPrimaryKeyColumns)
 		}
-		cache.query = buildUpsertQueryPostgres(dialect, "\"tokens\"", updateOnConflict, ret, update, conflict, insert, opts...)
+		cache.query = buildUpsertQueryPostgres(dialect, "\"tokens\"", updateOnConflict, ret, update, conflict, insert)
 
 		cache.valueMapping, err = queries.BindMapping(tokenType, tokenMapping, insert)
 		if err != nil {

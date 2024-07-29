@@ -5,6 +5,7 @@ package entity
 
 var TableNames = struct {
 	Permissions      string
+	PhotoURL         string
 	Roles            string
 	RolesPermissions string
 	SchemaMigrations string
@@ -13,6 +14,7 @@ var TableNames = struct {
 	UsersRoles       string
 }{
 	Permissions:      "permissions",
+	PhotoURL:         "photo_url",
 	Roles:            "roles",
 	RolesPermissions: "roles_permissions",
 	SchemaMigrations: "schema_migrations",

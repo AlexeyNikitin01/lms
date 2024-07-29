@@ -644,7 +644,7 @@ func (o SchemaMigrationSlice) UpdateAll(ctx context.Context, exec boil.ContextEx
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *SchemaMigration) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) error {
+func (o *SchemaMigration) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
 		return errors.New("entity: no schema_migrations provided for upsert")
 	}
@@ -690,7 +690,7 @@ func (o *SchemaMigration) Upsert(ctx context.Context, exec boil.ContextExecutor,
 	var err error
 
 	if !cached {
-		insert, _ := insertColumns.InsertColumnSet(
+		insert, ret := insertColumns.InsertColumnSet(
 			schemaMigrationAllColumns,
 			schemaMigrationColumnsWithDefault,
 			schemaMigrationColumnsWithoutDefault,
@@ -706,18 +706,12 @@ func (o *SchemaMigration) Upsert(ctx context.Context, exec boil.ContextExecutor,
 			return errors.New("entity: unable to upsert schema_migrations, could not build update column list")
 		}
 
-		ret := strmangle.SetComplement(schemaMigrationAllColumns, strmangle.SetIntersect(insert, update))
-
 		conflict := conflictColumns
-		if len(conflict) == 0 && updateOnConflict && len(update) != 0 {
-			if len(schemaMigrationPrimaryKeyColumns) == 0 {
-				return errors.New("entity: unable to upsert schema_migrations, could not build conflict column list")
-			}
-
+		if len(conflict) == 0 {
 			conflict = make([]string, len(schemaMigrationPrimaryKeyColumns))
 			copy(conflict, schemaMigrationPrimaryKeyColumns)
 		}
-		cache.query = buildUpsertQueryPostgres(dialect, "\"schema_migrations\"", updateOnConflict, ret, update, conflict, insert, opts...)
+		cache.query = buildUpsertQueryPostgres(dialect, "\"schema_migrations\"", updateOnConflict, ret, update, conflict, insert)
 
 		cache.valueMapping, err = queries.BindMapping(schemaMigrationType, schemaMigrationMapping, insert)
 		if err != nil {

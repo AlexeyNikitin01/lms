@@ -642,7 +642,7 @@ func (roleL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singular boo
 	}
 
 	query := NewQuery(
-		qm.Select("\"users\".\"id\", \"users\".\"login\", \"users\".\"password\", \"users\".\"name\", \"users\".\"surname\", \"users\".\"email\", \"users\".\"phone\", \"users\".\"place_work\", \"users\".\"position\", \"users\".\"created_at\", \"users\".\"updated_at\", \"users\".\"deleted_at\", \"a\".\"role_id\""),
+		qm.Select("\"users\".\"id\", \"users\".\"login\", \"users\".\"password\", \"users\".\"name\", \"users\".\"surname\", \"users\".\"email\", \"users\".\"phone\", \"users\".\"place_work\", \"users\".\"position\", \"users\".\"registered\", \"users\".\"created_at\", \"users\".\"updated_at\", \"users\".\"deleted_at\", \"a\".\"role_id\""),
 		qm.From("\"users\""),
 		qm.InnerJoin("\"users_roles\" as \"a\" on \"users\".\"id\" = \"a\".\"user_id\""),
 		qm.WhereIn("\"a\".\"role_id\" in ?", argsSlice...),
@@ -664,7 +664,7 @@ func (roleL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singular boo
 		one := new(User)
 		var localJoinCol int64
 
-		err = results.Scan(&one.ID, &one.Login, &one.Password, &one.Name, &one.Surname, &one.Email, &one.Phone, &one.PlaceWork, &one.Position, &one.CreatedAt, &one.UpdatedAt, &one.DeletedAt, &localJoinCol)
+		err = results.Scan(&one.ID, &one.Login, &one.Password, &one.Name, &one.Surname, &one.Email, &one.Phone, &one.PlaceWork, &one.Position, &one.Registered, &one.CreatedAt, &one.UpdatedAt, &one.DeletedAt, &localJoinCol)
 		if err != nil {
 			return errors.Wrap(err, "failed to scan eager loaded results for users")
 		}
@@ -1276,7 +1276,7 @@ func (o RoleSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, col
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *Role) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) error {
+func (o *Role) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
 		return errors.New("entity: no roles provided for upsert")
 	}
@@ -1330,7 +1330,7 @@ func (o *Role) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnCo
 	var err error
 
 	if !cached {
-		insert, _ := insertColumns.InsertColumnSet(
+		insert, ret := insertColumns.InsertColumnSet(
 			roleAllColumns,
 			roleColumnsWithDefault,
 			roleColumnsWithoutDefault,
@@ -1349,18 +1349,12 @@ func (o *Role) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnCo
 			return errors.New("entity: unable to upsert roles, could not build update column list")
 		}
 
-		ret := strmangle.SetComplement(roleAllColumns, strmangle.SetIntersect(insert, update))
-
 		conflict := conflictColumns
-		if len(conflict) == 0 && updateOnConflict && len(update) != 0 {
-			if len(rolePrimaryKeyColumns) == 0 {
-				return errors.New("entity: unable to upsert roles, could not build conflict column list")
-			}
-
+		if len(conflict) == 0 {
 			conflict = make([]string, len(rolePrimaryKeyColumns))
 			copy(conflict, rolePrimaryKeyColumns)
 		}
-		cache.query = buildUpsertQueryPostgres(dialect, "\"roles\"", updateOnConflict, ret, update, conflict, insert, opts...)
+		cache.query = buildUpsertQueryPostgres(dialect, "\"roles\"", updateOnConflict, ret, update, conflict, insert)
 
 		cache.valueMapping, err = queries.BindMapping(roleType, roleMapping, insert)
 		if err != nil {
