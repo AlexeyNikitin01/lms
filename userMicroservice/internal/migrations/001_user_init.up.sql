@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users(
     phone TEXT,
     place_work TEXT,
     position TEXT,
+    registered BOOL,
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now(),
     deleted_at timestamptz
