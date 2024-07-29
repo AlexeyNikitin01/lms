@@ -53,6 +53,7 @@ message UserAuthResponse {
 }
 
 message UserUpdateRequest {
+  string uuid = 1;
   string login = 2;
   string name = 3;
   string surname = 4;
