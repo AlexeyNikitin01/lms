@@ -12,6 +12,7 @@ type IUserPostgres interface {
 	GetUserByLoginPasswordDB(ctx context.Context, login, password string) (*entity.User, error)
 	GetUserByTokenDB(ctx context.Context, tokenID string) (*entity.User, *entity.Token, error)
 	InsertTokenDB(ctx context.Context, token *entity.Token) error
+	UpdateUser(ctx context.Context, user *entity.User) (*entity.User, error)
 }
 
 /*

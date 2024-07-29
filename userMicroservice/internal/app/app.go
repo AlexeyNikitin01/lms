@@ -7,6 +7,7 @@ import (
 )
 
 type IAppUser interface {
+	UpdateUser(ctx context.Context, user *entity.User) (*entity.User, error)
 	Register(ctx context.Context, login, password string) (*entity.User, error)
 	GetUser(ctx context.Context, uuid string) (*entity.User, error)
 	RefreshToken(tokenUser *entity.Token) (string, error)
