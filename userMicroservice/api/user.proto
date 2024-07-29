@@ -12,6 +12,7 @@ service UserService {
   rpc getUser(UserRequest) returns (UserResponse) {}
   rpc registerUser(UserRegisterRequest) returns (UserRegisterResponse) {}
   rpc authByLoginPassword(UserAuthRequest) returns (UserAuthResponse) {}
+  rpc updateUser(UserUpdateRequest) returns (UserResponse)
 }
 
 message UserRequest {
@@ -49,4 +50,14 @@ message UserAuthRequest {
 message UserAuthResponse {
   string access = 1;
   string refresh = 2;
+}
+
+message UserUpdateRequest {
+  string login = 2;
+  string name = 3;
+  string surname = 4;
+  string email = 5;
+  string phone = 6;
+  string placeWork = 7;
+  string position = 8;
 }
