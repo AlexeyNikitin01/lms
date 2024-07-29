@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"lms-user/internal/app"
 	"lms-user/internal/repository/pg/entity"
 
@@ -37,8 +38,15 @@ func (s gRPCServerStruct) GetUser(ctx context.Context, req *UserRequest) (*UserR
 	}
 
 	return &UserResponse{
-		Uuid:  req.Uuid,
-		Login: user.Login,
+		Uuid:        req.Uuid,
+		Login:       user.Login,
+		Name:        user.Name,
+		Surname:     user.Surname,
+		Email:       user.Email,
+		Phone:       user.Phone,
+		PlaceWork:   user.PlaceWork,
+		Position:    user.Position,
+		CreatedDate: timestamppb.New(user.CreatedAt),
 	}, nil
 }
 
