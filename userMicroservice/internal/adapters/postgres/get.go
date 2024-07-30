@@ -2,6 +2,9 @@ package postgres
 
 import (
 	"context"
+
+	"github.com/pkg/errors"
+
 	"lms-user/internal/repository/pg/entity"
 )
 
@@ -22,7 +25,7 @@ func (r *RepoUser) GetUserByLoginPasswordDB(ctx context.Context, login, password
 		entity.UserWhere.Password.EQ([]byte(password)),
 	).One(ctx, r.DB)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "err storage get user")
 	}
 
 	return u, nil
