@@ -8,7 +8,7 @@ db-stop:
 	docker stop user
 
 sql-gen:
-	sqlboiler -c etc/config.template.yml -p entity -o internal/repository/pg/entity --struct-tag-casing camel --add-soft-deletes --no-tests --wipe psql
+	sqlboiler -c etc/config.template.yml -p entity -o internal/repository/pg/entity --struct-tag-casing snake --add-soft-deletes --no-tests --wipe psql
 
 grpc-user:
 	protoc --go_out=. --go-grpc_out=. api/*.proto
