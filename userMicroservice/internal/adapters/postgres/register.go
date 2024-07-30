@@ -14,7 +14,7 @@ func (r *RepoUser) RegisterDB(ctx context.Context, login, password, email string
 		Email:    email,
 	}
 
-	err := u.Insert(ctx, r.DB, boil.Infer())
+	err := u.Insert(ctx, boil.GetContextDB(), boil.Infer())
 	if err != nil {
 		return nil, err
 	}
