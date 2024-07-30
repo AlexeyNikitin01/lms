@@ -10,8 +10,8 @@ import (
 )
 
 func (r *RepoUser) UpdateUser(ctx context.Context, user *entity.User) (*entity.User, error) {
-	err := user.
-		Upsert(ctx, boil.GetContextDB(), true, nil, boil.Infer(), boil.Infer())
+	err := user.Upsert(ctx, boil.GetContextDB(), true, nil,
+		boil.Blacklist("password"), boil.Infer())
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to update user storage")
 	}
