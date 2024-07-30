@@ -8,20 +8,20 @@ import (
 	"lms-user/internal/app"
 )
 
-type Server interface {
+type IServer interface {
 	UserServiceServer
 }
 
 type gRPCServerStruct struct {
-	UnimplementedUserServiceServer
-	domainUser app.IAppUser
+	UnimplementedUserServiceServer // Вызывает панику, если метод не реализован
+	domainUser                     app.IAppUser
 }
 
 func (s gRPCServerStruct) Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
 	return nil, nil
 }
 
-func NewService(domainUser app.IAppUser) Server {
+func NewService(domainUser app.IAppUser) IServer {
 	return &gRPCServerStruct{
 		domainUser: domainUser,
 	}
