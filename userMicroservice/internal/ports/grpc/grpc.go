@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"log"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -33,6 +34,7 @@ type gRPCServerStruct struct {
 }
 
 func (s gRPCServerStruct) Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
+	log.Println("ping server")
 	return &emptypb.Empty{}, nil
 }
 
