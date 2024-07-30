@@ -23,7 +23,7 @@ func (s gRPCServerStruct) UpdateUser(ctx context.Context, req *UserUpdateRequest
 
 	updateUser, err := s.domainUser.UpdateUser(ctx, &userForUpdate)
 	if err != nil {
-		return nil, errors.Wrap(err, "grpc interceptor: failed to update user")
+		return &UserResponse{}, errors.Wrap(err, "grpc interceptor: failed to update user")
 	}
 
 	return &UserResponse{
