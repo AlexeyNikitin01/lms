@@ -3,11 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/friendsofgo/errors"
-	"github.com/sirupsen/logrus"
-	"github.com/volatiletech/sqlboiler/v4/boil"
-	"golang.org/x/sync/errgroup"
-	"google.golang.org/grpc"
 	"log"
 	"net"
 	"net/http"
@@ -15,6 +10,12 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/friendsofgo/errors"
+	"github.com/sirupsen/logrus"
+	"github.com/volatiletech/sqlboiler/v4/boil"
+	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc"
 
 	"lms-user/internal/adapters/postgres"
 	"lms-user/internal/app"
