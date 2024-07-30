@@ -24,7 +24,7 @@ import (
 // PhotoURL is an object representing the database table.
 type PhotoURL struct {
 	ID     int64  `boil:"id" json:"id" toml:"id" yaml:"id"`
-	UserID string `boil:"userID" json:"userID" toml:"userID" yaml:"userID"`
+	UserID string `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
 	URL    string `boil:"url" json:"url" toml:"url" yaml:"url"`
 
 	R *photoURLR `boil:"-" json:"-" toml:"-" yaml:"-"`

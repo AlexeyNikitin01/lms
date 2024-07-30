@@ -31,12 +31,12 @@ type User struct {
 	Surname    string    `boil:"surname" json:"surname" toml:"surname" yaml:"surname"`
 	Email      string    `boil:"email" json:"email" toml:"email" yaml:"email"`
 	Phone      string    `boil:"phone" json:"phone" toml:"phone" yaml:"phone"`
-	PlaceWork  string    `boil:"placeWork" json:"placeWork" toml:"placeWork" yaml:"placeWork"`
+	PlaceWork  string    `boil:"place_work" json:"place_work" toml:"place_work" yaml:"place_work"`
 	Position   string    `boil:"position" json:"position" toml:"position" yaml:"position"`
 	Registered bool      `boil:"registered" json:"registered" toml:"registered" yaml:"registered"`
-	CreatedAt  time.Time `boil:"createdAt" json:"createdAt" toml:"createdAt" yaml:"createdAt"`
-	UpdatedAt  time.Time `boil:"updatedAt" json:"updatedAt" toml:"updatedAt" yaml:"updatedAt"`
-	DeletedAt  null.Time `boil:"deletedAt" json:"deletedAt,omitempty" toml:"deletedAt" yaml:"deletedAt,omitempty"`
+	CreatedAt  time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt  time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+	DeletedAt  null.Time `boil:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
