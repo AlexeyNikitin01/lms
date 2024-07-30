@@ -11,7 +11,7 @@ lms-1: возможность регистрации пользователей 
 */
 
 func (s gRPCServerStruct) RegisterUser(ctx context.Context, req *UserRegisterRequest) (*UserRegisterResponse, error) {
-	u, err := s.domainUser.Register(ctx, req.Login, req.Password)
+	u, err := s.domainUser.Register(ctx, req.Login, req.Password, req.Email)
 	if err != nil {
 		return nil, err
 	}

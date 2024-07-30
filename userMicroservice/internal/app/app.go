@@ -2,13 +2,14 @@ package app
 
 import (
 	"context"
+
 	"lms-user/internal/adapters/postgres"
 	"lms-user/internal/repository/pg/entity"
 )
 
 type IAppUser interface {
 	UpdateUser(ctx context.Context, user *entity.User) (*entity.User, error)
-	Register(ctx context.Context, login, password string) (*entity.User, error)
+	Register(ctx context.Context, login, password string, email string) (*entity.User, error)
 	GetUser(ctx context.Context, uuid string) (*entity.User, error)
 	RefreshToken(tokenUser *entity.Token) (string, error)
 	AccessToken(user *entity.User, tokenUser *entity.Token) (string, error)

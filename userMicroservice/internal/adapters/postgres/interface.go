@@ -2,12 +2,14 @@ package postgres
 
 import (
 	"context"
+
 	"github.com/jmoiron/sqlx"
+
 	"lms-user/internal/repository/pg/entity"
 )
 
 type IUserPostgres interface {
-	RegisterDB(ctx context.Context, login, password string) (*entity.User, error)
+	RegisterDB(ctx context.Context, login, password, email string) (*entity.User, error)
 	GetUserDB(ctx context.Context, uuid string) (*entity.User, error)
 	GetUserByLoginPasswordDB(ctx context.Context, login, password string) (*entity.User, error)
 	GetUserByTokenDB(ctx context.Context, tokenID string) (*entity.User, *entity.Token, error)
