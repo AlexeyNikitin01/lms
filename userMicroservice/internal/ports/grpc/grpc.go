@@ -33,7 +33,7 @@ type gRPCServerStruct struct {
 }
 
 func (s gRPCServerStruct) Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
-	return nil, nil
+	return &emptypb.Empty{}, nil
 }
 
 func NewService(domainUser app.IAppUser) IServer {
