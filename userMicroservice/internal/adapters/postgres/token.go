@@ -2,8 +2,11 @@ package postgres
 
 import (
 	"context"
+	"time"
+
 	"github.com/pkg/errors"
 	"github.com/volatiletech/sqlboiler/v4/boil"
+
 	"lms-user/internal/repository/pg/entity"
 )
 
@@ -22,11 +25,22 @@ func (r *RepoUser) GetUserByTokenDB(ctx context.Context, tokenID string) (*entit
 }
 
 func (r *RepoUser) InsertTokenDB(ctx context.Context, token *entity.Token) error {
-	//todo: происходит задубливание в бд, для одного пользователя может быть много токенов
 	err := token.Insert(ctx, boil.GetContextDB(), boil.Infer())
 	if err != nil {
 		return errors.Wrap(err, "AuthByLoginPassword - failed to insert token")
 	}
 
 	return nil
+}
+
+func (r *RepoUser) GetTokenByUserID(ctx context.Context, userID string) (*entity.Token, error) {
+	token, err := entity.Tokens(
+		entity.TokenWhere.UserID.EQ(userID),
+		entity.TokenWhere.ExpiresAt.GTE(time.Now()),
+	).One(ctx, boil.GetContextDB())
+	if err != nil {
+		return nil, err
+	}
+
+	return token, nil
 }
