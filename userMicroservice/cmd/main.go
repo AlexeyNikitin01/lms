@@ -59,11 +59,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	grpcServer := grpc.NewServer()
 
 	svc := grpcPort.NewService(
 		domainUser,
 	)
+
+	grpcServer := grpc.NewServer(grpc.ChainUnaryInterceptor(svc.Interceptor()))
+
 	grpcPort.RegisterUserServiceServer(grpcServer, svc)
 
 	eg, ctx := errgroup.WithContext(context.Background())
