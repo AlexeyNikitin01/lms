@@ -20,8 +20,15 @@ type contextKey struct {
 
 var UserCtxKey = &contextKey{name: "user"}
 
+var noAuthMethod = map[string]struct{}{
+	"/user.UserService/authByLoginPassword": {},
+}
+
 func (s gRPCServerStruct) Interceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
+		if _, ok := noAuthMethod[info.FullMethod]; ok {
+			return handler(ctx, req)
+		}
 		return authGrpc.UnaryServerInterceptor(s.authFunc())(ctx, req, info, handler)
 	}
 }
@@ -53,7 +60,7 @@ func FromMD(ctx context.Context, key string) (string, error) {
 		return "", status.New(codes.Unauthenticated, "invalid token").Err()
 	}
 
-	if strings.EqualFold(splits[0], key) {
+	if !strings.EqualFold(splits[0], key) {
 		return "", status.New(codes.PermissionDenied, "permission denied").Err()
 	}
 
