@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	"lms-user/internal/app"
@@ -26,6 +27,7 @@ import (
 
 type IServer interface {
 	UserServiceServer
+	Interceptor() grpc.UnaryServerInterceptor
 }
 
 type gRPCServerStruct struct {
