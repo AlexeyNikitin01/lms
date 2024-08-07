@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS users(
     place_work TEXT NOT NULL DEFAULT '',
     position TEXT NOT NULL DEFAULT '',
     registered BOOL NOT NULL DEFAULT false,
+    role TEXT NOT NULL DEFAULT 'user',
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now(),
     deleted_at timestamptz
@@ -23,35 +24,6 @@ CREATE TABLE IF NOT EXISTS tokens(
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now(),
     deleted_at timestamptz
-);
-
-CREATE TABLE IF NOT EXISTS roles (
-    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    created_at timestamptz NOT NULL DEFAULT now(),
-    updated_at timestamptz NOT NULL DEFAULT now(),
-    deleted_at timestamptz NOT NULL DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS users_roles (
-    user_id uuid REFERENCES users(id) NOT NULL,
-    role_id BIGINT REFERENCES roles(id) NOT NULL,
-    PRIMARY KEY (user_id, role_id)
-);
-
-
-CREATE TABLE IF NOT EXISTS permissions (
-    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    created_at timestamptz NOT NULL DEFAULT now(),
-    updated_at timestamptz NOT NULL DEFAULT now(),
-    deleted_at timestamptz NOT NULL DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS roles_permissions (
-    role_id BIGINT REFERENCES roles(id) NOT NULL,
-    permission_id BIGINT REFERENCES permissions(id) NOT NULL,
-    PRIMARY KEY (role_id, permission_id)
 );
 
 CREATE TABLE IF NOT EXISTS photo_url  (

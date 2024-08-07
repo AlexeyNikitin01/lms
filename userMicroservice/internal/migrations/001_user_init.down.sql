@@ -1,7 +1,3 @@
-DROP TABLE roles_permissions;
-DROP TABLE users_roles;
-DROP TABLE permissions;
-DROP TABLE roles;
 DROP TABLE tokens;
 DROP TABLE photo_url;
 DROP TABLE users;
