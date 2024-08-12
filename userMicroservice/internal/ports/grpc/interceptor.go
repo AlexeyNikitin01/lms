@@ -22,6 +22,7 @@ var UserCtxKey = &contextKey{name: "user"}
 
 var noAuthMethod = map[string]struct{}{
 	"/user.UserService/authByLoginPassword": {},
+	"/user.UserService/registerUser":        {},
 }
 
 func (s gRPCServerStruct) Interceptor() grpc.UnaryServerInterceptor {
