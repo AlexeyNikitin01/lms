@@ -7,5 +7,5 @@ import (
 )
 
 func AppRouter(r *gin.RouterGroup, a app.IAppUser) {
-	r.GET("all-user", getAllUser(a))
+	r.GET("ping", ping(a))
 }

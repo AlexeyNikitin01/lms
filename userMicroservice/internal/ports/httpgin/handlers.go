@@ -1,18 +1,17 @@
 package httpgin
 
 import (
-	"fmt"
+	"log"
+
 	"lms-user/internal/app"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-func getAllUser(a app.IAppUser) gin.HandlerFunc {
+func ping(_ app.IAppUser) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		fmt.Printf("user")
-		time.Sleep(time.Microsecond * 100)
+		log.Println("ping http gin")
 		ctx.Status(200)
-		ctx.JSON(200, &gin.H{"data": "ok"})
+		ctx.JSON(200, &gin.H{})
 	}
 }
