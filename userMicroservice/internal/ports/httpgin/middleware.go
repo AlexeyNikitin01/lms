@@ -12,8 +12,8 @@ import (
 )
 
 var methods = map[string]struct{}{
-	"/user/authByLoginPassword": {},
-	"/user/register":            {},
+	"/user/auth":     {},
+	"/user/register": {},
 }
 
 type contextKey struct {

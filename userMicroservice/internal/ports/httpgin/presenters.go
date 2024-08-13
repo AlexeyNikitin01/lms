@@ -30,3 +30,13 @@ type UserRequest struct {
 
 type Error struct {
 }
+
+type AuthByLogPassRequest struct {
+	Login    string `json:"login"`
+	Password string `json:"password"`
+}
+
+type AuthByLogPassResponse struct {
+	Token   string `json:"token"`
+	Refresh string `json:"refresh"`
+}
