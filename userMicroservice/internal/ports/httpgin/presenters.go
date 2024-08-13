@@ -44,3 +44,14 @@ type AuthByLogPassResponse struct {
 type GetUserReq struct {
 	UUID string `json:"userUUID"`
 }
+
+type UpdateUserRequest struct {
+	UUID      string `json:"userUUID"`
+	Login     string `json:"login"`
+	Name      string `json:"name"`
+	Surname   string `json:"surname"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	PlaceWork string `json:"place_work"`
+	Position  string `json:"position"`
+}
