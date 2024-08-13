@@ -1,8 +1,6 @@
 package httpgin
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 
@@ -14,18 +12,26 @@ func getUser(a app.IAppUser) gin.HandlerFunc {
 		var req GetUserReq
 		if err := c.Bind(&req); err != nil {
 			c.JSON(500, gin.H{
-				"err":    errors.Wrap(err, "get user request"),
 				"method": c.FullPath(),
+				"err":    errors.Wrap(err, "get user request").Error(),
 			})
 			return
 		}
-		fmt.Println(req.UUID)
+
+		currentUser := FromContext(c)
+		if !checkUser(currentUser, req.UUID) {
+			c.JSON(500, gin.H{
+				"method": c.FullPath(),
+				"err":    errors.New("you don`t get user").Error(),
+			})
+			return
+		}
 
 		user, err := a.GetUser(c, req.UUID)
 		if err != nil {
 			c.JSON(500, gin.H{
-				"err":    errors.Wrap(err, "get user domain"),
 				"method": c.FullPath(),
+				"err":    errors.Wrap(err, "get user domain").Error(),
 			})
 			return
 		}
