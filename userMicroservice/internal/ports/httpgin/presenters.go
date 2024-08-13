@@ -37,8 +37,9 @@ type AuthByLogPassRequest struct {
 }
 
 type AuthByLogPassResponse struct {
-	Token   string `json:"token"`
-	Refresh string `json:"refresh"`
+	Token    string `json:"token"`
+	Refresh  string `json:"refresh"`
+	UserUUID string `json:"userUUID"`
 }
 
 type GetUserReq struct {

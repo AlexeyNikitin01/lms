@@ -18,7 +18,7 @@ func authByLoginPassword(a app.IAppUser) gin.HandlerFunc {
 			return
 		}
 
-		_, token, err := a.AuthByLoginPassword(c, req.Login, req.Password)
+		user, token, err := a.AuthByLoginPassword(c, req.Login, req.Password)
 		if err != nil {
 			c.JSON(500, gin.H{
 				"method": c.FullPath(),
@@ -29,8 +29,9 @@ func authByLoginPassword(a app.IAppUser) gin.HandlerFunc {
 
 		c.JSON(200, gin.H{
 			"data": AuthByLogPassResponse{
-				Token:   token.Token,
-				Refresh: token.Refresh,
+				Token:    token.Token,
+				Refresh:  token.Refresh,
+				UserUUID: user.ID,
 			},
 		})
 
