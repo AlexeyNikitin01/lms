@@ -24,6 +24,7 @@ func authByLoginPassword(a app.IAppUser) gin.HandlerFunc {
 				"method": c.FullPath(),
 				"err":    errors.Wrap(err, "auth by login password gin").Error(),
 			})
+			return
 		}
 
 		c.JSON(200, gin.H{
