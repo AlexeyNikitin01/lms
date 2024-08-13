@@ -19,16 +19,10 @@ func register(a app.IAppUser) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"user": UserResponse{
-				Uuid:        user.ID,
-				Login:       user.Login,
-				Name:        user.Name,
-				Surname:     user.Surname,
-				Email:       user.Email,
-				Phone:       user.Phone,
-				PlaceWork:   user.PlaceWork,
-				Position:    user.Position,
-				CreatedDate: user.CreatedAt,
+			"user": UserRegisterResponse{
+				Uuid:  user.ID,
+				Login: user.Login,
+				Email: user.Email,
 			},
 		})
 

@@ -16,6 +16,12 @@ type UserResponse struct {
 	CreatedDate time.Time `json:"created_date"`
 }
 
+type UserRegisterResponse struct {
+	Uuid  string `json:"uuid"`
+	Login string `json:"login"`
+	Email string `json:"email"`
+}
+
 type UserRequest struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
