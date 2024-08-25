@@ -2,8 +2,9 @@ package client
 
 import (
 	"context"
-	"lms-user/internal/ports/grpc"
 	"log"
+
+	"lms-user/internal/ports/grpc"
 
 	connect "google.golang.org/grpc"
 )

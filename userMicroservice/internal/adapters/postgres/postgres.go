@@ -10,7 +10,7 @@ import (
 
 var once sync.Once
 
-// UserPostgres паттерн одиночка
+// UserPostgres паттерн одиночка.
 type UserPostgres struct {
 	db  *sqlx.DB
 	err error
@@ -24,6 +24,7 @@ func GetInstance() *UserPostgres {
 			instance = new(UserPostgres)
 		},
 	)
+
 	return instance
 }
 
@@ -31,6 +32,7 @@ func CreatePostgres(c *Config) (*sqlx.DB, error) {
 	userPostgres := GetInstance()
 	userPostgres.db, userPostgres.err = sqlx.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 		c.Host, c.Port, c.User, c.DBName, c.Password, c.SSLmode))
+
 	if userPostgres.err != nil {
 		return nil, userPostgres.err
 	}

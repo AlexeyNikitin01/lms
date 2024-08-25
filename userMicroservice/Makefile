@@ -18,3 +18,7 @@ pg-migrate:
 
 run:
 	go run ./cmd/main.go
+
+lint-without-fix:
+	golangci-lint --version
+	golangci-lint run --allow-parallel-runners --build-tags=integration --config ./build/ci/.golangci.yml ./...

@@ -3,9 +3,9 @@ package postgres
 import (
 	"context"
 
-	"github.com/pkg/errors"
-
 	"lms-user/internal/repository/pg/entity"
+
+	"github.com/pkg/errors"
 )
 
 func (r *RepoUser) GetUserDB(ctx context.Context, uuid string) (*entity.User, error) {

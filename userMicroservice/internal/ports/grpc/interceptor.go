@@ -30,6 +30,7 @@ func (s gRPCServerStruct) Interceptor() grpc.UnaryServerInterceptor {
 		if _, ok := noAuthMethod[info.FullMethod]; ok {
 			return handler(ctx, req)
 		}
+
 		return authGrpc.UnaryServerInterceptor(s.authFunc())(ctx, req, info, handler)
 	}
 }

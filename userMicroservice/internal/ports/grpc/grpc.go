@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"google.golang.org/grpc"
@@ -38,8 +37,7 @@ type gRPCServerStruct struct {
 
 func (s gRPCServerStruct) Ping(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
 	log.Println("ping server")
-	user := FromContext(ctx)
-	fmt.Println(user)
+
 	return &emptypb.Empty{}, nil
 }
 

@@ -2,10 +2,12 @@ package app
 
 import (
 	"context"
+	"time"
+
 	"github.com/pascaldekloe/jwt"
 	"github.com/thanhpk/randstr"
+
 	"lms-user/internal/repository/pg/entity"
-	"time"
 )
 
 func (a appUser) RefreshToken(tokenUser *entity.Token) (string, error) {
@@ -52,9 +54,9 @@ func (a appUser) ParseToken(ctx context.Context, token string) (*entity.User, *e
 		return nil, nil, err
 	}
 
-	tokenUserId := clm.Subject
+	tokenUserID := clm.Subject
 
-	user, tokenUser, err := a.repo.GetUserByTokenDB(ctx, tokenUserId)
+	user, tokenUser, err := a.repo.GetUserByTokenDB(ctx, tokenUserID)
 	if err != nil {
 		return nil, nil, err
 	}

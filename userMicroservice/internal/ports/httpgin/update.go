@@ -1,6 +1,8 @@
 package httpgin
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 
@@ -12,20 +14,22 @@ func updateUser(a app.IAppUser) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req UpdateUserRequest
 		if err := c.Bind(&req); err != nil {
-			c.JSON(500, gin.H{
+			c.JSON(http.StatusInternalServerError, gin.H{
 				"method": c.FullPath(),
 				"err":    errors.Wrap(err, "user update request").Error(),
 			})
+
 			return
 		}
 
 		currentUser := FromContext(c)
 
 		if !checkUser(currentUser, req.UUID) {
-			c.JSON(500, gin.H{
+			c.JSON(http.StatusInternalServerError, gin.H{
 				"method": c.FullPath(),
 				"error":  errors.New("you don`t update user").Error(),
 			})
+
 			return
 		}
 
@@ -42,16 +46,17 @@ func updateUser(a app.IAppUser) gin.HandlerFunc {
 
 		user, err := a.UpdateUser(c, &userForUpdate)
 		if err != nil {
-			c.JSON(500, gin.H{
+			c.JSON(http.StatusInternalServerError, gin.H{
 				"err":    errors.Wrap(err, "gin: failed to update user"),
 				"method": c.FullPath(),
 			})
+
 			return
 		}
 
-		c.JSON(200, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"user": &UserResponse{
-				Uuid:        user.ID,
+				UUID:        user.ID,
 				Login:       user.Login,
 				Name:        user.Name,
 				Surname:     user.Surname,
@@ -62,8 +67,6 @@ func updateUser(a app.IAppUser) gin.HandlerFunc {
 				CreatedDate: user.CreatedAt,
 			},
 		})
-
-		return
 	}
 }
 

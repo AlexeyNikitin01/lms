@@ -5,7 +5,7 @@ import (
 )
 
 type UserResponse struct {
-	Uuid        string    `json:"uuid"`
+	UUID        string    `json:"uuid"`
 	Login       string    `json:"login"`
 	Name        string    `json:"name"`
 	Surname     string    `json:"surname"`
@@ -17,7 +17,7 @@ type UserResponse struct {
 }
 
 type UserRegisterResponse struct {
-	Uuid  string `json:"uuid"`
+	UUID  string `json:"uuid"`
 	Login string `json:"login"`
 	Email string `json:"email"`
 }
@@ -28,8 +28,7 @@ type UserRequest struct {
 	Email    string `json:"email"`
 }
 
-type Error struct {
-}
+type Error struct{}
 
 type AuthByLogPassRequest struct {
 	Login    string `json:"login"`
@@ -39,15 +38,15 @@ type AuthByLogPassRequest struct {
 type AuthByLogPassResponse struct {
 	Token    string `json:"token"`
 	Refresh  string `json:"refresh"`
-	UserUUID string `json:"userUUID"`
+	UserUUID string `json:"user_uuid"`
 }
 
 type GetUserReq struct {
-	UUID string `json:"userUUID"`
+	UUID string `json:"user_uuid"`
 }
 
 type UpdateUserRequest struct {
-	UUID      string `json:"userUUID"`
+	UUID      string `json:"user_uuid"`
 	Login     string `json:"login"`
 	Name      string `json:"name"`
 	Surname   string `json:"surname"`

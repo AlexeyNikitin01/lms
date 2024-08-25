@@ -24,8 +24,6 @@ import (
 )
 
 func main() {
-	fmt.Println("init server")
-
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
 	cfg := postgres.Config{
@@ -71,7 +69,9 @@ func main() {
 	eg, ctx := errgroup.WithContext(context.Background())
 
 	sigQuit := make(chan os.Signal, 1)
+
 	signal.Ignore(syscall.SIGHUP, syscall.SIGPIPE)
+
 	signal.Notify(sigQuit, syscall.SIGINT, syscall.SIGTERM)
 
 	eg.Go(func() error {
@@ -84,7 +84,7 @@ func main() {
 		}
 	})
 
-	// run grpc server
+	// run grpc server.
 	eg.Go(func() error {
 		log.Printf("starting grpc server, listening on %s\n", port)
 		defer log.Printf("close grpc server listening on %s\n", port)
@@ -111,7 +111,7 @@ func main() {
 			return fmt.Errorf("grpc server can't listen and serve requests: %w", err)
 		}
 	})
-	//Run rest
+	// Run rest.
 	eg.Go(func() error {
 		log.Printf("starting http server, listening on %s\n", ":18080")
 		defer log.Printf("close http server listening on %s\n", ":18080")

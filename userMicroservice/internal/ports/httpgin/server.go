@@ -21,6 +21,8 @@ func Server(addr string, app app.IAppUser) *http.Server {
 		Addr:    addr,
 		Handler: router,
 	}
+
 	AppRouter(router.Group("user"), app)
+
 	return s
 }

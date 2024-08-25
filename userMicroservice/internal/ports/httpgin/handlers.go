@@ -1,6 +1,8 @@
 package httpgin
 
 import (
+	"net/http"
+
 	"lms-user/internal/app"
 
 	"github.com/gin-gonic/gin"
@@ -8,7 +10,7 @@ import (
 
 func ping(_ app.IAppUser) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		ctx.Status(200)
-		ctx.JSON(200, &gin.H{})
+		ctx.Status(http.StatusOK)
+		ctx.JSON(http.StatusOK, &gin.H{})
 	}
 }

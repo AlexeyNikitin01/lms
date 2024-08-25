@@ -2,7 +2,9 @@ package app
 
 import (
 	"context"
+
 	"github.com/pkg/errors"
+
 	"lms-user/internal/repository/pg/entity"
 )
 
