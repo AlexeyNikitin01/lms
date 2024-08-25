@@ -22,3 +22,8 @@ run:
 lint-without-fix:
 	golangci-lint --version
 	golangci-lint run --allow-parallel-runners --build-tags=integration --config ./build/ci/.golangci.yml ./...
+
+generate:
+	rm -rf mocks/*
+	mockgen -destination=mocks/postgres_mock.go -package=mocks -source=internal/adapters/postgres/interface.go
+	mockgen -destination=mocks/app_mock.go -package=mocks -source=internal/app/app.go
