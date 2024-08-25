@@ -11,7 +11,10 @@ import (
 )
 
 func (r *RepoUser) GetUserByTokenDB(ctx context.Context, tokenID string) (*entity.User, *entity.Token, error) {
-	tokenUser, err := entity.Tokens(entity.TokenWhere.ID.EQ(tokenID)).One(ctx, boil.GetContextDB())
+	tokenUser, err := entity.Tokens(
+		entity.TokenWhere.ID.EQ(tokenID),
+		entity.TokenWhere.ExpiresAt.GTE(time.Now()),
+	).One(ctx, boil.GetContextDB())
 	if err != nil {
 		return nil, nil, err
 	}
