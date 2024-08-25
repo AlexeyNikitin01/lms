@@ -31,6 +31,7 @@ jobs:
         run: |
           go mod tidy
           go build -v ./...
+          mockgen -destination=mocks/postgres_mock.go -package=mocks -source=internal/adapters/postgres/interface.go
 
       - name: Test
         working-directory: ${{ matrix.work_dir }}
