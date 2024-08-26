@@ -34,7 +34,7 @@ jobs:
           - 5432:5432
 
     env:
-      MY_VARIABLE: ${{ vars.DATABASE_URL }}
+      MY_VARIABLE: ${{ vars.DB }}
 
     steps:
       - uses: actions/checkout@v3
@@ -55,7 +55,9 @@ jobs:
           mockgen -destination=mocks/postgres_mock.go -package=mocks -source=internal/adapters/postgres/interface.go
 
       - name: Print environment variable
-        run: echo ${{ vars.DATABASE_URL }}
+        run: |
+          echo ${{ vars.DATABASE_URL }}
+          echo $MY_VARIABLE
 
       - name: Test
         working-directory: ${{ matrix.work_dir }}
