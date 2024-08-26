@@ -17,6 +17,7 @@ type IUserPostgres interface {
 	UpdateUser(ctx context.Context, user *entity.User) (*entity.User, error)
 	GetTokenByUserID(ctx context.Context, userID string) (*entity.Token, error)
 	DeleteOldToken(ctx context.Context, userID string) error
+	DeleteById(ctx context.Context, userID string) error
 }
 
 /*

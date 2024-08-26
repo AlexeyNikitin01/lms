@@ -19,3 +19,13 @@ func (r *RepoUser) DeleteOldToken(ctx context.Context, userID string) error {
 
 	return nil
 }
+
+func (r *RepoUser) DeleteById(ctx context.Context, userID string) error {
+	_, err := entity.Users(
+		entity.UserWhere.ID.EQ(userID)).DeleteAll(ctx, boil.GetContextDB(), true)
+	if err != nil {
+		return errors.Wrap(err, "DeleteById")
+	}
+
+	return nil
+}
