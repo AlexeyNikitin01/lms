@@ -44,6 +44,9 @@ jobs:
         with:
           go-version: 'stable'
 
+      - name: Set up mock
+        run: go install github.com/golang/mock/mockgen@latest
+
       - name: Build
         working-directory: ${{ matrix.work_dir }}
         run: |
