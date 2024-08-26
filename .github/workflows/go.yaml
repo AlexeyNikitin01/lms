@@ -62,7 +62,7 @@ jobs:
       - name: migrate db
         working-directory: ${{ matrix.work_dir }}
         run: |
-          migrate -path ./internal/migrations/ -database postgres://postgres:password@localhost:5432/user?sslmode=disable up
+          migrate -path ./internal/migrations/ -database $MY_VARIABLE up
       
       - name: Print environment variable
         run: echo $MY_VARIABLE
