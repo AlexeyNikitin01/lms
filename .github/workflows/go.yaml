@@ -48,7 +48,9 @@ jobs:
         run: go install github.com/golang/mock/mockgen@latest
 
       - name: set up migrate
-        run: go install github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+        run: |
+          go install github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+          go get github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
       - name: Build
         working-directory: ${{ matrix.work_dir }}
