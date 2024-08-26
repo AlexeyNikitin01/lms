@@ -67,7 +67,7 @@ jobs:
         
       - name: migrate db
         working-directory: ${{ matrix.work_dir }}
-        run: make migrate
+        run: make pg-migrate
 
       - name: Test
         working-directory: ${{ matrix.work_dir }}
