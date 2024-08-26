@@ -68,7 +68,7 @@ jobs:
         
       - name: migrate db
         working-directory: ${{ matrix.work_dir }}
-        run: migrate
+        run: migrate -path ./internal/migrations/ -database postgres://postgres:pass@localhost:7777/user?sslmode=disable up
 
       - name: Test
         working-directory: ${{ matrix.work_dir }}
