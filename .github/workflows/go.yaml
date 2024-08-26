@@ -65,9 +65,9 @@ jobs:
       - name: Print environment variable
         run: echo $MY_VARIABLE
         
-      - name: migrate db
-        working-directory: ${{ matrix.work_dir }}
-        run: make pg-migrate
+      # - name: migrate db
+      #   working-directory: ${{ matrix.work_dir }}
+      #   run: make pg-migrate
 
       - name: Test
         working-directory: ${{ matrix.work_dir }}
