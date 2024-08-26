@@ -33,7 +33,7 @@ jobs:
           --health-retries=5
 
     env:
-      DATABASE_URL: postgres://user:password@localhost:5432/user?sslmode=disable
+      MY_VARIABLE: ${{ DATABASE_URL.DATABASE_URL }}
 
     steps:
       - uses: actions/checkout@v3
@@ -50,13 +50,8 @@ jobs:
           go build -v ./...
           mockgen -destination=mocks/postgres_mock.go -package=mocks -source=internal/adapters/postgres/interface.go
 
-      - name: Load .env file
-        uses: loads/dotenv-action@v2
-        with:
-          path: .env
-
       - name: Print environment variable
-        run: echo $DATABASE_URL
+        run: echo MY_VARIABLE
 
       - name: Test
         working-directory: ${{ matrix.work_dir }}
