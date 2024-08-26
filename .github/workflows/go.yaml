@@ -58,14 +58,14 @@ jobs:
           go mod tidy
           go build -v ./...
           mockgen -destination=mocks/postgres_mock.go -package=mocks -source=internal/adapters/postgres/interface.go
-
+      
+      - name: Print environment variable
+        run: echo $MY_VARIABLE
+        
       - name: migrate db
         working-directory: ${{ matrix.work_dir }}
         run: |
           migrate -path ./internal/migrations/ -database $MY_VARIABLE up
-      
-      - name: Print environment variable
-        run: echo $MY_VARIABLE
 
       - name: Test
         working-directory: ${{ matrix.work_dir }}
