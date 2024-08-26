@@ -52,8 +52,9 @@ jobs:
 
       - name: set up migrate
         run: |
-          go install github.com/golang-migrate/migrate/v4/cmd/migrate@latest
-          go get github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+          curl -s https://packagecloud.io/install/repositories/golang-migrate/migrate/script.deb.sh | sudo bash
+          sudo apt-get update
+          sudo apt-get install migrate
 
       - name: Build
         working-directory: ${{ matrix.work_dir }}
@@ -67,7 +68,7 @@ jobs:
         
       - name: migrate db
         working-directory: ${{ matrix.work_dir }}
-        run: make pg-migrate
+        run: migrate -path ./internal/migrations/ -database postgres://postgres:pass@localhost:7777/user?sslmode=disable up
 
       - name: Test
         working-directory: ${{ matrix.work_dir }}
