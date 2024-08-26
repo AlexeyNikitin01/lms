@@ -5,12 +5,11 @@ name: Go
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "test" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "test" ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     strategy:
@@ -18,6 +17,25 @@ jobs:
       matrix:
         work_dir:
           - ./userMicroservice
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: pass
+          POSTGRES_USER: postgres
+          POSTGRES_DB: user
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 7777:5432
+
+    env:
+      MY_VARIABLE: ${{ vars.DB }}
+
     steps:
       - uses: actions/checkout@v3
 
@@ -29,12 +47,28 @@ jobs:
       - name: Set up mock
         run: go install github.com/golang/mock/mockgen@latest
 
+      - name: install make
+        run: sudo apt-get install make
+
+      - name: set up migrate
+        run: |
+          curl -s https://packagecloud.io/install/repositories/golang-migrate/migrate/script.deb.sh | sudo bash
+          sudo apt-get update
+          sudo apt-get install migrate
+          
       - name: Build
         working-directory: ${{ matrix.work_dir }}
         run: |
           go mod tidy
           go build -v ./...
           mockgen -destination=mocks/postgres_mock.go -package=mocks -source=internal/adapters/postgres/interface.go
+      
+      - name: Print environment variable
+        run: echo $MY_VARIABLE
+        
+      - name: migrate db
+        working-directory: ${{ matrix.work_dir }}
+        run: make pg-migrate
 
       - name: Test
         working-directory: ${{ matrix.work_dir }}
