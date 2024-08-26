@@ -22,7 +22,7 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: pass
           POSTGRES_USER: postgres
           POSTGRES_DB: user
         options: >-
@@ -31,7 +31,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 5432:5432
+          - 7777:5432
 
     env:
       MY_VARIABLE: ${{ vars.DB }}
@@ -46,6 +46,9 @@ jobs:
 
       - name: Set up mock
         run: go install github.com/golang/mock/mockgen@latest
+
+      - name: install make
+        run: sudo apt-get install make
 
       - name: set up migrate
         run: |
@@ -64,8 +67,7 @@ jobs:
         
       - name: migrate db
         working-directory: ${{ matrix.work_dir }}
-        run: |
-          migrate -path ./internal/migrations/ -database $MY_VARIABLE up
+        run: make migrate
 
       - name: Test
         working-directory: ${{ matrix.work_dir }}
