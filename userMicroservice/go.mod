@@ -3,6 +3,7 @@ module lms-user
 go 1.22.0
 
 require (
+	github.com/aws/aws-sdk-go v1.55.5
 	github.com/friendsofgo/errors v0.9.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang/mock v1.6.0
@@ -36,6 +37,7 @@ require (
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gofrs/uuid v4.2.0+incompatible // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect

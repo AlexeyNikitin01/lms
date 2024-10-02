@@ -2,3 +2,5 @@
 vendor
 /.idea/
 mocks/*
+./internal/adapters/aws/.aws
+./etc/config.template.yml
