@@ -17,6 +17,8 @@ import (
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 
+	"lms-user/cmd/config"
+	"lms-user/internal/adapters/cloud"
 	"lms-user/internal/adapters/postgres"
 	"lms-user/internal/app"
 	grpcPort "lms-user/internal/ports/grpc"
@@ -26,13 +28,23 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
+	um, err := config.NewConfigUserMicroservice()
+	if err != nil {
+		log.Fatalf("config read error %e", err)
+	}
+
+	s3session, err := cloud.AWS(um.AWS)
+	if err != nil {
+		log.Fatalf("s3session error %e obj: %v", err, s3session)
+	}
+
 	cfg := postgres.Config{
-		Host:     "localhost",
-		Port:     "7777",
-		User:     "postgres",
-		DBName:   "user",
-		Password: "pass",
-		SSLmode:  "disable",
+		Host:     um.Postgres.Host,
+		Port:     um.Postgres.Port,
+		User:     um.Postgres.User,
+		DBName:   um.Postgres.DBName,
+		Password: um.Postgres.Password,
+		SSLmode:  um.Postgres.SSLmode,
 	}
 
 	db, err := postgres.CreatePostgres(&cfg)
