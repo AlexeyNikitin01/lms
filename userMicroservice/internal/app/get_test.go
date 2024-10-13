@@ -43,10 +43,11 @@ func TestUserGet(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			db := mocks.NewMockIUserPostgres(ctrl)
+			cloud := mocks.NewMockICloud(ctrl)
 
 			tt.mockCalls(db, tt.args)
 
-			a := app.CreateAppUser(db)
+			a := app.CreateAppUser(db, cloud)
 
 			user, err := a.GetUser(context.Background(), tt.args.userUUID)
 			if err != nil {
