@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS users(
     position TEXT NOT NULL DEFAULT '',
     registered BOOL NOT NULL DEFAULT false,
     role TEXT NOT NULL DEFAULT 'user',
+    url VARCHAR(300) NOT NULL,
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now(),
     deleted_at timestamptz
@@ -24,10 +25,4 @@ CREATE TABLE IF NOT EXISTS tokens(
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now(),
     deleted_at timestamptz
-);
-
-CREATE TABLE IF NOT EXISTS photo_url  (
-    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id uuid REFERENCES users(id) NOT NULL,
-    url VARCHAR(300) NOT NULL
 );
