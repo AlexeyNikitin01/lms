@@ -4,3 +4,4 @@ vendor
 mocks/*
 ./internal/adapters/aws/.aws
 ./etc/config.template.yml
+tmp
