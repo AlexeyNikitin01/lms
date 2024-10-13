@@ -8,7 +8,12 @@ import (
 	"lms-user/cmd/config"
 )
 
-func AWS(cnf *config.AWS) (*session.Session, error) {
+type AWS struct {
+	S3     *session.Session
+	bucket string
+}
+
+func NewAWS(cnf *config.AWS) (*AWS, error) {
 	s3Session, err := session.NewSession(&aws.Config{
 		Credentials: credentials.NewStaticCredentials(
 			cnf.PublicKey,
@@ -22,5 +27,8 @@ func AWS(cnf *config.AWS) (*session.Session, error) {
 		return nil, err
 	}
 
-	return s3Session, nil
+	return &AWS{
+		S3:     s3Session,
+		bucket: cnf.Bucket,
+	}, nil
 }

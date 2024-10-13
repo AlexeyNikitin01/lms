@@ -4,12 +4,10 @@
 package entity
 
 var TableNames = struct {
-	PhotoURL         string
 	SchemaMigrations string
 	Tokens           string
 	Users            string
 }{
-	PhotoURL:         "photo_url",
 	SchemaMigrations: "schema_migrations",
 	Tokens:           "tokens",
 	Users:            "users",

@@ -52,6 +52,7 @@ func getUser(a app.IAppUser) gin.HandlerFunc {
 				PlaceWork:   user.PlaceWork,
 				Position:    user.Position,
 				CreatedDate: user.CreatedAt,
+				URL:         user.URL,
 			},
 		})
 	}

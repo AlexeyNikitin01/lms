@@ -33,9 +33,9 @@ func main() {
 		log.Fatalf("config read error %e", err)
 	}
 
-	s3session, err := cloud.AWS(um.AWS)
+	awsS3, err := cloud.NewAWS(um.AWS)
 	if err != nil {
-		log.Fatalf("s3session error %e obj: %v", err, s3session)
+		log.Fatalf("s3session error %e obj: %v", err, awsS3)
 	}
 
 	cfg := postgres.Config{
@@ -54,7 +54,7 @@ func main() {
 
 	boil.SetDB(db)
 
-	domainUser := app.CreateAppUser(postgres.CreateRepoUser(db))
+	domainUser := app.CreateAppUser(postgres.CreateRepoUser(db), awsS3)
 
 	svr := httpgin.Server(":18080", domainUser)
 

@@ -14,6 +14,7 @@ type UserResponse struct {
 	PlaceWork   string    `json:"place_work"`
 	Position    string    `json:"position"`
 	CreatedDate time.Time `json:"created_date"`
+	URL         string    `json:"url"`
 }
 
 type UserRegisterResponse struct {
@@ -54,4 +55,7 @@ type UpdateUserRequest struct {
 	Phone     string `json:"phone"`
 	PlaceWork string `json:"place_work"`
 	Position  string `json:"position"`
+}
+
+type UploadAvatar struct {
 }

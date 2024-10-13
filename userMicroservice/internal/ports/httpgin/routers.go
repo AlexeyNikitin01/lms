@@ -13,4 +13,5 @@ func AppRouter(r *gin.RouterGroup, a app.IAppUser) {
 	r.POST("auth", authByLoginPassword(a))
 	r.POST("register", register(a))
 	r.POST("update-user", updateUser(a))
+	r.POST("upload-avatar", uploadAvatar(a))
 }
