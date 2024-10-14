@@ -28,3 +28,13 @@ generate:
 	mockgen -destination=mocks/postgres_mock.go -package=mocks -source=internal/adapters/postgres/interface.go
 	mockgen -destination=mocks/cloud_mock.go -package=mocks -source=internal/adapters/cloud/inteface.go
 	mockgen -destination=mocks/app_mock.go -package=mocks -source=internal/app/app.go
+
+prometheus:
+	docker run -d \
+      -p 9090:9090 \
+      -v ./etc/prometheus.yml \
+      --name=prometheus \
+      prom/prometheus
+
+grafana:
+	docker run -d -p 3000:3000 --name=grafana grafana/grafana
