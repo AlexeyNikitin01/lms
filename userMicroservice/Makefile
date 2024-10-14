@@ -30,11 +30,18 @@ generate:
 	mockgen -destination=mocks/app_mock.go -package=mocks -source=internal/app/app.go
 
 prometheus:
-	docker run -d \
+	docker run \
+      -d \
+      --name prometheus_lms \
       -p 9090:9090 \
-      -v ./etc/prometheus.yml \
-      --name=prometheus \
+      -v ./etc/prometheus.yml:/etc/prometheus/prometheus.yml \
       prom/prometheus
+
+run-prometheus:
+	docker start prometheus
 
 grafana:
 	docker run -d -p 3000:3000 --name=grafana grafana/grafana
+
+run-grafana:
+	docker start grafana

@@ -1,8 +1,6 @@
-global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
-
 scrape_configs:
-  - job_name: 'user_microservice'
+  - job_name: myapp
+    scrape_interval: 10s
     static_configs:
-      - targets: ['localhost:18080']
+      - targets:
+          - 172.24.195.194:18080

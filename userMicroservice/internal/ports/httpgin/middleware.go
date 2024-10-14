@@ -12,6 +12,7 @@ import (
 )
 
 var methods = map[string]struct{}{
+	"/metrics":       {},
 	"/user/auth":     {},
 	"/user/register": {},
 }
