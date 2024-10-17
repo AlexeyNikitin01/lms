@@ -1,0 +1,11 @@
+psql:
+  user: "postgres"
+  pass: "pass"
+  host: "localhost"
+  port: 6666
+  dbname: "course"
+  sslmode: "disable"
+  blacklist:
+    - test
+    - gopg_migrations
+    - db_version
