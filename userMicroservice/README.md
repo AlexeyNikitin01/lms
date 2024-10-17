@@ -8,9 +8,9 @@ UC:
 --
     1. Create user
     2. Update user
-    3. Get User
-    4. Auth
-    5. Register
+    3. Get user
+    4. Auth with JWT token
+    5. Register user
 ---
 
 Технологии:
@@ -18,6 +18,8 @@ UC:
     1. SQL-boiler
     2. PostgreSQL
     3. Golang
+    4. Yandex cloud + S3
+    5. Prometheus + Grafana
 ---
 
 # ERD
