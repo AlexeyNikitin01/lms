@@ -9,3 +9,9 @@ psql:
     - test
     - gopg_migrations
     - db_version
+
+mongo:
+  host: "localhost"
+  port: 27017
+  user: "mongo"
+  pass: "pass"

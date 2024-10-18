@@ -12,11 +12,14 @@ import (
 	"time"
 
 	"github.com/friendsofgo/errors"
+	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"github.com/volatiletech/sqlboiler/v4/boil"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 
+	nosql "course/internal/adapters/mongo"
 	grpcPort "course/internal/ports/grpc"
 
 	"course/cmd/config"
@@ -28,28 +31,12 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	um, err := config.NewConfigCourseMicroservice()
-	if err != nil {
-		log.Fatalf("config read error %e", err)
-	}
+	conn := ConnectToDataBase()
 
-	cfg := postgres.Config{
-		Host:     um.Postgres.Host,
-		Port:     um.Postgres.Port,
-		User:     um.Postgres.User,
-		DBName:   um.Postgres.DBName,
-		Password: um.Postgres.Password,
-		SSLmode:  um.Postgres.SSLmode,
-	}
-
-	db, err := postgres.CreatePostgres(&cfg)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	boil.SetDB(db)
-
-	domainCourse := app.NewCourseApp(postgres.CreateRepoUser(db))
+	domainCourse := app.NewCourseApp(
+		postgres.CreateRepoUser(conn.DBConn),
+		nosql.NewMongoRepo(conn.MongoConn),
+	)
 
 	svr := httpgin.Server(":1818", domainCourse)
 
@@ -155,4 +142,66 @@ func main() {
 	}
 
 	log.Println("servers were successfully shutdown")
+}
+
+type Conn struct {
+	DBConn    *sqlx.DB
+	MongoConn *mongo.Client
+}
+
+func ConnectToDataBase() *Conn {
+	um, err := config.NewConfigCourseMicroservice()
+	if err != nil {
+		log.Fatalf("config read error %e", err)
+	}
+
+	dbConn, err := ConnPostgres(um)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	mongoClient, err := ConnMongo(um)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return &Conn{
+		DBConn:    dbConn,
+		MongoConn: mongoClient,
+	}
+}
+
+func ConnPostgres(um *config.CourseMicroservice) (*sqlx.DB, error) {
+	cfg := postgres.Config{
+		Host:     um.Postgres.Host,
+		Port:     um.Postgres.Port,
+		User:     um.Postgres.User,
+		DBName:   um.Postgres.DBName,
+		Password: um.Postgres.Password,
+		SSLmode:  um.Postgres.SSLmode,
+	}
+
+	db, err := postgres.CreatePostgres(&cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	boil.SetDB(db)
+
+	return db, nil
+}
+
+func ConnMongo(um *config.CourseMicroservice) (*mongo.Client, error) {
+	cfgMongo := nosql.MongoConfig{
+		Host:     um.Mongo.Host,
+		Port:     um.Mongo.Port,
+		User:     um.Mongo.User,
+		Password: um.Mongo.Password,
+	}
+	mongoClient, err := nosql.NewMongoClient(&cfgMongo)
+	if err != nil {
+		return nil, err
+	}
+
+	return mongoClient, nil
 }
