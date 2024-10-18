@@ -9,3 +9,7 @@ type LectureRequest struct {
 	Lecture  string `json:"lecture"`
 	CourseID int    `json:"course_id"`
 }
+
+type FindLecturesRequest struct {
+	CourseID int `json:"course_id"`
+}
