@@ -1,5 +1,5 @@
 package httpgin
 
-type CourseRequest struct{}
-
-type CourseResponse struct{}
+type CourseRequest struct {
+	Name string `json:"name"`
+}

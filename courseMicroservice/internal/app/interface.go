@@ -1,3 +1,11 @@
 package app
 
-type ICourseApp interface{}
+import (
+	"context"
+
+	"course/internal/repository/pg/entity"
+)
+
+type ICourseApp interface {
+	AddCourse(ctx context.Context, name string) (*entity.Course, error)
+}

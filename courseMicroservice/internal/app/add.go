@@ -1,0 +1,16 @@
+package app
+
+import (
+	"context"
+
+	"course/internal/repository/pg/entity"
+)
+
+func (c CourseApp) AddCourse(ctx context.Context, name string) (*entity.Course, error) {
+	course, err := c.DB.AddCourse(ctx, name)
+	if err != nil {
+		return nil, err
+	}
+
+	return course, nil
+}

@@ -1,10 +1,15 @@
 package postgres
 
 import (
+	"context"
+
 	"github.com/jmoiron/sqlx"
+
+	"course/internal/repository/pg/entity"
 )
 
 type ICoursePostgres interface {
+	AddCourse(ctx context.Context, name string) (*entity.Course, error)
 }
 
 /*
@@ -14,12 +19,12 @@ type ICoursePostgres interface {
 
 */
 
-type RepoUser struct {
+type RepoCourse struct {
 	DB *sqlx.DB
 }
 
 func CreateRepoUser(db *sqlx.DB) ICoursePostgres {
-	return &RepoUser{
+	return &RepoCourse{
 		DB: db,
 	}
 }
