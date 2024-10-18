@@ -11,7 +11,7 @@ import (
 
 func NewMongoClient(cfg *MongoConfig) (*mongo.Client, error) {
 	client, err := mongo.Connect(options.Client().ApplyURI(
-		fmt.Sprintf("mongodb://%s:%s", cfg.Host, cfg.Port)),
+		fmt.Sprintf("mongodb://%s:%s@%s:%s", cfg.User, cfg.Password, cfg.Host, cfg.Port)),
 	)
 	if err != nil {
 		log.Fatal(err)

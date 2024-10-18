@@ -14,3 +14,12 @@ func (c CourseApp) AddCourse(ctx context.Context, name string) (*entity.Course, 
 
 	return course, nil
 }
+
+func (c CourseApp) AddLecture(ctx context.Context, title, lecture string, courseID int) error {
+	err := c.Mongo.AddLecture(ctx, title, lecture, courseID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
