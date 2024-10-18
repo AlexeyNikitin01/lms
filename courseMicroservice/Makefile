@@ -41,3 +41,8 @@ sql-gen:
 
 run:
 	go run ./cmd/main.go
+
+mongo:
+	docker run -d --name course_mongo -p 27017:27017 \
+	-e MONGO_INITDB_ROOT_USERNAME=mongo \
+	-e MONGO_INITDB_ROOT_PASSWORD=pass mongo
