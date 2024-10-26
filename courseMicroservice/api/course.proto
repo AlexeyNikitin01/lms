@@ -10,6 +10,16 @@ import "google/protobuf/timestamp.proto";
 service CourseService {
   rpc ping(google.protobuf.Empty) returns (google.protobuf.Empty) {}
   rpc addCourse(CourseRequest) returns (CourseResponse) {}
+  rpc getAll(AllCourseRequest) returns (AllCourseResponse) {}
+}
+
+message AllCourseRequest {
+  int64 limit = 1;
+  int64 offset = 2;
+}
+
+message AllCourseResponse {
+  repeated CourseResponse courses = 1;
 }
 
 message CourseRequest {
