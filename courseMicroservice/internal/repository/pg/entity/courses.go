@@ -24,42 +24,47 @@ import (
 
 // Course is an object representing the database table.
 type Course struct {
-	ID        int64     `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Name      string    `boil:"name" json:"name" toml:"name" yaml:"name"`
-	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
-	DeletedAt null.Time `boil:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty"`
+	ID          int64     `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Name        string    `boil:"name" json:"name" toml:"name" yaml:"name"`
+	Description string    `boil:"description" json:"description" toml:"description" yaml:"description"`
+	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt   time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+	DeletedAt   null.Time `boil:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty"`
 
 	R *courseR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L courseL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var CourseColumns = struct {
-	ID        string
-	Name      string
-	CreatedAt string
-	UpdatedAt string
-	DeletedAt string
+	ID          string
+	Name        string
+	Description string
+	CreatedAt   string
+	UpdatedAt   string
+	DeletedAt   string
 }{
-	ID:        "id",
-	Name:      "name",
-	CreatedAt: "created_at",
-	UpdatedAt: "updated_at",
-	DeletedAt: "deleted_at",
+	ID:          "id",
+	Name:        "name",
+	Description: "description",
+	CreatedAt:   "created_at",
+	UpdatedAt:   "updated_at",
+	DeletedAt:   "deleted_at",
 }
 
 var CourseTableColumns = struct {
-	ID        string
-	Name      string
-	CreatedAt string
-	UpdatedAt string
-	DeletedAt string
+	ID          string
+	Name        string
+	Description string
+	CreatedAt   string
+	UpdatedAt   string
+	DeletedAt   string
 }{
-	ID:        "courses.id",
-	Name:      "courses.name",
-	CreatedAt: "courses.created_at",
-	UpdatedAt: "courses.updated_at",
-	DeletedAt: "courses.deleted_at",
+	ID:          "courses.id",
+	Name:        "courses.name",
+	Description: "courses.description",
+	CreatedAt:   "courses.created_at",
+	UpdatedAt:   "courses.updated_at",
+	DeletedAt:   "courses.deleted_at",
 }
 
 // Generated where
@@ -156,17 +161,19 @@ func (w whereHelpernull_Time) IsNull() qm.QueryMod    { return qmhelper.WhereIsN
 func (w whereHelpernull_Time) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
 var CourseWhere = struct {
-	ID        whereHelperint64
-	Name      whereHelperstring
-	CreatedAt whereHelpertime_Time
-	UpdatedAt whereHelpertime_Time
-	DeletedAt whereHelpernull_Time
+	ID          whereHelperint64
+	Name        whereHelperstring
+	Description whereHelperstring
+	CreatedAt   whereHelpertime_Time
+	UpdatedAt   whereHelpertime_Time
+	DeletedAt   whereHelpernull_Time
 }{
-	ID:        whereHelperint64{field: "\"courses\".\"id\""},
-	Name:      whereHelperstring{field: "\"courses\".\"name\""},
-	CreatedAt: whereHelpertime_Time{field: "\"courses\".\"created_at\""},
-	UpdatedAt: whereHelpertime_Time{field: "\"courses\".\"updated_at\""},
-	DeletedAt: whereHelpernull_Time{field: "\"courses\".\"deleted_at\""},
+	ID:          whereHelperint64{field: "\"courses\".\"id\""},
+	Name:        whereHelperstring{field: "\"courses\".\"name\""},
+	Description: whereHelperstring{field: "\"courses\".\"description\""},
+	CreatedAt:   whereHelpertime_Time{field: "\"courses\".\"created_at\""},
+	UpdatedAt:   whereHelpertime_Time{field: "\"courses\".\"updated_at\""},
+	DeletedAt:   whereHelpernull_Time{field: "\"courses\".\"deleted_at\""},
 }
 
 // CourseRels is where relationship names are stored.
@@ -207,8 +214,8 @@ func (r *courseR) GetVideoLectures() VideoLectureSlice {
 type courseL struct{}
 
 var (
-	courseAllColumns            = []string{"id", "name", "created_at", "updated_at", "deleted_at"}
-	courseColumnsWithoutDefault = []string{"name"}
+	courseAllColumns            = []string{"id", "name", "description", "created_at", "updated_at", "deleted_at"}
+	courseColumnsWithoutDefault = []string{"name", "description"}
 	courseColumnsWithDefault    = []string{"id", "created_at", "updated_at", "deleted_at"}
 	coursePrimaryKeyColumns     = []string{"id"}
 	courseGeneratedColumns      = []string{"id"}

@@ -5,7 +5,21 @@ package course;
 option go_package = "internal/ports/grpc";
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 service CourseService {
   rpc ping(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+  rpc addCourse(CourseRequest) returns (CourseResponse) {}
+}
+
+message CourseRequest {
+  string name = 1;
+  string description = 2;
+}
+
+message CourseResponse {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  google.protobuf.Timestamp createdDate = 4;
 }

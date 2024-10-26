@@ -9,7 +9,7 @@ import (
 )
 
 type ICoursePostgres interface {
-	AddCourse(ctx context.Context, name string) (*entity.Course, error)
+	AddCourse(ctx context.Context, name string, description string) (*entity.Course, error)
 }
 
 /*

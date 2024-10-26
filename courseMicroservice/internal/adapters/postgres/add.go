@@ -8,13 +8,18 @@ import (
 	"course/internal/repository/pg/entity"
 )
 
-func (r RepoCourse) AddCourse(ctx context.Context, name string) (*entity.Course, error) {
+func (r RepoCourse) AddCourse(ctx context.Context, name string, description string) (*entity.Course, error) {
 	c := &entity.Course{
-		Name: name,
+		Name:        name,
+		Description: description,
 	}
 
 	err := c.Insert(ctx, boil.GetContextDB(), boil.Infer())
 	if err != nil {
+		return nil, err
+	}
+
+	if err := c.Reload(ctx, boil.GetContextDB()); err != nil {
 		return nil, err
 	}
 

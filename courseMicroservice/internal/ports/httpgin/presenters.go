@@ -2,6 +2,7 @@ package httpgin
 
 type CourseRequest struct {
 	Name string `json:"name"`
+	Description string `json:"description"`
 }
 
 type LectureRequest struct {

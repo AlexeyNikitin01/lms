@@ -6,8 +6,8 @@ import (
 	"course/internal/repository/pg/entity"
 )
 
-func (c CourseApp) AddCourse(ctx context.Context, name string) (*entity.Course, error) {
-	course, err := c.DB.AddCourse(ctx, name)
+func (c CourseApp) AddCourse(ctx context.Context, name string, description string) (*entity.Course, error) {
+	course, err := c.DB.AddCourse(ctx, name, description)
 	if err != nil {
 		return nil, err
 	}
