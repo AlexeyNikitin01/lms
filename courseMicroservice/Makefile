@@ -46,3 +46,18 @@ mongo:
 	docker run -d --name course_mongo -p 27017:27017 \
 	-e MONGO_INITDB_ROOT_USERNAME=mongo \
 	-e MONGO_INITDB_ROOT_PASSWORD=pass mongo
+
+mongo-run:
+	docker start course_mongo
+
+mongo-stop:
+	docker stop course_mongo
+
+dbs:
+	make mongo-run
+	make db-run
+
+stop-dbs:
+	make mongo-stop
+	make db-stop
+	
