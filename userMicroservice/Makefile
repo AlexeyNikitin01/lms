@@ -45,3 +45,9 @@ grafana:
 
 run-grafana:
 	docker start grafana
+
+docker-build:
+	docker build -t user .
+
+docker-run:
+	docker run -p 18080:18080 -p 50054:50054 user
