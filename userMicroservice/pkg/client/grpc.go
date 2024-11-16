@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/lms-user/internal/ports/grpc"
+	"github.com/AlexeyNikitin01/lms-user/internal/ports/grpc"
 
 	connect "google.golang.org/grpc"
 )

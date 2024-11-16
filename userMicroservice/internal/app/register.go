@@ -3,7 +3,7 @@ package app
 import (
 	"context"
 
-	"github.com/lms-user/internal/repository/pg/entity"
+	"github.com/AlexeyNikitin01/lms-user/internal/repository/pg/entity"
 )
 
 func (a appUser) Register(ctx context.Context, login, password, email string) (*entity.User, error) {

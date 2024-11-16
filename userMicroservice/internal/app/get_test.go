@@ -7,9 +7,9 @@ import (
 
 	"github.com/golang/mock/gomock"
 
-	"github.com/lms-user/internal/app"
-	"github.com/lms-user/internal/repository/pg/entity"
-	"github.com/lms-user/mocks"
+	"github.com/AlexeyNikitin01/lms-user/internal/app"
+	"github.com/AlexeyNikitin01/lms-user/internal/repository/pg/entity"
+	"github.com/AlexeyNikitin01/lms-user/mocks"
 )
 
 func TestUserGet(t *testing.T) {

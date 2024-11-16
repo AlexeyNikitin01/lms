@@ -20,10 +20,10 @@ import (
 
 	"google.golang.org/grpc/test/bufconn"
 
-	"github.com/lms-user/internal/adapters/postgres"
-	"github.com/lms-user/internal/app"
-	grpcPort "github.com/lms-user/internal/ports/grpc"
-	"github.com/lms-user/internal/ports/httpgin"
+	"github.com/AlexeyNikitin01/lms-user/internal/adapters/postgres"
+	"github.com/AlexeyNikitin01/lms-user/internal/app"
+	grpcPort "github.com/AlexeyNikitin01/lms-user/internal/ports/grpc"
+	"github.com/AlexeyNikitin01/lms-user/internal/ports/httpgin"
 )
 
 type TestServer struct {

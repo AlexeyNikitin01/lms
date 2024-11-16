@@ -7,8 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/lms-user/internal/app"
-	"github.com/lms-user/internal/repository/pg/entity"
+	"github.com/AlexeyNikitin01/lms-user/internal/app"
+	"github.com/AlexeyNikitin01/lms-user/internal/repository/pg/entity"
 )
 
 var methods = map[string]struct{}{

@@ -1,4 +1,4 @@
-module github.com/lms-user
+module github.com/AlexeyNikitin01/lms-user
 
 go 1.22.0
 

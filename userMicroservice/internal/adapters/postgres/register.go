@@ -4,7 +4,7 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"golang.org/x/net/context"
 
-	"github.com/lms-user/internal/repository/pg/entity"
+	"github.com/AlexeyNikitin01/lms-user/internal/repository/pg/entity"
 )
 
 func (r *RepoUser) RegisterDB(ctx context.Context, login, password, email string) (*entity.User, error) {

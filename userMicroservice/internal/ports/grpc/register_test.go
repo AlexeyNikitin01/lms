@@ -6,8 +6,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
-	"github.com/lms-user/internal/ports/grpc"
-	"github.com/lms-user/internal/testutil"
+	"github.com/AlexeyNikitin01/lms-user/internal/ports/grpc"
+	"github.com/AlexeyNikitin01/lms-user/internal/testutil"
 )
 
 func BenchmarkRegisterBenchmark(b *testing.B) {

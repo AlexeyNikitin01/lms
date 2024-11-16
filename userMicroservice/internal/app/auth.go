@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 
-	"github.com/lms-user/internal/repository/pg/entity"
+	"github.com/AlexeyNikitin01/lms-user/internal/repository/pg/entity"
 )
 
 var point string = "appUser AuthByLoginPassword"

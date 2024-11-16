@@ -4,9 +4,9 @@ import (
 	"context"
 	"mime/multipart"
 
-	"github.com/lms-user/internal/adapters/cloud"
-	"github.com/lms-user/internal/adapters/postgres"
-	"github.com/lms-user/internal/repository/pg/entity"
+	"github.com/AlexeyNikitin01/lms-user/internal/adapters/cloud"
+	"github.com/AlexeyNikitin01/lms-user/internal/adapters/postgres"
+	"github.com/AlexeyNikitin01/lms-user/internal/repository/pg/entity"
 )
 
 type IAppUser interface {
