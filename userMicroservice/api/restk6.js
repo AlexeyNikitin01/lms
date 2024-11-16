@@ -1,15 +1,15 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-export let options = {
-    vus: 5,
-    duration: '30s',
+export const options = {
+    vus: 10, // количество виртуальных пользователей
+    duration: '10s', // продолжительность теста
 };
 
 export default function () {
     let url = 'http://localhost:18080/user/get-user';
-    let payload = JSON.stringify({
-        user_uuid: '431ca626-e240-4d19-927b-f3f9cf3bb138',
+    let payload = JSON.stringify( {
+        user_uuid: "431ca626-e240-4d19-927b-f3f9cf3bb138",
     });
 
     let params = {

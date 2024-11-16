@@ -12,7 +12,8 @@ service UserService {
   rpc getUser(UserRequest) returns (UserResponse) {}
   rpc registerUser(UserRegisterRequest) returns (UserRegisterResponse) {}
   rpc authByLoginPassword(UserAuthRequest) returns (UserAuthResponse) {}
-  rpc updateUser(UserUpdateRequest) returns (UserResponse);
+  rpc updateUser(UserUpdateRequest) returns (UserResponse) {}
+  rpc getAllUser(google.protobuf.Empty) returns (UsersResponse) {}
 }
 
 message UserRequest {
@@ -29,6 +30,10 @@ message UserResponse {
   string placeWork = 7;
   string position = 8;
   google.protobuf.Timestamp createdDate = 9;
+}
+
+message UsersResponse {
+  repeated UserResponse users = 1;
 }
 
 message UserRegisterRequest {

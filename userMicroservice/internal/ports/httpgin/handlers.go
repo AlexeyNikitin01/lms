@@ -3,7 +3,7 @@ package httpgin
 import (
 	"net/http"
 
-	"lms-user/internal/app"
+	"github.com/lms-user/internal/app"
 
 	"github.com/gin-gonic/gin"
 )

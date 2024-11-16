@@ -1,12 +1,12 @@
 import grpc from 'k6/net/grpc';
 import { check, sleep } from 'k6';
 
-const client = new grpc.Client();
-client.load(['.'], 'user.proto');
+const client = new grpc.Client();  // Глобальный клиент для всех VU
+client.load(['.'], 'user.proto');  // Загружаем .proto файл
 
 export const options = {
-    vus: 10, // количество виртуальных пользователей
-    duration: '10s', // продолжительность теста
+    vus: 10,
+    duration: '10s',
 };
 
 let isConnected = false;  // Флаг для проверки состояния подключения
@@ -18,15 +18,13 @@ export default function () {
         isConnected = true;  // Устанавливаем флаг, чтобы не подключаться повторно
     }
 
-    const params = {
-        metadata: {
-            Authorization: `bearer eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE3MzI0OTkwNzksImlhdCI6MTcyODg5OTA3OSwic3ViIjoiMjFlOWE5NmMtYWRlYi00NzBjLTk1YTItYTA0MGNlNDVkYjYyIiwidXNlcl9pZCI6IjQzMWNhNjI2LWUyNDAtNGQxOS05MjdiLWYzZjljZjNiYjEzOCJ9.vZoQB1VfVp_Ua5Tg1-FjDKc-BdzrT2gon7TMBiEbAOA4xmiu34s1H6wbDYTKJ82bUvLulZ1aJ6nSBlm0Q6R5WA`,  // передача токена
-        },
+    const requestPayload = {
+        login: "uuidv4()",
+        password: 'password',
+        email: 'test@mail.ru'
     };
 
-    const response = client.invoke('user.UserService/getUser', {
-        uuid: "431ca626-e240-4d19-927b-f3f9cf3bb138",
-    }, params);
+    const response = client.invoke('user.UserService/registerUser', requestPayload);
 
     check(response, {
         'status is OK': (r) => r && r.status === grpc.StatusOK,

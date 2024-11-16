@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"lms-user/internal/app"
+	"github.com/lms-user/internal/app"
 )
 
 func Server(addr string, app app.IAppUser) *http.Server {

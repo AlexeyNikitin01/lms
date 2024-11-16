@@ -3,7 +3,7 @@ package app
 import (
 	"context"
 
-	"lms-user/internal/repository/pg/entity"
+	"github.com/lms-user/internal/repository/pg/entity"
 )
 
 func (a appUser) GetUser(ctx context.Context, uuid string) (*entity.User, error) {
@@ -13,6 +13,15 @@ func (a appUser) GetUser(ctx context.Context, uuid string) (*entity.User, error)
 	}
 
 	return u, nil
+}
+
+func (a appUser) GetUsers(ctx context.Context) (entity.UserSlice, error) {
+	users, err := a.repo.GetUsersDB(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func (a appUser) GetUserByLoginPassword(ctx context.Context, login string, password string) (*entity.User, error) {

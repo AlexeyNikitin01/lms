@@ -7,14 +7,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"lms-user/internal/app"
-	"lms-user/internal/repository/pg/entity"
+	"github.com/lms-user/internal/app"
+	"github.com/lms-user/internal/repository/pg/entity"
 )
 
 var methods = map[string]struct{}{
-	"/metrics":       {},
-	"/user/auth":     {},
-	"/user/register": {},
+	"/metrics":        {},
+	"/user/auth":      {},
+	"/user/register":  {},
+	"/user/get-users": {},
 }
 
 type contextKey struct {

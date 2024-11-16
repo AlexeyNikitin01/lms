@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 
-	"lms-user/internal/repository/pg/entity"
+	"github.com/lms-user/internal/repository/pg/entity"
 )
 
 // SaveAvatarUrl TODO: необходимо проверять наличие аватара.

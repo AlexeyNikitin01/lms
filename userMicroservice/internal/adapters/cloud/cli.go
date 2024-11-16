@@ -5,7 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 
-	"lms-user/cmd/config"
+	"github.com/lms-user/cmd/config"
 )
 
 type AWS struct {

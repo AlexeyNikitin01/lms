@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 
-	"lms-user/internal/app"
+	"github.com/lms-user/internal/app"
 )
 
 func getUser(a app.IAppUser) gin.HandlerFunc {
@@ -54,6 +54,24 @@ func getUser(a app.IAppUser) gin.HandlerFunc {
 				CreatedDate: user.CreatedAt,
 				URL:         user.URL,
 			},
+		})
+	}
+}
+
+func getAllUser(a app.IAppUser) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		users, err := a.GetUsers(c)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"method": c.FullPath(),
+				"err":    errors.Wrap(err, "get user domain").Error(),
+			})
+
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"users": users,
 		})
 	}
 }

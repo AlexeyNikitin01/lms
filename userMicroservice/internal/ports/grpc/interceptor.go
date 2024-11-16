@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"lms-user/internal/repository/pg/entity"
+	"github.com/lms-user/internal/repository/pg/entity"
 )
 
 type contextKey struct {
@@ -23,6 +23,7 @@ var UserCtxKey = &contextKey{name: "user"}
 var noAuthMethod = map[string]struct{}{
 	"/user.UserService/authByLoginPassword": {},
 	"/user.UserService/registerUser":        {},
+	"/user.UserService/getAllUser":          {},
 }
 
 func (s gRPCServerStruct) Interceptor() grpc.UnaryServerInterceptor {

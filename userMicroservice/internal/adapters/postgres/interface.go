@@ -5,7 +5,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	"lms-user/internal/repository/pg/entity"
+	"github.com/lms-user/internal/repository/pg/entity"
 )
 
 type IUserPostgres interface {
@@ -19,6 +19,7 @@ type IUserPostgres interface {
 	DeleteOldToken(ctx context.Context, userID string) error
 	DeleteById(ctx context.Context, userID string) error
 	SaveAvatarUrl(ctx context.Context, url, userID string) error
+	GetUsersDB(ctx context.Context) (entity.UserSlice, error)
 }
 
 /*

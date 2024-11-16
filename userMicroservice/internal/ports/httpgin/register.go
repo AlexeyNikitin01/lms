@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 
-	"lms-user/internal/app"
+	"github.com/lms-user/internal/app"
 )
 
 func register(a app.IAppUser) gin.HandlerFunc {

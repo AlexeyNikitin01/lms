@@ -17,12 +17,12 @@ import (
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 
-	"lms-user/cmd/config"
-	"lms-user/internal/adapters/cloud"
-	"lms-user/internal/adapters/postgres"
-	"lms-user/internal/app"
-	grpcPort "lms-user/internal/ports/grpc"
-	"lms-user/internal/ports/httpgin"
+	"github.com/lms-user/cmd/config"
+	"github.com/lms-user/internal/adapters/cloud"
+	"github.com/lms-user/internal/adapters/postgres"
+	"github.com/lms-user/internal/app"
+	grpcPort "github.com/lms-user/internal/ports/grpc"
+	"github.com/lms-user/internal/ports/httpgin"
 )
 
 func main() {

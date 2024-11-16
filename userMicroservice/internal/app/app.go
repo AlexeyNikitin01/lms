@@ -4,9 +4,9 @@ import (
 	"context"
 	"mime/multipart"
 
-	"lms-user/internal/adapters/cloud"
-	"lms-user/internal/adapters/postgres"
-	"lms-user/internal/repository/pg/entity"
+	"github.com/lms-user/internal/adapters/cloud"
+	"github.com/lms-user/internal/adapters/postgres"
+	"github.com/lms-user/internal/repository/pg/entity"
 )
 
 type IAppUser interface {
@@ -23,6 +23,7 @@ type IAppUser interface {
 		header *multipart.FileHeader,
 		userID string,
 	) (string, error)
+	GetUsers(ctx context.Context) (entity.UserSlice, error)
 }
 
 type appUser struct {

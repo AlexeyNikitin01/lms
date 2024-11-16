@@ -51,3 +51,8 @@ docker-build:
 
 docker-run:
 	docker run -p 18080:18080 -p 50054:50054 user
+
+all:
+	make db-run
+	make run
+	
