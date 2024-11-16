@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS courses (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT NOT NULL,
+    photo_url TEXT NOT NULL,
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now(),
     deleted_at timestamptz

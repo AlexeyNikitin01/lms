@@ -27,6 +27,7 @@ type Course struct {
 	ID          int64     `boil:"id" json:"id" toml:"id" yaml:"id"`
 	Name        string    `boil:"name" json:"name" toml:"name" yaml:"name"`
 	Description string    `boil:"description" json:"description" toml:"description" yaml:"description"`
+	PhotoURL    string    `boil:"photo_url" json:"photo_url" toml:"photo_url" yaml:"photo_url"`
 	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt   time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 	DeletedAt   null.Time `boil:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty"`
@@ -39,6 +40,7 @@ var CourseColumns = struct {
 	ID          string
 	Name        string
 	Description string
+	PhotoURL    string
 	CreatedAt   string
 	UpdatedAt   string
 	DeletedAt   string
@@ -46,6 +48,7 @@ var CourseColumns = struct {
 	ID:          "id",
 	Name:        "name",
 	Description: "description",
+	PhotoURL:    "photo_url",
 	CreatedAt:   "created_at",
 	UpdatedAt:   "updated_at",
 	DeletedAt:   "deleted_at",
@@ -55,6 +58,7 @@ var CourseTableColumns = struct {
 	ID          string
 	Name        string
 	Description string
+	PhotoURL    string
 	CreatedAt   string
 	UpdatedAt   string
 	DeletedAt   string
@@ -62,6 +66,7 @@ var CourseTableColumns = struct {
 	ID:          "courses.id",
 	Name:        "courses.name",
 	Description: "courses.description",
+	PhotoURL:    "courses.photo_url",
 	CreatedAt:   "courses.created_at",
 	UpdatedAt:   "courses.updated_at",
 	DeletedAt:   "courses.deleted_at",
@@ -164,6 +169,7 @@ var CourseWhere = struct {
 	ID          whereHelperint64
 	Name        whereHelperstring
 	Description whereHelperstring
+	PhotoURL    whereHelperstring
 	CreatedAt   whereHelpertime_Time
 	UpdatedAt   whereHelpertime_Time
 	DeletedAt   whereHelpernull_Time
@@ -171,6 +177,7 @@ var CourseWhere = struct {
 	ID:          whereHelperint64{field: "\"courses\".\"id\""},
 	Name:        whereHelperstring{field: "\"courses\".\"name\""},
 	Description: whereHelperstring{field: "\"courses\".\"description\""},
+	PhotoURL:    whereHelperstring{field: "\"courses\".\"photo_url\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"courses\".\"created_at\""},
 	UpdatedAt:   whereHelpertime_Time{field: "\"courses\".\"updated_at\""},
 	DeletedAt:   whereHelpernull_Time{field: "\"courses\".\"deleted_at\""},
@@ -214,8 +221,8 @@ func (r *courseR) GetVideoLectures() VideoLectureSlice {
 type courseL struct{}
 
 var (
-	courseAllColumns            = []string{"id", "name", "description", "created_at", "updated_at", "deleted_at"}
-	courseColumnsWithoutDefault = []string{"name", "description"}
+	courseAllColumns            = []string{"id", "name", "description", "photo_url", "created_at", "updated_at", "deleted_at"}
+	courseColumnsWithoutDefault = []string{"name", "description", "photo_url"}
 	courseColumnsWithDefault    = []string{"id", "created_at", "updated_at", "deleted_at"}
 	coursePrimaryKeyColumns     = []string{"id"}
 	courseGeneratedColumns      = []string{"id"}

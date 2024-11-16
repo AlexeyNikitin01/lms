@@ -11,7 +11,12 @@ import (
 )
 
 func (s gRPCServerStruct) AddCourse(ctx context.Context, req *CourseRequest) (*CourseResponse, error) {
-	course, err := s.CourseApp.AddCourse(ctx, req.GetName(), req.GetDescription())
+	photo_url, err := s.CourseApp.UploadPhoto(ctx, req.GetPhoto(), req.GetPhotoname(), req.GetMime())
+	if err != nil {
+		return &CourseResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	course, err := s.CourseApp.AddCourse(ctx, req.GetName(), req.GetDescription(), photo_url)
 	if err != nil {
 		return &CourseResponse{}, status.Error(codes.Internal, err.Error())
 	}
@@ -25,7 +30,7 @@ func (s gRPCServerStruct) AddCourse(ctx context.Context, req *CourseRequest) (*C
 }
 
 func (s gRPCServerStruct) GetAll(ctx context.Context, req *AllCourseRequest) (*AllCourseResponse, error) {
-	courses, err := s.CourseApp.AllCourse(ctx, req.GetLimit(), req.GetOffset())
+	courses, total, err := s.CourseApp.AllCourse(ctx, req.GetLimit(), req.GetOffset())
 	if err != nil {
 		return &AllCourseResponse{}, status.Error(codes.Internal, err.Error())
 	}
@@ -36,11 +41,13 @@ func (s gRPCServerStruct) GetAll(ctx context.Context, req *AllCourseRequest) (*A
 			Name:        course.Name,
 			Description: course.Description,
 			CreatedDate: timestamppb.New(course.CreatedAt),
+			PhotoUrl:    course.PhotoURL,
 		}
 	})
 
 	return &AllCourseResponse{
 		Courses: pbCourses,
+		Total:   total,
 	}, nil
 }
 

@@ -7,13 +7,15 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const (
-	ConfigPath string = "./etc/config.template.yml"
-)
+var configs = []string{
+	"./etc/config.template.yml",
+	"./etc/config.aws.yml",
+}
 
 type CourseMicroservice struct {
 	Postgres *Postgres `yaml:"psql"`
 	Mongo    *Mongo    `yaml:"mongo"`
+	AWS      *AWS      `yaml:"AWS"`
 }
 
 type Postgres struct {
@@ -32,21 +34,31 @@ type Mongo struct {
 	Password string `yaml:"pass"`
 }
 
+type AWS struct {
+	PublicKey string `yaml:"publickey"`
+	SecretKey string `yaml:"secretkey"`
+	Region    string `yaml:"region"`
+	Endpoint  string `yaml:"endpoint"`
+	Bucket    string `yaml:"bucket"`
+}
+
 // NewConfigCourseMicroservice
 //
 // TODO: необходимо переместить ключи доступа в окружение github. Ключи видны всем. Это не правильно.
 func NewConfigCourseMicroservice() (*CourseMicroservice, error) {
-	yamlFile, err := os.ReadFile(ConfigPath)
-	if err != nil {
-		return nil, errors.Wrap(err, "read file config")
+	var courseMicroservice *CourseMicroservice
+
+	for _, config := range configs {
+		yamlFile, err := os.ReadFile(config)
+		if err != nil {
+			return nil, errors.Wrap(err, "read file config")
+		}
+
+		err = yaml.Unmarshal(yamlFile, &courseMicroservice)
+		if err != nil {
+			return nil, errors.Wrap(err, "unmarshal")
+		}
 	}
 
-	var config *CourseMicroservice
-
-	err = yaml.Unmarshal(yamlFile, &config)
-	if err != nil {
-		return nil, errors.Wrap(err, "unmarshal")
-	}
-
-	return config, nil
+	return courseMicroservice, nil
 }

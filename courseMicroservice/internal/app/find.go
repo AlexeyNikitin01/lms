@@ -17,11 +17,11 @@ func (c CourseApp) FindLecture(ctx context.Context, courseID int) (*bson.M, erro
 	return lecture, nil
 }
 
-func (c CourseApp) AllCourse(ctx context.Context, limit, offset int64) (entity.CourseSlice, error) {
-	courses, err := c.DB.AllCourse(ctx, limit, offset)
+func (c CourseApp) AllCourse(ctx context.Context, limit, offset int64) (entity.CourseSlice, int64, error) {
+	courses, total, err := c.DB.AllCourse(ctx, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	return courses, nil
+	return courses, total, nil
 }

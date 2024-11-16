@@ -19,12 +19,12 @@ import (
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 
-	nosql "course/internal/adapters/mongo"
-	grpcPort "course/internal/ports/grpc"
-
 	"course/cmd/config"
+	"course/internal/adapters/cloud"
+	nosql "course/internal/adapters/mongo"
 	"course/internal/adapters/postgres"
 	"course/internal/app"
+	grpcPort "course/internal/ports/grpc"
 	"course/internal/ports/httpgin"
 )
 
@@ -36,6 +36,7 @@ func main() {
 	domainCourse := app.NewCourseApp(
 		postgres.CreateRepoUser(conn.DBConn),
 		nosql.NewMongoRepo(conn.MongoConn),
+		conn.AWS,
 	)
 
 	svr := httpgin.Server(":1818", domainCourse)
@@ -147,6 +148,7 @@ func main() {
 type Conn struct {
 	DBConn    *sqlx.DB
 	MongoConn *mongo.Client
+	AWS       *cloud.AWS
 }
 
 func ConnectToDataBase() *Conn {
@@ -165,9 +167,15 @@ func ConnectToDataBase() *Conn {
 		log.Fatal(err)
 	}
 
+	awsS3, err := cloud.NewAWS(um.AWS)
+	if err != nil {
+		log.Fatalf("s3session error %e obj: %v", err, awsS3)
+	}
+
 	return &Conn{
 		DBConn:    dbConn,
 		MongoConn: mongoClient,
+		AWS:       awsS3,
 	}
 }
 

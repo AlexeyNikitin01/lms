@@ -20,11 +20,15 @@ message AllCourseRequest {
 
 message AllCourseResponse {
   repeated CourseResponse courses = 1;
+  int64 total = 2;
 }
 
 message CourseRequest {
   string name = 1;
   string description = 2;
+  string photoname = 3;
+  string mime = 4;
+  bytes photo = 5;
 }
 
 message CourseResponse {
@@ -32,4 +36,5 @@ message CourseResponse {
   string name = 2;
   string description = 3;
   google.protobuf.Timestamp createdDate = 4;
+  string photo_url = 5;
 }

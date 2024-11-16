@@ -9,8 +9,8 @@ import (
 )
 
 type ICoursePostgres interface {
-	AddCourse(ctx context.Context, name string, description string) (*entity.Course, error)
-	AllCourse(ctx context.Context, limit, offset int64) (entity.CourseSlice, error)
+	AddCourse(ctx context.Context, name string, description string, url string) (*entity.Course, error)
+	AllCourse(ctx context.Context, limit, offset int64) (entity.CourseSlice, int64, error)
 }
 
 /*
