@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -29,8 +28,6 @@ func (s gRPCServerStruct) GetUser(ctx context.Context, req *UserRequest) (*UserR
 }
 
 func (s gRPCServerStruct) GetAllUser(ctx context.Context, _ *emptypb.Empty) (*UsersResponse, error) {
-	fmt.Println("start")
-	log.Println("get all user ")
 	users, err := s.domainUser.GetUsers(ctx)
 	if err != nil {
 		return nil, err
@@ -45,6 +42,8 @@ func (s gRPCServerStruct) GetAllUser(ctx context.Context, _ *emptypb.Empty) (*Us
 			CreatedDate: timestamppb.New(user.CreatedAt),
 		})
 	}
+
+	log.Println("get all user: ", len(users))
 
 	return &UsersResponse{Users: resp}, nil
 }
