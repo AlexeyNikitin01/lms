@@ -137,7 +137,7 @@ func generateFilename(original string) string {
 	return fmt.Sprintf("%s_%d%s", name, timestamp, ext)
 }
 
-// UploadAvatarLocal загружает файл локально, если нет данных для AWS.
+// uploadAvatarLocal загружает файл локально, если нет данных для AWS.
 func (a appUser) uploadAvatarLocal(
 	ctx context.Context,
 	fileForm multipart.File,
