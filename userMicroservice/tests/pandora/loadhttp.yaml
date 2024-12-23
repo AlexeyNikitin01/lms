@@ -1,0 +1,17 @@
+pools:
+  - id: HTTP pool
+    gun:
+      type: my_custom_gun_name
+      target: localhost:18080
+    ammo:
+      type: custom_provider
+      source:
+        type: file
+        path: ./json.ammo
+    result:
+      type: phout
+      destination: ./http_phout.log
+    rps: { duration: 10s, type: line,  from: 1, to: 2 }
+    startup:
+      type: once
+      times: 10
