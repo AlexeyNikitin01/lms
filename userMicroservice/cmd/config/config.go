@@ -73,5 +73,7 @@ func NewCfgAWS() (*UserMicroserviceAWS, error) {
 		return nil, errors.Wrap(err, "unmarshal")
 	}
 
+	config.AWS.Active = true
+
 	return config, nil
 }
