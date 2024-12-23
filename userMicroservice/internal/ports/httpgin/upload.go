@@ -48,18 +48,9 @@ func uploadAvatar(a app.IAppUser) gin.HandlerFunc {
 			return
 		}
 
-		f, err := os.Open(url)
+		buf, err := os.ReadFile(url)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Файл не загружен"})
-			return
-		}
-		defer f.Close()
-
-		buf := make([]byte, 0)
-		_, err = f.Read(buf)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Файл не загружен в буфер"})
-			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{

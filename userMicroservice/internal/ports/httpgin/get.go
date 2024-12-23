@@ -1,7 +1,9 @@
 package httpgin
 
 import (
+	"encoding/base64"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
@@ -41,6 +43,15 @@ func getUser(a app.IAppUser) gin.HandlerFunc {
 			return
 		}
 
+		buf := make([]byte, 0)
+		if user.LocalPath != "" {
+			buf, err = os.ReadFile(user.LocalPath)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "Файл не загружен"})
+				return
+			}
+		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"user": UserResponse{
 				UUID:        user.ID,
@@ -54,6 +65,7 @@ func getUser(a app.IAppUser) gin.HandlerFunc {
 				CreatedDate: user.CreatedAt,
 				URL:         user.URL,
 			},
+			"avatar": base64.StdEncoding.EncodeToString(buf),
 		})
 	}
 }
