@@ -12,8 +12,24 @@ import (
 	"github.com/pkg/errors"
 )
 
+func (a appUser) UploadPhoto(
+	ctx context.Context,
+	fileForm multipart.File,
+	header *multipart.FileHeader,
+	userID string,
+) (bool, string, error) {
+	if a.s3.AWSIsActive() {
+		url, err := a.uploadAvatarS3(ctx, fileForm, header, userID)
+		return a.s3.AWSIsActive(), url, err
+	}
+
+	path, err := a.uploadAvatarLocal(ctx, fileForm, header, userID)
+
+	return a.s3.AWSIsActive(), path, err
+}
+
 // UploadAvatarS3 TODO: удалить старое фото профиля.
-func (a appUser) UploadAvatarS3(
+func (a appUser) uploadAvatarS3(
 	ctx context.Context,
 	fileForm multipart.File,
 	header *multipart.FileHeader,
@@ -119,4 +135,23 @@ func generateFilename(original string) string {
 	timestamp := time.Now().UnixNano()
 
 	return fmt.Sprintf("%s_%d%s", name, timestamp, ext)
+}
+
+// UploadAvatarLocal загружает файл локально, если нет данных для AWS.
+func (a appUser) uploadAvatarLocal(
+	ctx context.Context,
+	fileForm multipart.File,
+	header *multipart.FileHeader,
+	userID string,
+) (string, error) {
+	path, _, err := saveTmpFile(fileForm, header.Filename)
+	if err != nil {
+		return "", errors.Wrap(err, "tmp")
+	}
+
+	if err = a.repo.SaveAvatarLocalPath(ctx, path, userID); err != nil {
+		log.Printf("Не удалось удалить временный файл: %v", err)
+	}
+
+	return path, nil
 }

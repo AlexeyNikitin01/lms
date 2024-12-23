@@ -15,22 +15,30 @@ type AWS struct {
 }
 
 func NewAWS(cnf *config.AWS) (*AWS, error) {
-	s3Session, err := session.NewSession(&aws.Config{
-		Credentials: credentials.NewStaticCredentials(
-			cnf.PublicKey,
-			cnf.SecretKey,
-			"",
-		),
-		Endpoint: aws.String(cnf.Endpoint),
-		Region:   aws.String(cnf.Region),
-	})
-	if err != nil {
-		return nil, err
+	if cnf.Active {
+		s3Session, err := session.NewSession(&aws.Config{
+			Credentials: credentials.NewStaticCredentials(
+				cnf.PublicKey,
+				cnf.SecretKey,
+				"",
+			),
+			Endpoint: aws.String(cnf.Endpoint),
+			Region:   aws.String(cnf.Region),
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		return &AWS{
+			S3:     s3Session,
+			bucket: cnf.Bucket,
+		}, nil
 	}
 
 	return &AWS{
-		S3:     s3Session,
-		bucket: cnf.Bucket,
+		S3:     nil,
+		bucket: "",
+		active: cnf.Active,
 	}, nil
 }
 

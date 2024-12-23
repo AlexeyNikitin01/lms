@@ -1,7 +1,9 @@
 package httpgin
 
 import (
+	"encoding/base64"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
@@ -32,15 +34,37 @@ func uploadAvatar(a app.IAppUser) gin.HandlerFunc {
 
 		currentUser := FromContext(c)
 
-		url, err := a.UploadAvatarS3(c, file, header, currentUser.ID)
+		active, url, err := a.UploadPhoto(c, file, header, currentUser.ID)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Файл не загружен"})
 			return
 		}
 
+		if active {
+			c.JSON(http.StatusOK, gin.H{
+				"message": "Файл успешно загружен",
+				"url":     url,
+			})
+			return
+		}
+
+		f, err := os.Open(url)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Файл не загружен"})
+			return
+		}
+		defer f.Close()
+
+		buf := make([]byte, 0)
+		_, err = f.Read(buf)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Файл не загружен в буфер"})
+			return
+		}
+
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Файл успешно загружен",
-			"url":     url,
+			"message": "Файл успешно загружен локально",
+			"img":     base64.StdEncoding.EncodeToString(buf),
 		})
 	}
 }

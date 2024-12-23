@@ -12,7 +12,7 @@ import (
 // SaveAvatarUrl TODO: необходимо проверять наличие аватара.
 func (r *RepoUser) SaveAvatarUrl(ctx context.Context, url, userID string) error {
 	_, err := entity.Users(entity.UserWhere.ID.EQ(userID)).UpdateAll(ctx, boil.GetContextDB(), entity.M{
-		entity.UserTableColumns.URL: url,
+		entity.UserColumns.URL: url,
 	})
 	if err != nil {
 		return errors.Wrap(err, "don`t insert db url")
@@ -24,7 +24,7 @@ func (r *RepoUser) SaveAvatarUrl(ctx context.Context, url, userID string) error 
 // SaveAvatarLocalPath TODO: необходимо проверять наличие аватара.
 func (r *RepoUser) SaveAvatarLocalPath(ctx context.Context, path, userID string) error {
 	_, err := entity.Users(entity.UserWhere.ID.EQ(userID)).UpdateAll(ctx, boil.GetContextDB(), entity.M{
-		entity.UserTableColumns.LocalPath: path,
+		entity.UserColumns.LocalPath: path,
 	})
 	if err != nil {
 		return errors.Wrap(err, "don`t insert db path")

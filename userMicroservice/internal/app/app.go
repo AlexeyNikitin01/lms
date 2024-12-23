@@ -17,12 +17,12 @@ type IAppUser interface {
 	AccessToken(user *entity.User, tokenUser *entity.Token) (string, error)
 	ParseToken(ctx context.Context, token string) (*entity.User, *entity.Token, error)
 	AuthByLoginPassword(ctx context.Context, login, password string) (*entity.User, *entity.Token, error)
-	UploadAvatarS3(
+	UploadPhoto(
 		ctx context.Context,
 		fileForm multipart.File,
 		header *multipart.FileHeader,
 		userID string,
-	) (string, error)
+	) (bool, string, error)
 	GetUsers(ctx context.Context) (entity.UserSlice, error)
 }
 
