@@ -28,33 +28,10 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	um, err := config.NewConfigUserMicroservice()
-	if err != nil {
-		log.Fatalf("config read error %e", err)
-	}
-
-	awsS3, err := cloud.NewAWS(um.AWS)
-	if err != nil {
-		log.Fatalf("s3session error %e obj: %v", err, awsS3)
-	}
-
-	cfg := postgres.Config{
-		Host:     um.Postgres.Host,
-		Port:     um.Postgres.Port,
-		User:     um.Postgres.User,
-		DBName:   um.Postgres.DBName,
-		Password: um.Postgres.Password,
-		SSLmode:  um.Postgres.SSLmode,
-	}
-
-	db, err := postgres.CreatePostgres(&cfg)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	boil.SetDB(db)
-
-	domainUser := app.CreateAppUser(postgres.CreateRepoUser(db), awsS3)
+	// initial domain layer.
+	domainUser := app.CreateAppUser(
+		newPostgres(), newAws(),
+	)
 
 	svr := httpgin.Server(":18080", domainUser)
 
@@ -160,4 +137,42 @@ func main() {
 	}
 
 	log.Println("servers were successfully shutdown")
+}
+
+func newAws() *cloud.AWS {
+	ymlAWS, err := config.NewCfgAWS()
+	if err != nil {
+		log.Fatalf("config read error %e", err)
+	}
+
+	awsS3, err := cloud.NewAWS(ymlAWS.AWS)
+	if err != nil {
+		log.Fatalf("s3session error %e obj: %v", err, awsS3)
+	}
+
+	return awsS3
+}
+
+func newPostgres() postgres.IUserPostgres {
+	ymlPostgres, err := config.NewCfgPostgres()
+	if err != nil {
+		log.Fatalf("postgres yml error %e obj: %v", err, ymlPostgres)
+	}
+	cfg := postgres.Config{
+		Host:     ymlPostgres.Postgres.Host,
+		Port:     ymlPostgres.Postgres.Port,
+		User:     ymlPostgres.Postgres.User,
+		DBName:   ymlPostgres.Postgres.DBName,
+		Password: ymlPostgres.Postgres.Password,
+		SSLmode:  ymlPostgres.Postgres.SSLmode,
+	}
+
+	db, err := postgres.CreatePostgres(&cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	boil.SetDB(db)
+
+	return postgres.CreateRepoUser(db)
 }

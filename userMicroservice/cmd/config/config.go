@@ -8,12 +8,12 @@ import (
 )
 
 const (
-	ConfigPath string = "./etc/config.template.yml"
+	PathPostgres string = "./etc/config.template.yml"
+	PathAWS      string = "./etc/config.aws.yml"
 )
 
-type UserMicroservice struct {
+type UserMicroservicePostgres struct {
 	Postgres *Postgres `yaml:"psql"`
-	AWS      *AWS      `yaml:"AWS"`
 }
 
 type Postgres struct {
@@ -25,24 +25,48 @@ type Postgres struct {
 	SSLmode  string `yaml:"sslmode"`
 }
 
+// NewCfgPostgres
+//
+// TODO: необходимо переместить ключи доступа в окружение github. Ключи видны всем. Это не правильно.
+func NewCfgPostgres() (*UserMicroservicePostgres, error) {
+	yamlFile, err := os.ReadFile(PathPostgres)
+	if err != nil {
+		return nil, errors.Wrap(err, "read file config")
+	}
+
+	var config *UserMicroservicePostgres
+
+	err = yaml.Unmarshal(yamlFile, &config)
+	if err != nil {
+		return nil, errors.Wrap(err, "unmarshal")
+	}
+
+	return config, nil
+}
+
+type UserMicroserviceAWS struct {
+	AWS *AWS `yaml:"AWS"`
+}
+
 type AWS struct {
 	PublicKey string `yaml:"publickey"`
 	SecretKey string `yaml:"secretkey"`
 	Region    string `yaml:"region"`
 	Endpoint  string `yaml:"endpoint"`
 	Bucket    string `yaml:"bucket"`
+	Active    bool
 }
 
-// NewConfigUserMicroservice
-//
-// TODO: необходимо переместить ключи доступа в окружение github. Ключи видны всем. Это не правильно.
-func NewConfigUserMicroservice() (*UserMicroservice, error) {
-	yamlFile, err := os.ReadFile(ConfigPath)
-	if err != nil {
+// NewCfgAWS если нет конфигурации, то файлы сохраняются локально.
+func NewCfgAWS() (*UserMicroserviceAWS, error) {
+	yamlFile, err := os.ReadFile(PathAWS)
+	if errors.Is(err, os.ErrNotExist) {
+		return &UserMicroserviceAWS{}, nil
+	} else if err != nil {
 		return nil, errors.Wrap(err, "read file config")
 	}
 
-	var config *UserMicroservice
+	var config *UserMicroserviceAWS
 
 	err = yaml.Unmarshal(yamlFile, &config)
 	if err != nil {
