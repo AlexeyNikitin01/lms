@@ -3,7 +3,7 @@ package app
 import (
 	"context"
 
-	"github.com/AlexeyNikitin01/lms-user/internal/repository/pg/entity"
+	"lms-user/internal/repository/pg/entity"
 )
 
 func (a appUser) GetUser(ctx context.Context, uuid string) (*entity.User, error) {

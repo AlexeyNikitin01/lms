@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 
-	"github.com/AlexeyNikitin01/lms-user/internal/app"
-	"github.com/AlexeyNikitin01/lms-user/internal/repository/pg/entity"
+	"lms-user/internal/app"
+	"lms-user/internal/repository/pg/entity"
 )
 
 func updateUser(a app.IAppUser) gin.HandlerFunc {

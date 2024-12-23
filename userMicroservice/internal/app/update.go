@@ -5,7 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/AlexeyNikitin01/lms-user/internal/repository/pg/entity"
+	"lms-user/internal/repository/pg/entity"
 )
 
 func (a appUser) UpdateUser(ctx context.Context, user *entity.User) (*entity.User, error) {

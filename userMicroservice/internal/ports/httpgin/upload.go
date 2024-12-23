@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/AlexeyNikitin01/lms-user/internal/app"
+	"lms-user/internal/app"
 )
 
 func uploadAvatar(a app.IAppUser) gin.HandlerFunc {

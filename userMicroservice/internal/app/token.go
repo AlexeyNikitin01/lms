@@ -7,7 +7,7 @@ import (
 	"github.com/pascaldekloe/jwt"
 	"github.com/thanhpk/randstr"
 
-	"github.com/AlexeyNikitin01/lms-user/internal/repository/pg/entity"
+	"lms-user/internal/repository/pg/entity"
 )
 
 func (a appUser) RefreshToken(tokenUser *entity.Token) (string, error) {

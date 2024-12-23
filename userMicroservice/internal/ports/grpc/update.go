@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/AlexeyNikitin01/lms-user/internal/repository/pg/entity"
+	"lms-user/internal/repository/pg/entity"
 )
 
 func (s gRPCServerStruct) UpdateUser(ctx context.Context, req *UserUpdateRequest) (*UserResponse, error) {

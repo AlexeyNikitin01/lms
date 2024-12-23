@@ -3,7 +3,7 @@ package postgres
 import (
 	"context"
 
-	"github.com/AlexeyNikitin01/lms-user/internal/repository/pg/entity"
+	"lms-user/internal/repository/pg/entity"
 
 	"github.com/pkg/errors"
 )

@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	"github.com/AlexeyNikitin01/lms-user/internal/testutil"
+	"lms-user/internal/testutil"
 )
 
 func BenchmarkGet(b *testing.B) {

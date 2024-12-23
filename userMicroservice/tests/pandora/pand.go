@@ -14,7 +14,7 @@ import (
 	"github.com/yandex/pandora/core/register"
 	connect "google.golang.org/grpc"
 
-	"github.com/AlexeyNikitin01/lms-user/internal/ports/grpc"
+	"lms-user/internal/ports/grpc"
 )
 
 type Ammo struct {

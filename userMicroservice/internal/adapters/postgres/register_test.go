@@ -7,7 +7,7 @@ import (
 
 	"github.com/volatiletech/sqlboiler/v4/boil"
 
-	"github.com/AlexeyNikitin01/lms-user/internal/adapters/postgres"
+	"lms-user/internal/adapters/postgres"
 )
 
 func TestRegister(t *testing.T) {

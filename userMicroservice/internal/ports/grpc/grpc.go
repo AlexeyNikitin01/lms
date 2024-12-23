@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	"github.com/AlexeyNikitin01/lms-user/internal/app"
+	"lms-user/internal/app"
 )
 
 /*

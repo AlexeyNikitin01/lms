@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AlexeyNikitin01/lms-user/internal/testutil"
+	"lms-user/internal/testutil"
 )
 
 type respRegister struct {

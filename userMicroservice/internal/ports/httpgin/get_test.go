@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/AlexeyNikitin01/lms-user/internal/testutil"
+	"lms-user/internal/testutil"
 )
 
 type respUsers struct {
