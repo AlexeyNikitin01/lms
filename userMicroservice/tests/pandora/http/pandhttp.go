@@ -1,4 +1,4 @@
-package main
+package pand_http
 
 import (
 	"bytes"

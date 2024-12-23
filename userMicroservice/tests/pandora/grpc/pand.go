@@ -1,4 +1,4 @@
-package main
+package pand_grpc
 
 import (
 	"context"
