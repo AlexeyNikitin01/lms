@@ -6,5 +6,6 @@ mocks/*
 ./etc/config.template.yml
 etc/config.docker.yml
 etc/config.aws.yml
+etc/config.aws.example.yml
 tmp
 main
