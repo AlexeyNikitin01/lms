@@ -11,6 +11,7 @@ import (
 type AWS struct {
 	S3     *session.Session
 	bucket string
+	active bool
 }
 
 func NewAWS(cnf *config.AWS) (*AWS, error) {
@@ -31,4 +32,8 @@ func NewAWS(cnf *config.AWS) (*AWS, error) {
 		S3:     s3Session,
 		bucket: cnf.Bucket,
 	}, nil
+}
+
+func (a AWS) AWSIsActive() bool {
+	return a.active
 }
