@@ -10,8 +10,7 @@ CREATE TABLE IF NOT EXISTS users(
     position TEXT NOT NULL DEFAULT '',
     registered BOOL NOT NULL DEFAULT false,
     role TEXT NOT NULL DEFAULT 'user',
-    url VARCHAR(300) NOT NULL DEFAULT '',
-    local_path VARCHAR(300) NOT NULL DEFAULT '',
+    avatar VARCHAR(300) NOT NULL DEFAULT '',
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now(),
     deleted_at timestamptz
