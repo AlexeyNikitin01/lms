@@ -18,9 +18,8 @@ type IUserPostgres interface {
 	GetTokenByUserID(ctx context.Context, userID string) (*entity.Token, error)
 	DeleteOldToken(ctx context.Context, userID string) error
 	DeleteById(ctx context.Context, userID string) error
-	SaveAvatarUrl(ctx context.Context, url, userID string) error
+	SaveAvatarFileName(ctx context.Context, url, userID string) error
 	GetUsersDB(ctx context.Context) (entity.UserSlice, error)
-	SaveAvatarLocalPath(ctx context.Context, path, userID string) error
 }
 
 /*

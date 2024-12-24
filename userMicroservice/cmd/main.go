@@ -18,8 +18,10 @@ import (
 	"google.golang.org/grpc"
 
 	"lms-user/cmd/config"
-	"lms-user/internal/adapters/cloud"
 	"lms-user/internal/adapters/postgres"
+	"lms-user/internal/adapters/storage"
+	"lms-user/internal/adapters/storage/cloud"
+	"lms-user/internal/adapters/storage/local"
 	"lms-user/internal/app"
 	grpcPort "lms-user/internal/ports/grpc"
 	"lms-user/internal/ports/httpgin"
@@ -30,7 +32,7 @@ func main() {
 
 	// initial domain layer.
 	domainUser := app.CreateAppUser(
-		newPostgres(), newAws(),
+		newPostgres(), newStorage(),
 	)
 
 	svr := httpgin.Server(":18080", domainUser)
@@ -139,9 +141,11 @@ func main() {
 	log.Println("servers were successfully shutdown")
 }
 
-func newAws() *cloud.AWS {
+func newStorage() storage.IFace {
 	ymlAWS, err := config.NewCfgAWS()
-	if err != nil {
+	if errors.Is(err, os.ErrNotExist) {
+		return local.NewLocal()
+	} else if err != nil {
 		log.Fatalf("config read error %e", err)
 	}
 

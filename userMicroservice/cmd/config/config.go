@@ -61,7 +61,7 @@ type AWS struct {
 func NewCfgAWS() (*UserMicroserviceAWS, error) {
 	yamlFile, err := os.ReadFile(PathAWS)
 	if errors.Is(err, os.ErrNotExist) {
-		return &UserMicroserviceAWS{&AWS{}}, nil
+		return nil, os.ErrNotExist
 	} else if err != nil {
 		return nil, errors.Wrap(err, "read file config")
 	}

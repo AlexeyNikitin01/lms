@@ -9,25 +9,12 @@ import (
 	"lms-user/internal/repository/pg/entity"
 )
 
-// SaveAvatarUrl TODO: необходимо проверять наличие аватара.
-func (r *RepoUser) SaveAvatarUrl(ctx context.Context, url, userID string) error {
+func (r *RepoUser) SaveAvatarFileName(ctx context.Context, avatar, userID string) error {
 	_, err := entity.Users(entity.UserWhere.ID.EQ(userID)).UpdateAll(ctx, boil.GetContextDB(), entity.M{
-		entity.UserColumns.URL: url,
+		entity.UserColumns.Avatar: avatar,
 	})
 	if err != nil {
 		return errors.Wrap(err, "don`t insert db url")
-	}
-
-	return nil
-}
-
-// SaveAvatarLocalPath TODO: необходимо проверять наличие аватара.
-func (r *RepoUser) SaveAvatarLocalPath(ctx context.Context, path, userID string) error {
-	_, err := entity.Users(entity.UserWhere.ID.EQ(userID)).UpdateAll(ctx, boil.GetContextDB(), entity.M{
-		entity.UserColumns.LocalPath: path,
-	})
-	if err != nil {
-		return errors.Wrap(err, "don`t insert db path")
 	}
 
 	return nil

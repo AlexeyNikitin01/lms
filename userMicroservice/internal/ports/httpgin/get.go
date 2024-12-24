@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
@@ -44,12 +45,17 @@ func getUser(a app.IAppUser) gin.HandlerFunc {
 		}
 
 		buf := make([]byte, 0)
-		if user.LocalPath != "" {
-			buf, err = os.ReadFile(user.LocalPath)
+		if strings.Contains(user.Avatar, "tmp") {
+			buf, err = os.ReadFile(user.Avatar)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": "Файл не загружен"})
 				return
 			}
+			user.Avatar = ""
+		}
+
+		if user.Avatar != "" {
+			user.Avatar = "https://storage.yandexcloud.net/lms-user/" + user.Avatar
 		}
 
 		c.JSON(http.StatusOK, gin.H{
@@ -63,7 +69,7 @@ func getUser(a app.IAppUser) gin.HandlerFunc {
 				PlaceWork:   user.PlaceWork,
 				Position:    user.Position,
 				CreatedDate: user.CreatedAt,
-				URL:         user.URL,
+				URL:         user.Avatar,
 			},
 			"avatar": base64.StdEncoding.EncodeToString(buf),
 		})
