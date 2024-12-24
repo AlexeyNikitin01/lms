@@ -35,8 +35,7 @@ type User struct {
 	Position   string    `boil:"position" json:"position" toml:"position" yaml:"position"`
 	Registered bool      `boil:"registered" json:"registered" toml:"registered" yaml:"registered"`
 	Role       string    `boil:"role" json:"role" toml:"role" yaml:"role"`
-	URL        string    `boil:"url" json:"url" toml:"url" yaml:"url"`
-	LocalPath  string    `boil:"local_path" json:"local_path" toml:"local_path" yaml:"local_path"`
+	Avatar     string    `boil:"avatar" json:"avatar" toml:"avatar" yaml:"avatar"`
 	CreatedAt  time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt  time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 	DeletedAt  null.Time `boil:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty"`
@@ -57,8 +56,7 @@ var UserColumns = struct {
 	Position   string
 	Registered string
 	Role       string
-	URL        string
-	LocalPath  string
+	Avatar     string
 	CreatedAt  string
 	UpdatedAt  string
 	DeletedAt  string
@@ -74,8 +72,7 @@ var UserColumns = struct {
 	Position:   "position",
 	Registered: "registered",
 	Role:       "role",
-	URL:        "url",
-	LocalPath:  "local_path",
+	Avatar:     "avatar",
 	CreatedAt:  "created_at",
 	UpdatedAt:  "updated_at",
 	DeletedAt:  "deleted_at",
@@ -93,8 +90,7 @@ var UserTableColumns = struct {
 	Position   string
 	Registered string
 	Role       string
-	URL        string
-	LocalPath  string
+	Avatar     string
 	CreatedAt  string
 	UpdatedAt  string
 	DeletedAt  string
@@ -110,8 +106,7 @@ var UserTableColumns = struct {
 	Position:   "users.position",
 	Registered: "users.registered",
 	Role:       "users.role",
-	URL:        "users.url",
-	LocalPath:  "users.local_path",
+	Avatar:     "users.avatar",
 	CreatedAt:  "users.created_at",
 	UpdatedAt:  "users.updated_at",
 	DeletedAt:  "users.deleted_at",
@@ -140,8 +135,7 @@ var UserWhere = struct {
 	Position   whereHelperstring
 	Registered whereHelperbool
 	Role       whereHelperstring
-	URL        whereHelperstring
-	LocalPath  whereHelperstring
+	Avatar     whereHelperstring
 	CreatedAt  whereHelpertime_Time
 	UpdatedAt  whereHelpertime_Time
 	DeletedAt  whereHelpernull_Time
@@ -157,8 +151,7 @@ var UserWhere = struct {
 	Position:   whereHelperstring{field: "\"users\".\"position\""},
 	Registered: whereHelperbool{field: "\"users\".\"registered\""},
 	Role:       whereHelperstring{field: "\"users\".\"role\""},
-	URL:        whereHelperstring{field: "\"users\".\"url\""},
-	LocalPath:  whereHelperstring{field: "\"users\".\"local_path\""},
+	Avatar:     whereHelperstring{field: "\"users\".\"avatar\""},
 	CreatedAt:  whereHelpertime_Time{field: "\"users\".\"created_at\""},
 	UpdatedAt:  whereHelpertime_Time{field: "\"users\".\"updated_at\""},
 	DeletedAt:  whereHelpernull_Time{field: "\"users\".\"deleted_at\""},
@@ -192,9 +185,9 @@ func (r *userR) GetTokens() TokenSlice {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"id", "login", "password", "name", "surname", "email", "phone", "place_work", "position", "registered", "role", "url", "local_path", "created_at", "updated_at", "deleted_at"}
+	userAllColumns            = []string{"id", "login", "password", "name", "surname", "email", "phone", "place_work", "position", "registered", "role", "avatar", "created_at", "updated_at", "deleted_at"}
 	userColumnsWithoutDefault = []string{"login", "password"}
-	userColumnsWithDefault    = []string{"id", "name", "surname", "email", "phone", "place_work", "position", "registered", "role", "url", "local_path", "created_at", "updated_at", "deleted_at"}
+	userColumnsWithDefault    = []string{"id", "name", "surname", "email", "phone", "place_work", "position", "registered", "role", "avatar", "created_at", "updated_at", "deleted_at"}
 	userPrimaryKeyColumns     = []string{"id"}
 	userGeneratedColumns      = []string{}
 )
