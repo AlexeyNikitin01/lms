@@ -54,7 +54,6 @@ type AWS struct {
 	Region    string `yaml:"region"`
 	Endpoint  string `yaml:"endpoint"`
 	Bucket    string `yaml:"bucket"`
-	Active    bool
 }
 
 // NewCfgAWS если нет конфигурации, то файлы сохраняются локально.
@@ -72,8 +71,6 @@ func NewCfgAWS() (*UserMicroserviceAWS, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "unmarshal")
 	}
-
-	config.AWS.Active = true
 
 	return config, nil
 }
