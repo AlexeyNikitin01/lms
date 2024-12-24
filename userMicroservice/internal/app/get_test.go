@@ -43,7 +43,7 @@ func TestUserGet(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			db := mocks.NewMockIUserPostgres(ctrl)
-			cloud := mocks.NewMockICloud(ctrl)
+			cloud := mocks.NewMockIFace(ctrl)
 
 			tt.mockCalls(db, tt.args)
 
