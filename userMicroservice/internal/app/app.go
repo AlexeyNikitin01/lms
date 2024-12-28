@@ -25,10 +25,10 @@ type IAppUser interface {
 type appUser struct {
 	repo      postgres.IUserPostgres
 	stg       storage.IFace
-	telemetry *metrics.Telemetry
+	telemetry metrics.ITelemetry
 }
 
-func CreateAppUser(repoUser postgres.IUserPostgres, stg storage.IFace, telemetry *metrics.Telemetry) IAppUser {
+func CreateAppUser(repoUser postgres.IUserPostgres, stg storage.IFace, telemetry metrics.ITelemetry) IAppUser {
 	return &appUser{
 		repo:      repoUser,
 		stg:       stg,

@@ -15,7 +15,7 @@ type Telemetry struct {
 	*UserTelemetry
 }
 
-func NewUserOpenTelemetryMetric() (*Telemetry, error) {
+func NewUserOpenTelemetryMetric() (ITelemetry, error) {
 	metricExporter, err := prometheus.New()
 	if err != nil {
 		return nil, errors.Wrap(err, "don`t create prometheus")

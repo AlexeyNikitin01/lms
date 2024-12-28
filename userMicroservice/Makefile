@@ -28,6 +28,7 @@ generate:
 	mockgen -destination=mocks/postgres_mock.go -package=mocks -source=internal/adapters/postgres/interface.go
 	mockgen -destination=mocks/cloud_mock.go -package=mocks -source=internal/adapters/storage/interface.go
 	mockgen -destination=mocks/app_mock.go -package=mocks -source=internal/app/app.go
+	mockgen -destination=mocks/tel_mock.go -package=mocks -source=internal/metrics/face.go
 
 prometheus:
 	docker run \
