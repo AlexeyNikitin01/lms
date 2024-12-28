@@ -16,7 +16,6 @@ func Server(addr string, app app.IAppUser) *http.Server {
 	router.Use(corsMiddleware())
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
-	router.Use(prometheusMiddleware())
 	router.Use(auth(app))
 
 	s := &http.Server{
@@ -24,8 +23,11 @@ func Server(addr string, app app.IAppUser) *http.Server {
 		Handler: router,
 	}
 
-	router.GET("metrics", gin.WrapH(promhttp.Handler()))
-	AppRouter(router.Group("user"), app)
+	userGroup := router.Group("user")
+	AppRouter(userGroup, app)
+
+	metricsGroup := router.Group("metrics")
+	metricsGroup.GET("", gin.WrapH(promhttp.Handler()))
 
 	return s
 }

@@ -12,5 +12,7 @@ func (a appUser) Register(ctx context.Context, login, password, email string) (*
 		return nil, err
 	}
 
+	a.telemetry.IncSingUp(ctx)
+
 	return u, err
 }

@@ -24,6 +24,8 @@ func (a appUser) AuthByLoginPassword(ctx context.Context, login, password string
 	}
 
 	if oldToken != nil {
+		a.telemetry.IncSingIn(ctx)
+
 		return user, oldToken, nil
 	}
 
@@ -51,6 +53,8 @@ func (a appUser) AuthByLoginPassword(ctx context.Context, login, password string
 	if err != nil {
 		return nil, nil, errors.Wrap(err, point)
 	}
+
+	a.telemetry.IncSingIn(ctx)
 
 	return user, tokensUser, nil
 }

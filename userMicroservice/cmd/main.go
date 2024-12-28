@@ -23,6 +23,7 @@ import (
 	"lms-user/internal/adapters/storage/cloud"
 	"lms-user/internal/adapters/storage/local"
 	"lms-user/internal/app"
+	"lms-user/internal/metrics"
 	grpcPort "lms-user/internal/ports/grpc"
 	"lms-user/internal/ports/httpgin"
 )
@@ -30,9 +31,14 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
+	metric, err := metrics.NewUserOpenTelemetryMetric()
+	if err != nil {
+		log.Fatalf("don`t create metric %v", err)
+	}
+
 	// initial domain layer.
 	domainUser := app.CreateAppUser(
-		newPostgres(), newStorage(),
+		newPostgres(), newStorage(), metric,
 	)
 
 	svr := httpgin.Server(":18080", domainUser)

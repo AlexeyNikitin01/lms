@@ -41,7 +41,13 @@ run-prometheus:
 	docker start prometheus
 
 grafana:
-	docker run -d -p 3000:3000 --name=grafana grafana/grafana
+	docker run -d \
+	  --name=grafana \
+	  -p 3000:3000 \
+	  -e "GF_SECURITY_ADMIN_PASSWORD=admin" \
+	  -v grafana-storage:/var/lib/grafana \
+	  grafana/grafana:latest
+
 
 run-grafana:
 	docker start grafana

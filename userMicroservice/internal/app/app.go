@@ -6,6 +6,7 @@ import (
 
 	"lms-user/internal/adapters/postgres"
 	"lms-user/internal/adapters/storage"
+	"lms-user/internal/metrics"
 	"lms-user/internal/repository/pg/entity"
 )
 
@@ -22,13 +23,15 @@ type IAppUser interface {
 }
 
 type appUser struct {
-	repo postgres.IUserPostgres
-	stg  storage.IFace
+	repo      postgres.IUserPostgres
+	stg       storage.IFace
+	telemetry *metrics.Telemetry
 }
 
-func CreateAppUser(repoUser postgres.IUserPostgres, stg storage.IFace) IAppUser {
+func CreateAppUser(repoUser postgres.IUserPostgres, stg storage.IFace, telemetry *metrics.Telemetry) IAppUser {
 	return &appUser{
-		repo: repoUser,
-		stg:  stg,
+		repo:      repoUser,
+		stg:       stg,
+		telemetry: telemetry,
 	}
 }
