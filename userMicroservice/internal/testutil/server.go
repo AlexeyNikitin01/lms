@@ -22,6 +22,7 @@ import (
 
 	"lms-user/internal/adapters/postgres"
 	"lms-user/internal/app"
+	"lms-user/internal/metrics"
 	grpcPort "lms-user/internal/ports/grpc"
 	"lms-user/internal/ports/httpgin"
 )
@@ -48,7 +49,12 @@ func CreateTestServer() TestServer {
 
 	boil.SetDB(db)
 
-	domainUser := app.CreateAppUser(postgres.CreateRepoUser(db), nil)
+	m, err := metrics.NewUserOpenTelemetryMetric()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	domainUser := app.CreateAppUser(postgres.CreateRepoUser(db), nil, m)
 
 	svr := httpgin.Server(":18080", domainUser)
 
@@ -100,7 +106,12 @@ func CreateTestGRPC() {
 
 	boil.SetDB(db)
 
-	domainUser := app.CreateAppUser(postgres.CreateRepoUser(db), nil)
+	m, err := metrics.NewUserOpenTelemetryMetric()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	domainUser := app.CreateAppUser(postgres.CreateRepoUser(db), nil, m)
 
 	svc := grpcPort.NewService(
 		domainUser,
@@ -143,7 +154,12 @@ func GetClientGRPC() (grpcPort.UserServiceClient, context.Context) {
 
 	boil.SetDB(db)
 
-	domainUser := app.CreateAppUser(postgres.CreateRepoUser(db), nil)
+	m, err := metrics.NewUserOpenTelemetryMetric()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	domainUser := app.CreateAppUser(postgres.CreateRepoUser(db), nil, m)
 
 	svc := grpcPort.NewService(
 		domainUser,
@@ -191,7 +207,12 @@ func Client(t testing.TB) (grpcPort.UserServiceClient, context.Context) {
 
 	boil.SetDB(db)
 
-	domainUser := app.CreateAppUser(postgres.CreateRepoUser(db), nil)
+	m, err := metrics.NewUserOpenTelemetryMetric()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	domainUser := app.CreateAppUser(postgres.CreateRepoUser(db), nil, m)
 
 	svc := grpcPort.NewService(
 		domainUser,
