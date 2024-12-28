@@ -46,6 +46,7 @@ grafana:
 	  --name=grafana \
 	  -p 3000:3000 \
 	  -e "GF_SECURITY_ADMIN_PASSWORD=admin" \
+	  -v ./etc/grafana/dashboards:/etc/grafana/dashboards \
 	  -v grafana-storage:/var/lib/grafana \
 	  grafana/grafana:latest
 
