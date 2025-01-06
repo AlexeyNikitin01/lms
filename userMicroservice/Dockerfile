@@ -1,4 +1,4 @@
-FROM golang:1.22 AS builder
+FROM golang:1.23 AS builder
 
 WORKDIR /app
 
@@ -15,6 +15,7 @@ WORKDIR /root/
 
 COPY --from=builder /app/user .
 COPY etc/config.docker.yml etc/config.template.yml
+COPY internal/migrations internal/migrations
 EXPOSE 18080 50054
 
 CMD ["./user"]

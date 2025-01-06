@@ -12,6 +12,10 @@ import (
 	"time"
 
 	"github.com/friendsofgo/errors"
+	"github.com/golang-migrate/migrate/v4"
+	postgresMigrate "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"golang.org/x/sync/errgroup"
@@ -184,5 +188,32 @@ func newPostgres() postgres.IUserPostgres {
 
 	boil.SetDB(db)
 
+	if err = runMigrations(db); err != nil {
+		log.Fatalf("failed to run migrations: %v", err)
+	}
+
 	return postgres.CreateRepoUser(db)
+}
+
+func runMigrations(db *sqlx.DB) error {
+	driver, err := postgresMigrate.WithInstance(db.DB, &postgresMigrate.Config{})
+	if err != nil {
+		return fmt.Errorf("failed to create migration driver: %w", err)
+	}
+
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://internal/migrations",
+		"postgres",
+		driver,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to create migration instance: %w", err)
+	}
+
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		return fmt.Errorf("failed to apply migrations: %w", err)
+	}
+
+	log.Println("Migrations applied successfully")
+	return nil
 }
