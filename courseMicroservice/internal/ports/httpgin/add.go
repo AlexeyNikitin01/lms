@@ -1,57 +1,61 @@
 package httpgin
 
 import (
-	"fmt"
+	"log"
 	"net/http"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 
 	"course/internal/app"
+	"course/internal/repository/pg/entity"
 )
 
 func addCourse(app app.ICourseApp) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req CourseRequest
-		fmt.Println("start")
 
-		file, err := c.FormFile("file")
-		if err != nil {
+		if err := c.BindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		fileContent, err := file.Open()
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to open file"})
-			return
-		}
-		defer fileContent.Close()
-
-		data := make([]byte, file.Size)
-		if _, err := fileContent.Read(data); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
-			return
-		}
-
-		url, err := app.UploadPhoto(c, data, file.Filename, "image/jpeg")
+		course, err := app.AddCourse(c, req.Name, req.Description)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		if err = c.BindJSON(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		course, err := app.AddCourse(c, req.Name, req.Description, url)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
+		if err = addAvatarCourse(app, c, course); err != nil {
+			log.Println("аватар для курса не загружен")
 		}
 
 		c.JSON(http.StatusOK, gin.H{"course": course})
 	}
+}
+
+func addAvatarCourse(app app.ICourseApp, c *gin.Context, course *entity.Course) error {
+	file, header, err := c.Request.FormFile("file")
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	allowedExtensions := map[string]bool{
+		".jpg": true,
+		".png": true,
+	}
+
+	if !allowedExtensions[filepath.Ext(header.Filename)] {
+		return err
+	}
+
+	if err = app.UploadPhoto(c, file, header, course); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func addLecture(app app.ICourseApp) gin.HandlerFunc {

@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"mime/multipart"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 
@@ -9,9 +10,9 @@ import (
 )
 
 type ICourseApp interface {
-	AddCourse(ctx context.Context, name string, description string, url string) (*entity.Course, error)
+	AddCourse(ctx context.Context, name string, description string) (*entity.Course, error)
 	AddLecture(ctx context.Context, title, lecture string, courseID int) error
 	AllCourse(ctx context.Context, limit, offset int64) (entity.CourseSlice, int64, error)
-	UploadPhoto(ctx context.Context, photo []byte, filename string, mime string) (string, error)
+	UploadPhoto(ctx context.Context, fileForm multipart.File, header *multipart.FileHeader, course *entity.Course) error
 	FindLecture(ctx context.Context, courseID int) (*bson.M, error)
 }

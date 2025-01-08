@@ -2,10 +2,11 @@ package cloud
 
 import (
 	"context"
-	"os"
+	"mime/multipart"
 )
 
 type ICloud interface {
-	Upload(ctx context.Context, file *os.File, name string, info os.FileInfo, mime string) error
+	Upload(ctx context.Context, fileForm multipart.File, header *multipart.FileHeader) (string, error)
 	Link(fileName string) string
+	DeleteFile(ctx context.Context, key string) error
 }

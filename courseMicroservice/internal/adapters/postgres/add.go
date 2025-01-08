@@ -3,16 +3,16 @@ package postgres
 import (
 	"context"
 
+	"github.com/pkg/errors"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 
 	"course/internal/repository/pg/entity"
 )
 
-func (r RepoCourse) AddCourse(ctx context.Context, name string, description string, url string) (*entity.Course, error) {
+func (r RepoCourse) AddCourse(ctx context.Context, name string, description string) (*entity.Course, error) {
 	c := &entity.Course{
 		Name:        name,
 		Description: description,
-		PhotoURL:    url,
 	}
 
 	err := c.Insert(ctx, boil.GetContextDB(), boil.Infer())
@@ -25,4 +25,21 @@ func (r RepoCourse) AddCourse(ctx context.Context, name string, description stri
 	}
 
 	return c, nil
+}
+
+func (r RepoCourse) SaveAvatarCourse(ctx context.Context, fileName string, courseID int64) error {
+	_, err := entity.Courses(
+		entity.CourseWhere.ID.EQ(courseID),
+	).UpdateAll(
+		ctx,
+		boil.GetContextDB(),
+		entity.M{
+			entity.CourseColumns.PhotoURL: fileName,
+		},
+	)
+	if err != nil {
+		return errors.Wrap(err, "don`t upload file in db")
+	}
+
+	return nil
 }
