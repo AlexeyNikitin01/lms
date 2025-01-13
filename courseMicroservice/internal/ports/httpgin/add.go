@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 
 	"course/internal/app"
 	"course/internal/repository/pg/entity"
@@ -13,14 +14,10 @@ import (
 
 func addCourse(app app.ICourseApp) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var req CourseRequest
+		name := c.PostForm("name")
+		description := c.PostForm("description")
 
-		if err := c.BindJSON(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		course, err := app.AddCourse(c, req.Name, req.Description)
+		course, err := app.AddCourse(c, name, description)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -43,12 +40,13 @@ func addAvatarCourse(app app.ICourseApp, c *gin.Context, course *entity.Course) 
 	defer file.Close()
 
 	allowedExtensions := map[string]bool{
-		".jpg": true,
-		".png": true,
+		".jpg":  true,
+		".jpeg": true,
+		".png":  true,
 	}
 
 	if !allowedExtensions[filepath.Ext(header.Filename)] {
-		return err
+		return errors.New("unsupported file type, only .jpg, .jpeg, and .png are allowed")
 	}
 
 	if err = app.UploadPhoto(c, file, header, course); err != nil {

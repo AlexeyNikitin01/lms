@@ -42,6 +42,10 @@ func getAllCourses(app app.ICourseApp) gin.HandlerFunc {
 			return
 		}
 
+		for _, course := range courses {
+			course.PhotoURL = "https://storage.yandexcloud.net/lms-user/" + course.PhotoURL
+		}
+
 		c.JSON(http.StatusOK, gin.H{"courses": courses, "total": total})
 	}
 }

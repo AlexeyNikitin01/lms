@@ -1,8 +1,9 @@
 package httpgin
 
 type CourseRequest struct {
-	Name string `json:"name"`
+	Name        string `json:"name"`
 	Description string `json:"description"`
+	Image       string `json:"image,omitempty"`
 }
 
 type LectureRequest struct {
@@ -16,6 +17,6 @@ type FindLecturesRequest struct {
 }
 
 type AllCoursesRequest struct {
-	Limit int64 `json:"limit"`
+	Limit  int64 `json:"limit"`
 	Offset int64 `json:"offset"`
 }
