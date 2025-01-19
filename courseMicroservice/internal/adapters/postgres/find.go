@@ -26,3 +26,20 @@ func (r RepoCourse) AllCourse(ctx context.Context, limit, offset int64) (entity.
 
 	return courses, total, nil
 }
+
+func (r RepoCourse) GetCourse(ctx context.Context, courseID int64) (*entity.Course, error) {
+	course, err := entity.Courses(
+		entity.CourseWhere.ID.EQ(courseID),
+		qm.Load(qm.Rels(
+			entity.CourseRels.Modules,
+			entity.ModuleRels.Lectures,
+			entity.LectureRels.Tests,
+			entity.TestRels.Questions,
+		)),
+	).One(ctx, boil.GetContextDB())
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get course by id")
+	}
+
+	return course, nil
+}

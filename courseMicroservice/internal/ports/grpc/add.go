@@ -5,7 +5,6 @@ import (
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"course/internal/repository/pg/entity"
 )
@@ -25,7 +24,6 @@ func (s gRPCServerStruct) GetAll(ctx context.Context, req *AllCourseRequest) (*A
 			Id:          course.ID,
 			Name:        course.Name,
 			Description: course.Description,
-			CreatedDate: timestamppb.New(course.CreatedAt),
 			PhotoUrl:    course.PhotoURL,
 		}
 	})

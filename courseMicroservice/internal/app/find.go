@@ -25,3 +25,12 @@ func (c CourseApp) AllCourse(ctx context.Context, limit, offset int64) (entity.C
 
 	return courses, total, nil
 }
+
+func (c CourseApp) GetCourse(ctx context.Context, courseID int64) (*entity.Course, error) {
+	course, err := c.DB.GetCourse(ctx, courseID)
+	if err != nil {
+		return nil, err
+	}
+
+	return course, nil
+}
