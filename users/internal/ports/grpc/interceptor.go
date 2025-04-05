@@ -24,6 +24,7 @@ var noAuthMethod = map[string]struct{}{
 	"/user.UserService/authByLoginPassword": {},
 	"/user.UserService/registerUser":        {},
 	"/user.UserService/getAllUser":          {},
+	"/user.UserService/ping":                {},
 }
 
 func (s gRPCServerStruct) Interceptor() grpc.UnaryServerInterceptor {

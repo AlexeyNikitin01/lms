@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	`sync`
 	"syscall"
 	"time"
 
@@ -15,6 +16,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	postgresMigrate "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	`github.com/grpc-ecosystem/grpc-gateway/v2/runtime`
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"github.com/volatiletech/sqlboiler/v4/boil"
@@ -45,110 +47,147 @@ func main() {
 		newPostgres(), newStorage(), metric,
 	)
 
-	svr := httpgin.Server(":18080", domainUser)
+	// Create context that listens for interrupt signals
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 
+	// Create errgroup with the signal context
+	eg, ctx := errgroup.WithContext(ctx)
+
+	// Initialize servers
 	httpServer := &http.Server{
 		Addr:    ":18080",
-		Handler: svr.Handler,
+		Handler: httpgin.Server(":18080", domainUser).Handler,
 	}
 
-	port := ":50054"
-
-	lis, err := net.Listen("tcp", port)
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-
-	svc := grpcPort.NewService(
-		domainUser,
+	grpcServer := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			grpcPort.NewService(domainUser).Interceptor(),
+		),
 	)
+	grpcPort.RegisterUserServiceServer(grpcServer, grpcPort.NewService(domainUser))
 
-	grpcServer := grpc.NewServer(grpc.ChainUnaryInterceptor(svc.Interceptor()))
+	// gRPC Gateway setup
+	mux := runtime.NewServeMux()
+	opts := []grpc.DialOption{grpc.WithInsecure()}
+	err = grpcPort.RegisterUserServiceHandlerFromEndpoint(
+		context.Background(), // Use separate context for setup
+		mux,
+		"localhost:50054",
+		opts,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	grpcPort.RegisterUserServiceServer(grpcServer, svc)
+	gatewayServer := &http.Server{
+		Addr:    ":5051",
+		Handler: mux,
+	}
 
-	eg, ctx := errgroup.WithContext(context.Background())
+	// Start servers in separate goroutines
+	var wg sync.WaitGroup
 
-	sigQuit := make(chan os.Signal, 1)
-
-	signal.Ignore(syscall.SIGHUP, syscall.SIGPIPE)
-
-	signal.Notify(sigQuit, syscall.SIGINT, syscall.SIGTERM)
-
+	// gRPC Server
+	wg.Add(1)
 	eg.Go(func() error {
-		select {
-		case s := <-sigQuit:
-			log.Printf("captured signal: %v\n", s)
-			return fmt.Errorf("captured signal: %v", s)
-		case <-ctx.Done():
-			return nil
+		defer wg.Done()
+
+		lis, err := net.Listen("tcp", ":50054")
+		if err != nil {
+			return fmt.Errorf("failed to listen: %v", err)
 		}
-	})
 
-	// run grpc server.
-	eg.Go(func() error {
-		log.Printf("starting grpc server, listening on %s\n", port)
-		defer log.Printf("close grpc server listening on %s\n", port)
+		log.Printf("starting gRPC server on %s", lis.Addr().String())
+		defer log.Printf("stopping gRPC server")
 
-		errCh := make(chan error)
-
-		defer func() {
-			grpcServer.GracefulStop()
-			_ = lis.Close()
-
-			close(errCh)
-		}()
-
+		errCh := make(chan error, 1)
 		go func() {
 			if err := grpcServer.Serve(lis); err != nil {
-				errCh <- err
+				errCh <- fmt.Errorf("gRPC server error: %w", err)
 			}
 		}()
 
 		select {
 		case <-ctx.Done():
-			return ctx.Err()
+			grpcServer.GracefulStop()
+			return nil
 		case err := <-errCh:
-			return fmt.Errorf("grpc server can't listen and serve requests: %w", err)
+			return err
 		}
 	})
-	// Run rest.
+
+	// HTTP Server
+	wg.Add(1)
 	eg.Go(func() error {
-		log.Printf("starting http server, listening on %s\n", ":18080")
-		defer log.Printf("close http server listening on %s\n", ":18080")
+		defer wg.Done()
 
-		errCh := make(chan error)
+		log.Printf("starting HTTP server on %s", httpServer.Addr)
+		defer log.Printf("stopping HTTP server")
 
-		defer func() {
-			shCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-			defer cancel()
-
-			if err := httpServer.Shutdown(shCtx); err != nil {
-				log.Printf("can't close http server listening on %s: %s", ":18080", err.Error())
-			}
-
-			close(errCh)
-		}()
-
+		errCh := make(chan error, 1)
 		go func() {
-			if err := httpServer.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
-				errCh <- err
+			if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				errCh <- fmt.Errorf("HTTP server error: %w", err)
 			}
 		}()
 
 		select {
 		case <-ctx.Done():
-			return ctx.Err()
+			shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			if err := httpServer.Shutdown(shutdownCtx); err != nil {
+				return fmt.Errorf("HTTP server shutdown error: %w", err)
+			}
+			return nil
 		case err := <-errCh:
-			return fmt.Errorf("http server can't listen and serve requests: %w", err)
+			return err
 		}
 	})
 
+	// gRPC Gateway Server
+	wg.Add(1)
+	eg.Go(func() error {
+		defer wg.Done()
+
+		log.Printf("starting gRPC-Gateway server on %s", gatewayServer.Addr)
+		defer log.Printf("stopping gRPC-Gateway server")
+
+		errCh := make(chan error, 1)
+		go func() {
+			if err := gatewayServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				errCh <- fmt.Errorf("gRPC-Gateway server error: %w", err)
+			}
+		}()
+
+		select {
+		case <-ctx.Done():
+			shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			if err := gatewayServer.Shutdown(shutdownCtx); err != nil {
+				return fmt.Errorf("gRPC-Gateway server shutdown error: %w", err)
+			}
+			return nil
+		case err := <-errCh:
+			return err
+		}
+	})
+
+	// Wait for shutdown signal
+	eg.Go(func() error {
+		<-ctx.Done()
+		log.Println("received shutdown signal")
+		return nil
+	})
+
+	// Wait for all servers to shutdown
 	if err := eg.Wait(); err != nil {
-		log.Printf("gracefully shutting down the servers: %s\n", err.Error())
+		log.Printf("error in server group: %v", err)
 	}
 
-	log.Println("servers were successfully shutdown")
+	// Additional wait to ensure all cleanup is done
+	wg.Wait()
+	log.Println("all servers stopped gracefully")
 }
 
 func newStorage() storage.IFace {
