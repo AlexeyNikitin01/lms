@@ -3,7 +3,7 @@ datasources:
   - name: Prometheus
     type: prometheus
     access: proxy
-    url: http://172.24.195.194:9090  # Применяем правильный адрес для Prometheus в Docker
+    url: http://prometheus:9090  # Применяем правильный адрес для Prometheus в Docker
     isDefault: true
     editable: true
     jsonData:

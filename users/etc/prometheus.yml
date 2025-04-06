@@ -3,4 +3,4 @@ scrape_configs:
     scrape_interval: 10s
     static_configs:
       - targets:
-          - 172.24.195.194:18080
+          - user-microservice:18080

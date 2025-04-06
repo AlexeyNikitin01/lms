@@ -127,7 +127,7 @@ func main() {
 
 		errCh := make(chan error, 1)
 		go func() {
-			if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			if err := httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 				errCh <- fmt.Errorf("HTTP server error: %w", err)
 			}
 		}()
@@ -155,7 +155,7 @@ func main() {
 
 		errCh := make(chan error, 1)
 		go func() {
-			if err := gatewayServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			if err := gatewayServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 				errCh <- fmt.Errorf("gRPC-Gateway server error: %w", err)
 			}
 		}()

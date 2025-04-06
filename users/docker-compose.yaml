@@ -29,8 +29,6 @@ services:
       - "9090:9090"
     volumes:
       - ./etc/prometheus.yml:/etc/prometheus/prometheus.yml  # Конфигурация Prometheus
-    networks:
-      - monitoring
 
   grafana:
     image: grafana/grafana:latest
@@ -43,14 +41,8 @@ services:
       - ./etc/grafana/dashboards:/etc/grafana/provisioning/dashboards  # Дашборды
       - ./etc/grafana/datasources:/etc/grafana/provisioning/datasources  # Источники данных
       - grafana-storage:/var/lib/grafana  # Хранилище для Grafana
-    networks:
-      - monitoring
     depends_on:
       - prometheus
-
-networks:
-  monitoring:
-    driver: bridge
 
 volumes:
   grafana-storage:
