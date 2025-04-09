@@ -5,20 +5,20 @@ import (
 	"fmt"
 	"mime/multipart"
 	"net/url"
-	"path/filepath"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/pkg/errors"
+
+	"course/internal/adapters/storage"
 )
 
-func (a AWS) Upload(
+func (a *AWS) Upload(
 	ctx context.Context,
 	fileForm multipart.File,
 	header *multipart.FileHeader,
 ) (string, error) {
-	uniqueFileName := generateFilename(header.Filename)
+	uniqueFileName := storage.GenerateFilename(header.Filename)
 
 	_, err := s3manager.NewUploader(a.S3).UploadWithContext(ctx, &s3manager.UploadInput{
 		Bucket:             aws.String(a.bucket),
@@ -32,12 +32,4 @@ func (a AWS) Upload(
 	}
 
 	return uniqueFileName, nil
-}
-
-func generateFilename(original string) string {
-	ext := filepath.Ext(original)
-	name := filepath.Base(original[:len(original)-len(ext)])
-	timestamp := time.Now().UnixNano()
-
-	return fmt.Sprintf("%s_%d%s", name, timestamp, ext)
 }

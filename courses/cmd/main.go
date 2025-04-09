@@ -12,6 +12,9 @@ import (
 	"time"
 
 	"github.com/friendsofgo/errors"
+	"github.com/golang-migrate/migrate/v4"
+	postgresMigrate "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"github.com/volatiletech/sqlboiler/v4/boil"
@@ -20,9 +23,11 @@ import (
 	"google.golang.org/grpc"
 
 	"course/cmd/config"
-	"course/internal/adapters/cloud"
 	nosql "course/internal/adapters/mongo"
 	"course/internal/adapters/postgres"
+	`course/internal/adapters/storage`
+	`course/internal/adapters/storage/cloud`
+	`course/internal/adapters/storage/local`
 	"course/internal/app"
 	grpcPort "course/internal/ports/grpc"
 	"course/internal/ports/httpgin"
@@ -33,10 +38,14 @@ func main() {
 
 	conn := ConnectToDataBase()
 
+	if err := runMigrations(conn.DBConn); err != nil {
+		log.Fatalf("failed to run migrations: %v", err)
+	}
+
 	domainCourse := app.NewCourseApp(
 		postgres.CreateRepoUser(conn.DBConn),
 		nosql.NewMongoRepo(conn.MongoConn),
-		conn.AWS,
+		newStorage(),
 	)
 
 	svr := httpgin.Server(":1818", domainCourse)
@@ -148,7 +157,6 @@ func main() {
 type Conn struct {
 	DBConn    *sqlx.DB
 	MongoConn *mongo.Client
-	AWS       *cloud.AWS
 }
 
 func ConnectToDataBase() *Conn {
@@ -167,15 +175,9 @@ func ConnectToDataBase() *Conn {
 		log.Fatal(err)
 	}
 
-	awsS3, err := cloud.NewAWS(um.AWS)
-	if err != nil {
-		log.Fatalf("s3session error %e obj: %v", err, awsS3)
-	}
-
 	return &Conn{
 		DBConn:    dbConn,
 		MongoConn: mongoClient,
-		AWS:       awsS3,
 	}
 }
 
@@ -212,4 +214,43 @@ func ConnMongo(um *config.CourseMicroservice) (*mongo.Client, error) {
 	}
 
 	return mongoClient, nil
+}
+
+func newStorage() storage.ICloud {
+	ymlAWS, err := config.NewCfgAWS()
+	if errors.Is(err, os.ErrNotExist) {
+		return local.NewLocal()
+	} else if err != nil {
+		log.Fatalf("config read error %e", err)
+	}
+
+	awsS3, err := cloud.NewAWS(ymlAWS.AWS)
+	if err != nil {
+		log.Fatalf("s3session error %e obj: %v", err, awsS3)
+	}
+
+	return awsS3
+}
+
+func runMigrations(db *sqlx.DB) error {
+	driver, err := postgresMigrate.WithInstance(db.DB, &postgresMigrate.Config{})
+	if err != nil {
+		return fmt.Errorf("failed to create migration driver: %w", err)
+	}
+
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://internal/migrations",
+		"postgres",
+		driver,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to create migration instance: %w", err)
+	}
+
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		return fmt.Errorf("failed to apply migrations: %w", err)
+	}
+
+	log.Println("Migrations applied successfully")
+	return nil
 }

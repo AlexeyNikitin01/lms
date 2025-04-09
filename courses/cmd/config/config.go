@@ -9,8 +9,12 @@ import (
 
 var configs = []string{
 	"./etc/config.template.yml",
-	"./etc/config.aws.yml",
 }
+
+const (
+	PathPostgres string = "./etc/config.template.yml"
+	PathAWS      string = "./etc/config.aws.yml"
+)
 
 type CourseMicroservice struct {
 	Postgres *Postgres `yaml:"psql"`
@@ -42,6 +46,10 @@ type AWS struct {
 	Bucket    string `yaml:"bucket"`
 }
 
+type CourseMicroserviceAWS struct {
+	AWS *AWS `yaml:"AWS"`
+}
+
 // NewConfigCourseMicroservice
 //
 // TODO: необходимо переместить ключи доступа в окружение github. Ключи видны всем. Это не правильно.
@@ -61,4 +69,23 @@ func NewConfigCourseMicroservice() (*CourseMicroservice, error) {
 	}
 
 	return courseMicroservice, nil
+}
+
+// NewCfgAWS если нет конфигурации, то файлы сохраняются локально.
+func NewCfgAWS() (*CourseMicroserviceAWS, error) {
+	yamlFile, err := os.ReadFile(PathAWS)
+	if errors.Is(err, os.ErrNotExist) {
+		return nil, os.ErrNotExist
+	} else if err != nil {
+		return nil, errors.Wrap(err, "read file config")
+	}
+
+	var config *CourseMicroserviceAWS
+
+	err = yaml.Unmarshal(yamlFile, &config)
+	if err != nil {
+		return nil, errors.Wrap(err, "unmarshal")
+	}
+
+	return config, nil
 }

@@ -6,14 +6,18 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 
 	"course/cmd/config"
+	"course/internal/adapters/storage"
 )
+
+const URL = "https://storage.yandexcloud.net/lms-user/"
 
 type AWS struct {
 	S3     *session.Session
 	bucket string
+	URL    string
 }
 
-func NewAWS(cnf *config.AWS) (*AWS, error) {
+func NewAWS(cnf *config.AWS) (storage.ICloud, error) {
 	s3Session, err := session.NewSession(&aws.Config{
 		Credentials: credentials.NewStaticCredentials(
 			cnf.PublicKey,
@@ -30,5 +34,6 @@ func NewAWS(cnf *config.AWS) (*AWS, error) {
 	return &AWS{
 		S3:     s3Session,
 		bucket: cnf.Bucket,
+		URL:    URL,
 	}, nil
 }

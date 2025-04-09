@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (a AWS) DeleteFile(ctx context.Context, key string) error {
+func (a *AWS) DeleteFile(ctx context.Context, key string) error {
 	if key == "" {
 		return nil
 	}
