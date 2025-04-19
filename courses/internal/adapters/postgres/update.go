@@ -36,7 +36,14 @@ func (r RepoCourse) insertModule(
 	courseID int64,
 ) error {
 	module.CourseID = courseID
-	if err := module.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err := module.Upsert(
+		ctx,
+		tx,
+		true,
+		[]string{entity.ModuleColumns.ID},
+		boil.Infer(),
+		boil.Infer(),
+	); err != nil {
 		return err
 	}
 
@@ -63,7 +70,13 @@ func (r RepoCourse) insertLecture(
 ) error {
 	lecture.ModuleID = moduleID
 
-	if err := lecture.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err := lecture.Upsert(
+		ctx,
+		tx,
+		true,
+		[]string{entity.LectureColumns.ID},
+		boil.Infer(),
+		boil.Infer()); err != nil {
 		return err
 	}
 
@@ -85,7 +98,13 @@ func (r RepoCourse) insertLecture(
 func (r RepoCourse) insertTest(ctx context.Context, tx boil.ContextExecutor, lectureID int64, test *entity.Test) error {
 	test.LectureID = lectureID
 
-	if err := test.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err := test.Upsert(
+		ctx,
+		tx,
+		true,
+		[]string{entity.TestColumns.ID},
+		boil.Infer(),
+		boil.Infer()); err != nil {
 		return err
 	}
 
@@ -98,8 +117,28 @@ func (r RepoCourse) insertTest(ctx context.Context, tx boil.ContextExecutor, lec
 	for _, q := range questions {
 		q.TestID = test.ID
 
-		if err := q.Insert(ctx, tx, boil.Infer()); err != nil {
+		if err := q.Upsert(ctx,
+			tx,
+			true,
+			[]string{entity.QuestionColumns.ID},
+			boil.Infer(),
+			boil.Infer()); err != nil {
 			return err
+		}
+
+		if err := q.Reload(ctx, tx); err != nil {
+			return err
+		}
+
+		for _, a := range q.R.GetAnswers() {
+			if err := a.Upsert(ctx,
+				tx,
+				true,
+				[]string{entity.AnswerColumns.ID},
+				boil.Infer(),
+				boil.Infer()); err != nil {
+				return err
+			}
 		}
 	}
 

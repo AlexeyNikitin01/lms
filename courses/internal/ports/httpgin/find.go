@@ -74,30 +74,47 @@ func getCourse(app app.ICourseApp) gin.HandlerFunc {
 				for _, t := range l.R.GetTests() {
 					questions := []gin.H{}
 					for _, q := range t.R.GetQuestions() {
+						answers := []gin.H{}
+						for _, a := range q.R.GetAnswers() {
+							answers = append(answers, gin.H{
+								"answer": gin.H{
+									"answer_id":  a.ID,
+									"text":       a.Text,
+									"is_correct": a.IsCorrect,
+								},
+							})
+						}
 						questions = append(questions, gin.H{
-							"answer": q,
+							"question": gin.H{
+								"question_id": q.ID,
+								"text":        q.Text,
+								"answers":     answers,
+							},
 						})
 					}
 					tests = append(tests,
 						gin.H{
 							"test": gin.H{
-								"name":    t.Name,
-								"answers": questions,
+								"test_id":   t.ID,
+								"name":      t.Name,
+								"questions": questions,
 							},
 						})
 
 				}
 				lectures = append(lectures, gin.H{
 					"lecture": gin.H{
-						"text":  l.Lecture,
-						"name":  l.Title,
-						"tests": tests,
+						"lecture_id": l.ID,
+						"text":       l.Lecture,
+						"name":       l.Title,
+						"tests":      tests,
 					},
 				})
 			}
 			modules = append(modules,
 				gin.H{
 					"module": gin.H{
+						"module_id":   m.ID,
 						"name_module": m.Name,
 						"lectures":    lectures,
 					},
@@ -107,6 +124,7 @@ func getCourse(app app.ICourseApp) gin.HandlerFunc {
 		c.JSON(
 			http.StatusOK,
 			gin.H{
+				"id":      courseID,
 				"course":  course,
 				"modules": modules,
 			},

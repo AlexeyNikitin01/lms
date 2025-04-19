@@ -15,8 +15,8 @@ func (c CourseApp) AddCourse(ctx context.Context, name string, description strin
 	return course, nil
 }
 
-func (c CourseApp) AddLecture(ctx context.Context, title, lecture string, courseID int) error {
-	err := c.Mongo.AddLecture(ctx, title, lecture, courseID)
+func (c CourseApp) AddLecture(ctx context.Context, title, lecture string, courseID int64) error {
+	err := c.Mongo.AddLecture(ctx, title, lecture, int(courseID))
 	if err != nil {
 		return err
 	}

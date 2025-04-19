@@ -197,6 +197,7 @@ func ConnPostgres(um *config.CourseMicroservice) (*sqlx.DB, error) {
 	}
 
 	boil.SetDB(db)
+	boil.DebugMode = true
 
 	return db, nil
 }

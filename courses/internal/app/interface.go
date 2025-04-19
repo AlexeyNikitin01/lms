@@ -12,9 +12,9 @@ import (
 type ICourseApp interface {
 	AddCourse(ctx context.Context, name string, description string) (*entity.Course, error)
 	UpdateCourse(ctx context.Context, courseID int64, course *entity.Course) error
-	AddLecture(ctx context.Context, title, lecture string, courseID int) error
+	AddLecture(ctx context.Context, title, lecture string, courseID int64) error
 	AllCourse(ctx context.Context, limit, offset int64) (entity.CourseSlice, int64, error)
 	UploadPhoto(ctx context.Context, fileForm multipart.File, header *multipart.FileHeader, course *entity.Course) error
-	FindLecture(ctx context.Context, courseID int) (*bson.M, error)
+	FindLecture(ctx context.Context, courseID int64) (*bson.M, error)
 	GetCourse(ctx context.Context, courseID int64) (*entity.Course, error)
 }

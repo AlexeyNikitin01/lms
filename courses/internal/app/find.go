@@ -8,8 +8,8 @@ import (
 	"course/internal/repository/pg/entity"
 )
 
-func (c CourseApp) FindLecture(ctx context.Context, courseID int) (*bson.M, error) {
-	lecture, err := c.Mongo.FindLecture(ctx, courseID)
+func (c CourseApp) FindLecture(ctx context.Context, courseID int64) (*bson.M, error) {
+	lecture, err := c.Mongo.FindLecture(ctx, int(courseID))
 	if err != nil {
 		return nil, err
 	}

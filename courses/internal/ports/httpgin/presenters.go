@@ -13,11 +13,11 @@ type CourseRequest struct {
 type LectureRequest struct {
 	Title    string `json:"title"`
 	Lecture  string `json:"lecture"`
-	CourseID int    `json:"course_id"`
+	CourseID int64  `json:"course_id"`
 }
 
 type FindLecturesRequest struct {
-	CourseID int `json:"course_id"`
+	CourseID int64 `json:"course_id"`
 }
 
 type AllCoursesRequest struct {
@@ -25,29 +25,40 @@ type AllCoursesRequest struct {
 	Offset int64 `json:"offset"`
 }
 
-type Question struct {
+type Answer struct {
+	AnswerID  int64  `json:"answer_id"`
 	Text      string `json:"text"`
 	IsCorrect bool   `json:"is_correct"`
 }
 
+type Question struct {
+	QuestionID int64    `json:"question_id"`
+	Text       string   `json:"text"`
+	Answers    []Answer `json:"answers"`
+}
+
 type Test struct {
+	TestID    int64      `json:"test_id"`
 	Name      string     `json:"name"`
 	Questions []Question `json:"questions"`
 }
 
 type Lecture struct {
-	Name  string `json:"name"`
-	Text  string `json:"text"`
-	Tests []Test `json:"tests"`
+	LectureID int64  `json:"lecture_id"`
+	Name      string `json:"name"`
+	Text      string `json:"text"`
+	Tests     []Test `json:"tests"`
 }
 
 type Module struct {
+	ModuleID int64     `json:"module_id"`
 	Name     string    `json:"name"`
 	Lectures []Lecture `json:"lectures"`
 }
 
 type Course struct {
-	Modules []Module `json:"modules"`
+	CourseID int64    `json:"course_id"`
+	Modules  []Module `json:"modules"`
 }
 
 func convertToEntityCourse(course Course, courseID int64) *entity.Course {
@@ -64,12 +75,23 @@ func convertToEntityCourse(course Course, courseID int64) *entity.Course {
 
 				for _, q := range t.Questions {
 					entityQuestions = append(entityQuestions, &entity.Question{
-						Text:      q.Text,
-						IsCorrect: q.IsCorrect,
+						ID:   q.QuestionID,
+						Text: q.Text,
 					})
+
+					var answers entity.AnswerSlice
+
+					for _, a := range q.Answers {
+						answers = append(answers, &entity.Answer{
+							ID:        a.AnswerID,
+							Text:      a.Text,
+							IsCorrect: a.IsCorrect,
+						})
+					}
 				}
 
 				newTest := &entity.Test{
+					ID:   t.TestID,
 					Name: t.Name,
 				}
 
@@ -80,6 +102,7 @@ func convertToEntityCourse(course Course, courseID int64) *entity.Course {
 			}
 
 			newLecture := &entity.Lecture{
+				ID:      l.LectureID,
 				Title:   l.Name,
 				Lecture: l.Text,
 			}
@@ -90,6 +113,7 @@ func convertToEntityCourse(course Course, courseID int64) *entity.Course {
 		}
 
 		newModule := &entity.Module{
+			ID:       m.ModuleID,
 			Name:     m.Name,
 			CourseID: courseID,
 		}

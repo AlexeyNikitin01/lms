@@ -35,6 +35,7 @@ func (r RepoCourse) GetCourse(ctx context.Context, courseID int64) (*entity.Cour
 			entity.ModuleRels.Lectures,
 			entity.LectureRels.Tests,
 			entity.TestRels.Questions,
+			entity.QuestionRels.Answers,
 		)),
 	).One(ctx, boil.GetContextDB())
 	if err != nil {
