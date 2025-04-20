@@ -74,11 +74,6 @@ func convertToEntityCourse(course Course, courseID int64) *entity.Course {
 				var entityQuestions entity.QuestionSlice
 
 				for _, q := range t.Questions {
-					entityQuestions = append(entityQuestions, &entity.Question{
-						ID:   q.QuestionID,
-						Text: q.Text,
-					})
-
 					var answers entity.AnswerSlice
 
 					for _, a := range q.Answers {
@@ -88,6 +83,16 @@ func convertToEntityCourse(course Course, courseID int64) *entity.Course {
 							IsCorrect: a.IsCorrect,
 						})
 					}
+
+					question := &entity.Question{
+						ID:   q.QuestionID,
+						Text: q.Text,
+					}
+
+					question.R = question.R.NewStruct()
+					question.R.Answers = answers
+
+					entityQuestions = append(entityQuestions, question)
 				}
 
 				newTest := &entity.Test{

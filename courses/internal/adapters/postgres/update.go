@@ -126,11 +126,14 @@ func (r RepoCourse) insertTest(ctx context.Context, tx boil.ContextExecutor, lec
 			return err
 		}
 
+		answers := q.R.GetAnswers()
+
 		if err := q.Reload(ctx, tx); err != nil {
 			return err
 		}
 
-		for _, a := range q.R.GetAnswers() {
+		for _, a := range answers {
+			a.QuestionID = q.ID
 			if err := a.Upsert(ctx,
 				tx,
 				true,
