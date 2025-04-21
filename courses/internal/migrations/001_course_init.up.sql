@@ -50,3 +50,13 @@ CREATE TABLE IF NOT EXISTS answers (
      question_id    BIGINT  NOT NULL,
      FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE
 );
+
+INSERT INTO public.courses (name, description, photo_url)
+VALUES ( 'тестовый курс', 'тестовое описание', 'tmp/file.jpg');
+
+INSERT INTO public.modules (name, course_id) VALUES ( 'модуль 1', 1);
+INSERT INTO public.modules (name, course_id) VALUES ( 'модуль 2', 1);
+
+INSERT INTO public.lectures (title, module_id, lecture) VALUES ('лекция 1', 1, '');
+INSERT INTO public.lectures (title, module_id, lecture) VALUES ('лекция 2', 1, '');
+INSERT INTO public.lectures (title, module_id, lecture) VALUES ('лекция 3', 2, '');
