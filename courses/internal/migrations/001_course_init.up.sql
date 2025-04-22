@@ -58,5 +58,12 @@ INSERT INTO public.modules (name, course_id) VALUES ( 'модуль 1', 1);
 INSERT INTO public.modules (name, course_id) VALUES ( 'модуль 2', 1);
 
 INSERT INTO public.lectures (title, module_id, lecture) VALUES ('лекция 1', 1, '');
-INSERT INTO public.lectures (title, module_id, lecture) VALUES ('лекция 2', 1, '');
+INSERT INTO public.lectures (title, module_id, lecture) VALUES ('лекция 2', 1, '<h1>что-то</h1><p><strong>Таблица</strong> (от лат. tabula — доска) — <strong>способ структурирования данных</strong>, который предполагает распределение информации по однотипным строкам и столбцам (графам). &nbsp;1</p><p style="text-align: left"><strong>Некоторые элементы таблицы</strong>:</p><ul><li><p><strong>Строки</strong>. В них сравниваются между собой какие-либо элементы: отметки, значения температуры воздуха или воды, стоимость, количество и т. д..&nbsp;3</p></li><li><p><strong>Столбцы</strong>. Отражают свойства, по которым происходит сравнение: пол, возраст, город и т. д..&nbsp;3</p></li><li><p><strong>Заголовок таблицы</strong>. Определяет название или назначение таблицы.&nbsp;3</p></li><li><p><strong>Ячейка</strong>. Находится на пересечении строки и столбца, содержит информацию в числовом, текстовом или другом виде.&nbsp;3</p></li></ul><p style="text-align: left">Таблицы широко используются в различных исследованиях и анализе данных. Встречаются в СМИ, в рукописных материалах, в компьютерных программах и в дорожных знаках.&nbsp;14</p><img class="editor-image" style="max-width: 100%; height: auto;" src="https://cdn1.ozone.ru/s3/multimedia-d/c600/6278532805.jpg"><table class="editor-table" style="min-width: 75px"><colgroup><col style="min-width: 25px"><col style="width: 25px"><col style="min-width: 25px"></colgroup><tbody><tr><th colspan="1" rowspan="1"><p></p></th><th colspan="1" rowspan="1" colwidth="25"><p style="text-align: center"></p></th><th colspan="1" rowspan="1"><p></p></th></tr><tr><td colspan="1" rowspan="1"><p></p></td><td colspan="1" rowspan="1" colwidth="25"><p></p></td><td colspan="1" rowspan="1"><p></p></td></tr><tr><td colspan="1" rowspan="1"><p></p></td><td colspan="1" rowspan="1" colwidth="25"><p></p></td><td colspan="1" rowspan="1"><p></p></td></tr></tbody></table>');
 INSERT INTO public.lectures (title, module_id, lecture) VALUES ('лекция 3', 2, '');
+
+INSERT INTO public.tests (name, lecture_id) VALUES ('Тестирование', 2);
+
+INSERT INTO public.questions (text, test_id) VALUES ('вопрос 1', 1);
+
+INSERT INTO public.answers (text, is_correct, question_id) VALUES ('ответ 1', true, 1);
+INSERT INTO public.answers (text, is_correct, question_id) VALUES ('ответ 2', false, 1);
