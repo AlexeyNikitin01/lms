@@ -73,15 +73,18 @@ var CourseWhere = struct {
 // CourseRels is where relationship names are stored.
 var CourseRels = struct {
 	Modules       string
+	UsersCourses  string
 	VideoLectures string
 }{
 	Modules:       "Modules",
+	UsersCourses:  "UsersCourses",
 	VideoLectures: "VideoLectures",
 }
 
 // courseR is where relationships are stored.
 type courseR struct {
 	Modules       ModuleSlice       `boil:"Modules" json:"Modules" toml:"Modules" yaml:"Modules"`
+	UsersCourses  UsersCourseSlice  `boil:"UsersCourses" json:"UsersCourses" toml:"UsersCourses" yaml:"UsersCourses"`
 	VideoLectures VideoLectureSlice `boil:"VideoLectures" json:"VideoLectures" toml:"VideoLectures" yaml:"VideoLectures"`
 }
 
@@ -95,6 +98,13 @@ func (r *courseR) GetModules() ModuleSlice {
 		return nil
 	}
 	return r.Modules
+}
+
+func (r *courseR) GetUsersCourses() UsersCourseSlice {
+	if r == nil {
+		return nil
+	}
+	return r.UsersCourses
 }
 
 func (r *courseR) GetVideoLectures() VideoLectureSlice {
@@ -434,6 +444,20 @@ func (o *Course) Modules(mods ...qm.QueryMod) moduleQuery {
 	return Modules(queryMods...)
 }
 
+// UsersCourses retrieves all the users_course's UsersCourses with an executor.
+func (o *Course) UsersCourses(mods ...qm.QueryMod) usersCourseQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"users_courses\".\"course_id\"=?", o.ID),
+	)
+
+	return UsersCourses(queryMods...)
+}
+
 // VideoLectures retrieves all the video_lecture's VideoLectures with an executor.
 func (o *Course) VideoLectures(mods ...qm.QueryMod) videoLectureQuery {
 	var queryMods []qm.QueryMod
@@ -551,6 +575,119 @@ func (courseL) LoadModules(ctx context.Context, e boil.ContextExecutor, singular
 				local.R.Modules = append(local.R.Modules, foreign)
 				if foreign.R == nil {
 					foreign.R = &moduleR{}
+				}
+				foreign.R.Course = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadUsersCourses allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (courseL) LoadUsersCourses(ctx context.Context, e boil.ContextExecutor, singular bool, maybeCourse interface{}, mods queries.Applicator) error {
+	var slice []*Course
+	var object *Course
+
+	if singular {
+		var ok bool
+		object, ok = maybeCourse.(*Course)
+		if !ok {
+			object = new(Course)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeCourse)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeCourse))
+			}
+		}
+	} else {
+		s, ok := maybeCourse.(*[]*Course)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeCourse)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeCourse))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &courseR{}
+		}
+		args[object.ID] = struct{}{}
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &courseR{}
+			}
+			args[obj.ID] = struct{}{}
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.From(`users_courses`),
+		qm.WhereIn(`users_courses.course_id in ?`, argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load users_courses")
+	}
+
+	var resultSlice []*UsersCourse
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice users_courses")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on users_courses")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for users_courses")
+	}
+
+	if len(usersCourseAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.UsersCourses = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &usersCourseR{}
+			}
+			foreign.R.Course = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.CourseID {
+				local.R.UsersCourses = append(local.R.UsersCourses, foreign)
+				if foreign.R == nil {
+					foreign.R = &usersCourseR{}
 				}
 				foreign.R.Course = local
 				break
@@ -718,6 +855,59 @@ func (o *Course) AddModules(ctx context.Context, exec boil.ContextExecutor, inse
 	for _, rel := range related {
 		if rel.R == nil {
 			rel.R = &moduleR{
+				Course: o,
+			}
+		} else {
+			rel.R.Course = o
+		}
+	}
+	return nil
+}
+
+// AddUsersCourses adds the given related objects to the existing relationships
+// of the course, optionally inserting them as new records.
+// Appends related to o.R.UsersCourses.
+// Sets related.R.Course appropriately.
+func (o *Course) AddUsersCourses(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*UsersCourse) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.CourseID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"users_courses\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"course_id"}),
+				strmangle.WhereClause("\"", "\"", 2, usersCoursePrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.CourseID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &courseR{
+			UsersCourses: related,
+		}
+	} else {
+		o.R.UsersCourses = append(o.R.UsersCourses, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &usersCourseR{
 				Course: o,
 			}
 		} else {

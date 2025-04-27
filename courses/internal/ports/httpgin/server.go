@@ -7,9 +7,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"course/internal/app"
+	grpcuser "course/pkg/grpc-user"
 )
 
-func Server(addr string, app app.ICourseApp) *http.Server {
+func Server(addr string, app app.ICourseApp, userClient grpcuser.UserServiceClient) *http.Server {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 
@@ -17,6 +18,7 @@ func Server(addr string, app app.ICourseApp) *http.Server {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 	router.Use(prometheusMiddleware())
+	router.Use(auth(userClient))
 
 	s := &http.Server{
 		Addr:    addr,

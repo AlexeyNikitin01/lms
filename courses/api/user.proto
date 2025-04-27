@@ -2,18 +2,48 @@ syntax = "proto3";
 
 package user;
 
-option go_package = "pkg/grpc-user";
+option go_package = "internal/ports/grpc";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
 
 service UserService {
-  rpc ping(google.protobuf.Empty) returns (google.protobuf.Empty) {}
-  rpc getUser(UserRequest) returns (UserResponse) {}
-  rpc registerUser(UserRegisterRequest) returns (UserRegisterResponse) {}
-  rpc authByLoginPassword(UserAuthRequest) returns (UserAuthResponse) {}
-  rpc updateUser(UserUpdateRequest) returns (UserResponse) {}
-  rpc getAllUser(google.protobuf.Empty) returns (UsersResponse) {}
+  rpc ping(google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      get: "/ping"
+    };
+  }
+  rpc getUser(UserRequest) returns (UserResponse) {
+    option (google.api.http) = {
+      get: "/user/get/{uuid}"
+    };
+  }
+  rpc registerUser(UserRegisterRequest) returns (UserRegisterResponse) {
+    option (google.api.http) = {
+      post: "/user/register"
+    };
+  }
+  rpc authByLoginPassword(UserAuthRequest) returns (UserAuthResponse) {
+    option (google.api.http) = {
+      post: "/user/auth"
+    };
+  }
+  rpc updateUser(UserUpdateRequest) returns (UserResponse) {
+    option (google.api.http) = {
+      post: "/user/update"
+    };
+  }
+  rpc getAllUser(google.protobuf.Empty) returns (UsersResponse) {
+    option (google.api.http) = {
+      get: "/user/all"
+    };
+  };
+  rpc getUserInfo(google.protobuf.Empty) returns (UserResponse) {
+    option (google.api.http) = {
+      get: "/user/info"
+    };
+  }
 }
 
 message UserRequest {
@@ -27,9 +57,9 @@ message UserResponse {
   string surname = 4;
   string email = 5;
   string phone = 6;
-  string placeWork = 7;
+  string place_work = 7;
   string position = 8;
-  google.protobuf.Timestamp createdDate = 9;
+  google.protobuf.Timestamp created_date = 9;
 }
 
 message UsersResponse {
@@ -64,6 +94,6 @@ message UserUpdateRequest {
   string surname = 4;
   string email = 5;
   string phone = 6;
-  string placeWork = 7;
+  string place_work = 7;
   string position = 8;
 }

@@ -43,3 +43,18 @@ func (r RepoCourse) SaveAvatarCourse(ctx context.Context, fileName string, cours
 
 	return nil
 }
+
+func (r RepoCourse) SetAuthorCourse(ctx context.Context, courseID int64, authorUUID string) error {
+	c := entity.UsersCourse{
+		CourseID: courseID,
+		UserUUID: authorUUID,
+		UserRole: "author",
+	}
+
+	err := c.Insert(ctx, boil.GetContextDB(), boil.Infer())
+	if err != nil {
+		return errors.Wrap(err, "don`t upload file in db")
+	}
+
+	return nil
+}

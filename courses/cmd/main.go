@@ -31,6 +31,7 @@ import (
 	"course/internal/app"
 	grpcPort "course/internal/ports/grpc"
 	"course/internal/ports/httpgin"
+	grpc_user "course/pkg/grpc-user"
 )
 
 func main() {
@@ -48,7 +49,15 @@ func main() {
 		newStorage(),
 	)
 
-	svr := httpgin.Server(":1818", domainCourse)
+	userConn, err := grpc.NewClient(":50054", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect to user service: %v", err)
+	}
+	defer userConn.Close()
+
+	userClient := grpc_user.NewUserServiceClient(userConn)
+
+	svr := httpgin.Server(":1818", domainCourse, userClient)
 
 	httpServer := &http.Server{
 		Addr:    ":1818",

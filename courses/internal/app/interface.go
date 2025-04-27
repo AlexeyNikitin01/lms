@@ -10,7 +10,7 @@ import (
 )
 
 type ICourseApp interface {
-	AddCourse(ctx context.Context, name string, description string) (*entity.Course, error)
+	AddCourse(ctx context.Context, name string, description string, authorUUID string) (*entity.Course, error)
 	UpdateCourse(ctx context.Context, courseID int64, course *entity.Course) error
 	AddLecture(ctx context.Context, title, lecture string, courseID int64) error
 	AllCourse(ctx context.Context, limit, offset int64) (entity.CourseSlice, int64, error)

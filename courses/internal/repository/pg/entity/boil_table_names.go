@@ -11,6 +11,7 @@ var TableNames = struct {
 	Questions        string
 	SchemaMigrations string
 	Tests            string
+	UsersCourses     string
 	VideoLectures    string
 }{
 	Answers:          "answers",
@@ -20,5 +21,6 @@ var TableNames = struct {
 	Questions:        "questions",
 	SchemaMigrations: "schema_migrations",
 	Tests:            "tests",
+	UsersCourses:     "users_courses",
 	VideoLectures:    "video_lectures",
 }

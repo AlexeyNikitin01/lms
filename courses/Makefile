@@ -28,7 +28,7 @@ pg-migrate:
 	migrate -path $(PATH_MIGRATIONS) -database postgres://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable up
 
 grpc:
-	protoc --go_out=. --go-grpc_out=. $(PATH_API_PROTO)
+	protoc --go_out=. --go-grpc_out=. --grpc-gateway_out=. --proto_path=./api  $(PATH_API_PROTO)
 
 sql-gen:
 	sqlboiler -c  $(PATH_CONF_BOIL) \

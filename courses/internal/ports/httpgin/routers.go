@@ -10,11 +10,8 @@ func AppRouter(r *gin.RouterGroup, app app.ICourseApp) {
 	r.GET("ping", ping(app))
 
 	//TODO: заменить на get запрос, через query параметр.
-	r.POST("get-lecture", getLecture(app))
-	r.POST("get-all-courses", getAllCourses(app))
-	r.POST("get-course/:id", getCourse(app))
-
-	r.POST("add-course", addCourse(app))
-	r.POST("update-course/:id", updateCourse(app))
-	r.POST("add-lecture", addLecture(app))
+	r.POST("all", getAllCourses(app))
+	r.POST("get/:id", getCourse(app))
+	r.POST("create", createCourse(app))
+	r.POST("update/:id", updateCourse(app))
 }
