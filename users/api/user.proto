@@ -39,6 +39,11 @@ service UserService {
       get: "/user/all"
     };
   };
+  rpc getUserInfo(google.protobuf.Empty) returns (UserResponse) {
+    option (google.api.http) = {
+      get: "/user/info"
+    };
+  }
 }
 
 message UserRequest {
