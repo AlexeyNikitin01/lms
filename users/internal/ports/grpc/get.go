@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -66,7 +65,6 @@ func Transform[T1 any, T2 any](s1 []T1, f func(a T1) T2) []T2 {
 }
 
 func (s gRPCServerStruct) GetUserInfo(ctx context.Context, _ *emptypb.Empty) (*UserResponse, error) {
-	fmt.Println("here")
 	user := ctx.Value(UserCtxKey).(*entity.User)
 
 	return &UserResponse{

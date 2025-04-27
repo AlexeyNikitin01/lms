@@ -33,7 +33,7 @@ func auth(app app.IAppUser) gin.HandlerFunc {
 
 		path := ctx.GetHeader("authorization")
 
-		tokenRaw := strings.ReplaceAll(path, "bearer ", "")
+		tokenRaw := strings.ReplaceAll(path, "Bearer ", "")
 
 		user, _, err := app.ParseToken(ctx, tokenRaw)
 		if err != nil {

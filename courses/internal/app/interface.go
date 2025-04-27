@@ -17,4 +17,6 @@ type ICourseApp interface {
 	UploadPhoto(ctx context.Context, fileForm multipart.File, header *multipart.FileHeader, course *entity.Course) error
 	FindLecture(ctx context.Context, courseID int64) (*bson.M, error)
 	GetCourse(ctx context.Context, courseID int64) (*entity.Course, error)
+	GetListUserCourseByID(ctx context.Context, courseID int64) (entity.UsersCourseSlice, error)
+	GetUserRole(ctx context.Context, courseID int64, uuid string) (*entity.UsersCourse, error)
 }

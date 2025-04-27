@@ -93,3 +93,10 @@ func getAllUser(a app.IAppUser) gin.HandlerFunc {
 		})
 	}
 }
+
+func getUserInfo(_ app.IAppUser) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		user := FromContext(c)
+		c.JSON(http.StatusOK, gin.H{"uuid": user.ID})
+	}
+}

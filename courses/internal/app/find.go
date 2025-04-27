@@ -34,3 +34,11 @@ func (c CourseApp) GetCourse(ctx context.Context, courseID int64) (*entity.Cours
 
 	return course, nil
 }
+
+func (c CourseApp) GetListUserCourseByID(ctx context.Context, courseID int64) (entity.UsersCourseSlice, error) {
+	return c.DB.GetListUserByCourseID(ctx, courseID)
+}
+
+func (c CourseApp) GetUserRole(ctx context.Context, courseID int64, uuid string) (*entity.UsersCourse, error) {
+	return c.DB.GetUserRole(ctx, courseID, uuid)
+}

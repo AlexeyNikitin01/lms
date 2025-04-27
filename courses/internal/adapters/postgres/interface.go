@@ -15,6 +15,8 @@ type ICoursePostgres interface {
 	SaveAvatarCourse(ctx context.Context, fileName string, courseID int64) error
 	UpdateCourse(ctx context.Context, courseID int64, course *entity.Course) error
 	GetCourse(ctx context.Context, courseID int64) (*entity.Course, error)
+	GetListUserByCourseID(ctx context.Context, courseID int64) (entity.UsersCourseSlice, error)
+	GetUserRole(ctx context.Context, courseID int64, uuid string) (*entity.UsersCourse, error)
 }
 
 /*

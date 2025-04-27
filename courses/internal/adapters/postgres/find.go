@@ -44,3 +44,26 @@ func (r RepoCourse) GetCourse(ctx context.Context, courseID int64) (*entity.Cour
 
 	return course, nil
 }
+
+func (r RepoCourse) GetListUserByCourseID(ctx context.Context, courseID int64) (entity.UsersCourseSlice, error) {
+	listUser, err := entity.UsersCourses(
+		entity.UsersCourseWhere.CourseID.EQ(courseID),
+	).All(ctx, boil.GetContextDB())
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to load users courses")
+	}
+
+	return listUser, nil
+}
+
+func (r RepoCourse) GetUserRole(ctx context.Context, courseID int64, uuid string) (*entity.UsersCourse, error) {
+	userRole, err := entity.UsersCourses(
+		entity.UsersCourseWhere.CourseID.EQ(courseID),
+		entity.UsersCourseWhere.UserUUID.EQ(uuid),
+	).One(ctx, boil.GetContextDB())
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to load users courses")
+	}
+
+	return userRole, nil
+}

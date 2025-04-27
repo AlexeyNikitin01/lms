@@ -112,3 +112,45 @@ func getCourse(app app.ICourseApp) gin.HandlerFunc {
 		)
 	}
 }
+
+func getListUserByCourseID(app app.ICourseApp) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id := c.Param("id")
+		courseID, err := strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid course ID"})
+			return
+		}
+
+		listUser, err := app.GetListUserCourseByID(c, courseID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"users": listUser,
+		})
+	}
+}
+
+func getRole(app app.ICourseApp) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id := c.Param("id")
+		courseID, err := strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid course ID"})
+			return
+		}
+
+		uuid := c.Param("uuid")
+
+		userRole, err := app.GetUserRole(c, courseID, uuid)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, userRole)
+	}
+}
