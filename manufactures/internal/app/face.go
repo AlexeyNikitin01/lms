@@ -1,11 +1,19 @@
 package app
 
-type apper interface {
+import (
+	"manufactures/internal/adapters/dadata"
+)
+
+type Apper interface {
 	get() error
 }
 
-type AppManfs struct{}
+type AppManfs struct {
+	D dadata.Dadata
+}
 
-func NewAppManfs() AppManfs {
-	return AppManfs{}
+func NewAppManfs(d dadata.Dadata) AppManfs {
+	return AppManfs{
+		D: d,
+	}
 }

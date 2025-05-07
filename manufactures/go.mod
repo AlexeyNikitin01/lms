@@ -3,6 +3,7 @@ module manufactures
 go 1.24.2
 
 require (
+	github.com/ekomobile/dadata/v2 v2.16.0
 	github.com/friendsofgo/errors v0.9.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang-migrate/migrate/v4 v4.18.3
