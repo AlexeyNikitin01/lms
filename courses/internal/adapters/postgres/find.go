@@ -67,3 +67,7 @@ func (r RepoCourse) GetUserRole(ctx context.Context, courseID int64, uuid string
 
 	return userRole, nil
 }
+
+func (r RepoCourse) GetListLectures(ctx context.Context) (entity.LectureSlice, error) {
+	return nil, nil
+}

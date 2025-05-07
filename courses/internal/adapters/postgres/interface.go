@@ -17,6 +17,7 @@ type ICoursePostgres interface {
 	GetCourse(ctx context.Context, courseID int64) (*entity.Course, error)
 	GetListUserByCourseID(ctx context.Context, courseID int64) (entity.UsersCourseSlice, error)
 	GetUserRole(ctx context.Context, courseID int64, uuid string) (*entity.UsersCourse, error)
+	GetListLectures(ctx context.Context) (entity.LectureSlice, error)
 }
 
 /*

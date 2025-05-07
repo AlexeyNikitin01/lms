@@ -5,8 +5,10 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 
 	"course/internal/app"
+	"course/internal/repository/pg/entity"
 )
 
 func getAllCourses(app app.ICourseApp) gin.HandlerFunc {
@@ -152,5 +154,32 @@ func getRole(app app.ICourseApp) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, userRole)
+	}
+}
+
+func getListLecture(_ app.ICourseApp) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		lectures, err := entity.Lectures().All(c, boil.GetContextDB())
+		if err != nil {
+			return
+		}
+		c.JSON(http.StatusOK, lectures)
+	}
+}
+
+func getLecture(_ app.ICourseApp) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		idParam := c.Param("id")
+		lectureID, err := strconv.ParseInt(idParam, 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid course ID"})
+			return
+		}
+
+		lecture, err := entity.Lectures(entity.LectureWhere.ID.EQ(lectureID)).One(c, boil.GetContextDB())
+		if err != nil {
+			return
+		}
+		c.JSON(http.StatusOK, lecture)
 	}
 }
