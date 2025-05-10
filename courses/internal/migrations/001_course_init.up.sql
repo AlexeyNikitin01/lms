@@ -88,3 +88,55 @@ INSERT INTO answers (text, is_correct, question_id)
 VALUES ('ответ 1', true, 1);
 INSERT INTO answers (text, is_correct, question_id)
 VALUES ('ответ 2', false, 1);
+
+-- Пример генерации 10 курсов по материаловедению
+DO
+$$
+    BEGIN
+        FOR i IN 1..10
+            LOOP
+                INSERT INTO courses (name, description, photo_url)
+                VALUES ('Материаловедение ' || i,
+                        'Описание курса по материаловедению №' || i,
+                        'https://example.com/materials/image' || i || '.jpg');
+
+                -- добавим по 2 модуля на курс
+                FOR m IN 1..2
+                    LOOP
+                        INSERT INTO modules (name, course_id)
+                        VALUES ('Модуль ' || m || ' курса ' || i,
+                                currval('courses_id_seq') -- получаем ID только что вставленного курса
+                               );
+
+                        -- добавим по 2 лекции на модуль
+                        FOR l IN 1..2
+                            LOOP
+                                INSERT INTO lectures (title, module_id, lecture)
+                                VALUES ('Лекция ' || l || ' модуля ' || m || ' курса ' || i,
+                                        currval('modules_id_seq'),
+                                        '<p>Это содержимое лекции ' || l || ' по материаловедению.</p>');
+
+                                -- тест к каждой второй лекции
+                                IF l = 2 THEN
+                                    INSERT INTO tests (name, lecture_id)
+                                    VALUES ('Тест к лекции ' || l || ' модуля ' || m || ' курса ' || i,
+                                            currval('lectures_id_seq'));
+
+                                    -- 1 вопрос с 2 ответами
+                                    INSERT INTO questions (text, test_id)
+                                    VALUES ('Что такое сплав?',
+                                            currval('tests_id_seq'));
+
+                                    INSERT INTO answers (text, is_correct, question_id)
+                                    VALUES ('Материал, состоящий из двух или более металлов', true,
+                                            currval('questions_id_seq'));
+
+                                    INSERT INTO answers (text, is_correct, question_id)
+                                    VALUES ('Чистый металл без примесей', false, currval('questions_id_seq'));
+                                END IF;
+
+                            END LOOP;
+                    END LOOP;
+            END LOOP;
+    END
+$$;
