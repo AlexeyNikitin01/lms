@@ -26,6 +26,21 @@ func data(a app.AppManfs) gin.HandlerFunc {
 	}
 }
 
+func vacancies(a app.AppManfs) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		company := c.Param("company")
+
+		res, err := a.HH.SearchVacanciesByEmployer(company)
+		if err != nil {
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"data": res,
+		})
+	}
+}
+
 func ToPtr[T any](x T) *T {
 	return &x
 }

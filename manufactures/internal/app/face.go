@@ -2,18 +2,21 @@ package app
 
 import (
 	"manufactures/internal/adapters/dadata"
+	"manufactures/internal/adapters/hh"
 )
 
 type Apper interface {
-	get() error
+	data() error
 }
 
 type AppManfs struct {
-	D dadata.Dadata
+	D  dadata.Dadata
+	HH hh.HHClient
 }
 
-func NewAppManfs(d dadata.Dadata) AppManfs {
+func NewAppManfs(d dadata.Dadata, hh hh.HHClient) AppManfs {
 	return AppManfs{
-		D: d,
+		D:  d,
+		HH: hh,
 	}
 }

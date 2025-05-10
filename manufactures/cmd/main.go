@@ -17,6 +17,7 @@ import (
 	"google.golang.org/grpc"
 
 	"manufactures/internal/adapters/dadata"
+	"manufactures/internal/adapters/hh"
 	"manufactures/internal/app"
 	"manufactures/internal/ports/http"
 	user "manufactures/pkg/grpc"
@@ -25,7 +26,7 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	domainUser := app.NewAppManfs(dadata.NewDadata())
+	domainUser := app.NewAppManfs(dadata.NewDadata(), hh.NewHHClient())
 
 	// Create context that listens for interrupt signals
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
