@@ -1,9 +1,17 @@
 package app
 
+import (
+	"lab/internal/adapters/postgres"
+)
+
 type Laber interface{}
 
-type Lab struct{}
+type Lab struct {
+	PG *postgres.LabPostgres
+}
 
-func NewLab() *Lab {
-	return &Lab{}
+func NewLab(p *postgres.LabPostgres) *Lab {
+	return &Lab{
+		PG: p,
+	}
 }

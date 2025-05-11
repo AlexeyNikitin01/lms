@@ -1,13 +1,13 @@
-DB_PORT=7777
+DB_PORT=7555
 DB_PASS=pass
-DB_NAME=map
+DB_NAME=lab
 DB_USER=postgres
 DB_HOST=localhost
 
 PATH_MIGRATIONS = ./internal/migrations
 PATH_API_PROTO = ./api/*.proto
 
-DOCKER_NAME=courses
+DOCKER_NAME=lab
 
 PATH_ENTITY_BOIL=internal/repository/pg/entity
 PATH_CONF_BOIL=etc/config.template.yml

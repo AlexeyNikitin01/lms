@@ -1,0 +1,11 @@
+psql:
+  user: "postgres"
+  pass: "pass"
+  host: "localhost"
+  port: 7555
+  dbname: "lab"
+  sslmode: "disable"
+  blacklist:
+    - test
+    - gopg_migrations
+    - db_version
