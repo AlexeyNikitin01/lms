@@ -4,9 +4,13 @@
 package entity
 
 var TableNames = struct {
-	Labs             string
-	SchemaMigrations string
+	AirplaneMaterials string
+	AirplaneModels    string
+	Labs              string
+	SchemaMigrations  string
 }{
-	Labs:             "labs",
-	SchemaMigrations: "schema_migrations",
+	AirplaneMaterials: "airplane_materials",
+	AirplaneModels:    "airplane_models",
+	Labs:              "labs",
+	SchemaMigrations:  "schema_migrations",
 }
