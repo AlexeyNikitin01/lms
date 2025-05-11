@@ -24,58 +24,79 @@ import (
 
 // AirplaneModel is an object representing the database table.
 type AirplaneModel struct {
-	ID           int         `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Name         string      `boil:"name" json:"name" toml:"name" yaml:"name"`
-	Manufacturer string      `boil:"manufacturer" json:"manufacturer" toml:"manufacturer" yaml:"manufacturer"`
-	Year         null.Int    `boil:"year" json:"year,omitempty" toml:"year" yaml:"year,omitempty"`
-	Description  null.String `boil:"description" json:"description,omitempty" toml:"description" yaml:"description,omitempty"`
+	ID                 int         `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Name               string      `boil:"name" json:"name" toml:"name" yaml:"name"`
+	Manufacturer       string      `boil:"manufacturer" json:"manufacturer" toml:"manufacturer" yaml:"manufacturer"`
+	Year               null.Int    `boil:"year" json:"year,omitempty" toml:"year" yaml:"year,omitempty"`
+	Description        null.String `boil:"description" json:"description,omitempty" toml:"description" yaml:"description,omitempty"`
+	LectureDescription null.String `boil:"lecture_description" json:"lecture_description,omitempty" toml:"lecture_description" yaml:"lecture_description,omitempty"`
+	CreatedAt          null.Time   `boil:"created_at" json:"created_at,omitempty" toml:"created_at" yaml:"created_at,omitempty"`
+	UpdatedAt          null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
 
 	R *airplaneModelR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L airplaneModelL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var AirplaneModelColumns = struct {
-	ID           string
-	Name         string
-	Manufacturer string
-	Year         string
-	Description  string
+	ID                 string
+	Name               string
+	Manufacturer       string
+	Year               string
+	Description        string
+	LectureDescription string
+	CreatedAt          string
+	UpdatedAt          string
 }{
-	ID:           "id",
-	Name:         "name",
-	Manufacturer: "manufacturer",
-	Year:         "year",
-	Description:  "description",
+	ID:                 "id",
+	Name:               "name",
+	Manufacturer:       "manufacturer",
+	Year:               "year",
+	Description:        "description",
+	LectureDescription: "lecture_description",
+	CreatedAt:          "created_at",
+	UpdatedAt:          "updated_at",
 }
 
 var AirplaneModelTableColumns = struct {
-	ID           string
-	Name         string
-	Manufacturer string
-	Year         string
-	Description  string
+	ID                 string
+	Name               string
+	Manufacturer       string
+	Year               string
+	Description        string
+	LectureDescription string
+	CreatedAt          string
+	UpdatedAt          string
 }{
-	ID:           "airplane_models.id",
-	Name:         "airplane_models.name",
-	Manufacturer: "airplane_models.manufacturer",
-	Year:         "airplane_models.year",
-	Description:  "airplane_models.description",
+	ID:                 "airplane_models.id",
+	Name:               "airplane_models.name",
+	Manufacturer:       "airplane_models.manufacturer",
+	Year:               "airplane_models.year",
+	Description:        "airplane_models.description",
+	LectureDescription: "airplane_models.lecture_description",
+	CreatedAt:          "airplane_models.created_at",
+	UpdatedAt:          "airplane_models.updated_at",
 }
 
 // Generated where
 
 var AirplaneModelWhere = struct {
-	ID           whereHelperint
-	Name         whereHelperstring
-	Manufacturer whereHelperstring
-	Year         whereHelpernull_Int
-	Description  whereHelpernull_String
+	ID                 whereHelperint
+	Name               whereHelperstring
+	Manufacturer       whereHelperstring
+	Year               whereHelpernull_Int
+	Description        whereHelpernull_String
+	LectureDescription whereHelpernull_String
+	CreatedAt          whereHelpernull_Time
+	UpdatedAt          whereHelpernull_Time
 }{
-	ID:           whereHelperint{field: "\"airplane_models\".\"id\""},
-	Name:         whereHelperstring{field: "\"airplane_models\".\"name\""},
-	Manufacturer: whereHelperstring{field: "\"airplane_models\".\"manufacturer\""},
-	Year:         whereHelpernull_Int{field: "\"airplane_models\".\"year\""},
-	Description:  whereHelpernull_String{field: "\"airplane_models\".\"description\""},
+	ID:                 whereHelperint{field: "\"airplane_models\".\"id\""},
+	Name:               whereHelperstring{field: "\"airplane_models\".\"name\""},
+	Manufacturer:       whereHelperstring{field: "\"airplane_models\".\"manufacturer\""},
+	Year:               whereHelpernull_Int{field: "\"airplane_models\".\"year\""},
+	Description:        whereHelpernull_String{field: "\"airplane_models\".\"description\""},
+	LectureDescription: whereHelpernull_String{field: "\"airplane_models\".\"lecture_description\""},
+	CreatedAt:          whereHelpernull_Time{field: "\"airplane_models\".\"created_at\""},
+	UpdatedAt:          whereHelpernull_Time{field: "\"airplane_models\".\"updated_at\""},
 }
 
 // AirplaneModelRels is where relationship names are stored.
@@ -106,9 +127,9 @@ func (r *airplaneModelR) GetAirplaneMaterials() AirplaneMaterialSlice {
 type airplaneModelL struct{}
 
 var (
-	airplaneModelAllColumns            = []string{"id", "name", "manufacturer", "year", "description"}
+	airplaneModelAllColumns            = []string{"id", "name", "manufacturer", "year", "description", "lecture_description", "created_at", "updated_at"}
 	airplaneModelColumnsWithoutDefault = []string{"name", "manufacturer"}
-	airplaneModelColumnsWithDefault    = []string{"id", "year", "description"}
+	airplaneModelColumnsWithDefault    = []string{"id", "year", "description", "lecture_description", "created_at", "updated_at"}
 	airplaneModelPrimaryKeyColumns     = []string{"id"}
 	airplaneModelGeneratedColumns      = []string{}
 )
@@ -721,6 +742,16 @@ func (o *AirplaneModel) Insert(ctx context.Context, exec boil.ContextExecutor, c
 	}
 
 	var err error
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		if queries.MustTime(o.CreatedAt).IsZero() {
+			queries.SetScanner(&o.CreatedAt, currTime)
+		}
+		if queries.MustTime(o.UpdatedAt).IsZero() {
+			queries.SetScanner(&o.UpdatedAt, currTime)
+		}
+	}
 
 	if err := o.doBeforeInsertHooks(ctx, exec); err != nil {
 		return err
@@ -796,6 +827,12 @@ func (o *AirplaneModel) Insert(ctx context.Context, exec boil.ContextExecutor, c
 // See boil.Columns.UpdateColumnSet documentation to understand column list inference for updates.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
 func (o *AirplaneModel) Update(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		queries.SetScanner(&o.UpdatedAt, currTime)
+	}
+
 	var err error
 	if err = o.doBeforeUpdateHooks(ctx, exec); err != nil {
 		return 0, err
@@ -925,6 +962,14 @@ func (o AirplaneModelSlice) UpdateAll(ctx context.Context, exec boil.ContextExec
 func (o *AirplaneModel) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) error {
 	if o == nil {
 		return errors.New("entity: no airplane_models provided for upsert")
+	}
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		if queries.MustTime(o.CreatedAt).IsZero() {
+			queries.SetScanner(&o.CreatedAt, currTime)
+		}
+		queries.SetScanner(&o.UpdatedAt, currTime)
 	}
 
 	if err := o.doBeforeUpsertHooks(ctx, exec); err != nil {

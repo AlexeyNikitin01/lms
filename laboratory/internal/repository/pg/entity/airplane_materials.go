@@ -29,6 +29,7 @@ type AirplaneMaterial struct {
 	Name            string      `boil:"name" json:"name" toml:"name" yaml:"name"`
 	Description     null.String `boil:"description" json:"description,omitempty" toml:"description" yaml:"description,omitempty"`
 	Color           null.String `boil:"color" json:"color,omitempty" toml:"color" yaml:"color,omitempty"`
+	CreatedAt       null.Time   `boil:"created_at" json:"created_at,omitempty" toml:"created_at" yaml:"created_at,omitempty"`
 
 	R *airplaneMaterialR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L airplaneMaterialL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -40,12 +41,14 @@ var AirplaneMaterialColumns = struct {
 	Name            string
 	Description     string
 	Color           string
+	CreatedAt       string
 }{
 	ID:              "id",
 	AirplaneModelID: "airplane_model_id",
 	Name:            "name",
 	Description:     "description",
 	Color:           "color",
+	CreatedAt:       "created_at",
 }
 
 var AirplaneMaterialTableColumns = struct {
@@ -54,12 +57,14 @@ var AirplaneMaterialTableColumns = struct {
 	Name            string
 	Description     string
 	Color           string
+	CreatedAt       string
 }{
 	ID:              "airplane_materials.id",
 	AirplaneModelID: "airplane_materials.airplane_model_id",
 	Name:            "airplane_materials.name",
 	Description:     "airplane_materials.description",
 	Color:           "airplane_materials.color",
+	CreatedAt:       "airplane_materials.created_at",
 }
 
 // Generated where
@@ -212,18 +217,44 @@ func (w whereHelpernull_String) NIN(slice []string) qm.QueryMod {
 func (w whereHelpernull_String) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
 func (w whereHelpernull_String) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
+type whereHelpernull_Time struct{ field string }
+
+func (w whereHelpernull_Time) EQ(x null.Time) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_Time) NEQ(x null.Time) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_Time) LT(x null.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_Time) LTE(x null.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_Time) GT(x null.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_Time) GTE(x null.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+
+func (w whereHelpernull_Time) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Time) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+
 var AirplaneMaterialWhere = struct {
 	ID              whereHelperint
 	AirplaneModelID whereHelpernull_Int
 	Name            whereHelperstring
 	Description     whereHelpernull_String
 	Color           whereHelpernull_String
+	CreatedAt       whereHelpernull_Time
 }{
 	ID:              whereHelperint{field: "\"airplane_materials\".\"id\""},
 	AirplaneModelID: whereHelpernull_Int{field: "\"airplane_materials\".\"airplane_model_id\""},
 	Name:            whereHelperstring{field: "\"airplane_materials\".\"name\""},
 	Description:     whereHelpernull_String{field: "\"airplane_materials\".\"description\""},
 	Color:           whereHelpernull_String{field: "\"airplane_materials\".\"color\""},
+	CreatedAt:       whereHelpernull_Time{field: "\"airplane_materials\".\"created_at\""},
 }
 
 // AirplaneMaterialRels is where relationship names are stored.
@@ -254,9 +285,9 @@ func (r *airplaneMaterialR) GetAirplaneModel() *AirplaneModel {
 type airplaneMaterialL struct{}
 
 var (
-	airplaneMaterialAllColumns            = []string{"id", "airplane_model_id", "name", "description", "color"}
+	airplaneMaterialAllColumns            = []string{"id", "airplane_model_id", "name", "description", "color", "created_at"}
 	airplaneMaterialColumnsWithoutDefault = []string{"name"}
-	airplaneMaterialColumnsWithDefault    = []string{"id", "airplane_model_id", "description", "color"}
+	airplaneMaterialColumnsWithDefault    = []string{"id", "airplane_model_id", "description", "color", "created_at"}
 	airplaneMaterialPrimaryKeyColumns     = []string{"id"}
 	airplaneMaterialGeneratedColumns      = []string{}
 )
@@ -830,6 +861,13 @@ func (o *AirplaneMaterial) Insert(ctx context.Context, exec boil.ContextExecutor
 	}
 
 	var err error
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		if queries.MustTime(o.CreatedAt).IsZero() {
+			queries.SetScanner(&o.CreatedAt, currTime)
+		}
+	}
 
 	if err := o.doBeforeInsertHooks(ctx, exec); err != nil {
 		return err
@@ -1034,6 +1072,13 @@ func (o AirplaneMaterialSlice) UpdateAll(ctx context.Context, exec boil.ContextE
 func (o *AirplaneMaterial) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) error {
 	if o == nil {
 		return errors.New("entity: no airplane_materials provided for upsert")
+	}
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		if queries.MustTime(o.CreatedAt).IsZero() {
+			queries.SetScanner(&o.CreatedAt, currTime)
+		}
 	}
 
 	if err := o.doBeforeUpsertHooks(ctx, exec); err != nil {

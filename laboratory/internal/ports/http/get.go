@@ -48,12 +48,13 @@ func getLab(_ *app.Lab) gin.HandlerFunc {
 }
 
 type AirplaneModel struct {
-	ID           int                `json:"id"`
-	Name         string             `json:"name"`
-	Manufacturer string             `json:"manufacturer"`
-	Year         int                `json:"year"`
-	Description  string             `json:"description"`
-	Materials    []AirplaneMaterial `json:"materials"`
+	ID                 int                `json:"id"`
+	Name               string             `json:"name"`
+	Manufacturer       string             `json:"manufacturer"`
+	Year               int                `json:"year"`
+	Description        string             `json:"description"`
+	LectureDescription string             `json:"lecture_description"`
+	Materials          []AirplaneMaterial `json:"materials"`
 }
 
 type AirplaneMaterial struct {
@@ -72,34 +73,36 @@ func getAirplaneModel(_ *app.Lab) gin.HandlerFunc {
 			return
 		}
 
+		// Получаем модель самолета с загруженными материалами
 		airplane, err := entity.AirplaneModels(
 			qm.Where("id = ?", id),
-			qm.Load(entity.AirplaneModelRels.AirplaneMaterials), // Подгружаем связанные материалы
+			qm.Load(entity.AirplaneModelRels.AirplaneMaterials),
 		).One(c, boil.GetContextDB())
-
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Model not found"})
 			return
 		}
 
-		response := gin.H{
-			"id":           airplane.ID,
-			"name":         airplane.Name,
-			"manufacturer": airplane.Manufacturer,
-			"year":         airplane.Year,
-			"description":  airplane.Description,
-			"materials":    make([]gin.H, len(airplane.R.AirplaneMaterials)),
+		response := AirplaneModel{
+			ID:                 airplane.ID,
+			Name:               airplane.Name,
+			Manufacturer:       airplane.Manufacturer,
+			Year:               airplane.Year.Int,
+			Description:        airplane.Description.String,
+			LectureDescription: airplane.LectureDescription.String,
 		}
 
-		for i, material := range airplane.R.AirplaneMaterials {
-			response["materials"].([]gin.H)[i] = gin.H{
-				"id":          material.ID,
-				"name":        material.Name,
-				"description": material.Description,
-				"color":       material.Color,
-			}
+		// Обработка связанных материалов
+		for _, mat := range airplane.R.AirplaneMaterials {
+			response.Materials = append(response.Materials, AirplaneMaterial{
+				ID:          mat.ID,
+				Name:        mat.Name,
+				Description: mat.Description.String,
+				Color:       mat.Color.String,
+			})
 		}
 
+		// Возвращаем результат
 		c.JSON(http.StatusOK, response)
 	}
 }
