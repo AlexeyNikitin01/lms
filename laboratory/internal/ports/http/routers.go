@@ -8,4 +8,6 @@ import (
 
 func AppRouter(r *gin.RouterGroup, a *app.Lab) {
 	r.GET("ping", ping(a))
+	r.GET(":id", getLab(a))
+	r.PUT(":id", updateLab(a))
 }

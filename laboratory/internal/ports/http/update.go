@@ -11,15 +11,12 @@ import (
 	"lab/internal/repository/pg/entity"
 )
 
-type LabResponse struct {
-	ID      int64  `json:"id"`
-	Title   string `json:"title"`
-	Author  string `json:"author"`
-	Lecture string `json:"lecture"`
-	Formule string `json:"formule"`
+type UpdateLabRequest struct {
+	Content string `json:"content,omitempty"`
+	Formule string `json:"formule,omitempty"`
 }
 
-func getLab(_ *app.Lab) gin.HandlerFunc {
+func updateLab(_ *app.Lab) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		idStr := c.Param("id")
 		id, err := strconv.ParseInt(idStr, 10, 64)
@@ -28,9 +25,28 @@ func getLab(_ *app.Lab) gin.HandlerFunc {
 			return
 		}
 
+		var req UpdateLabRequest
+		if err = c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
+			return
+		}
+
 		lab, err := entity.FindLab(c, boil.GetContextDB(), id)
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{"error": "lab not found"})
+			return
+		}
+
+		// Обновляем поля
+		if req.Content != "" {
+			lab.Lecture = req.Content
+		}
+		if req.Formule != "" {
+			lab.Formule = req.Formule
+		}
+
+		if _, err = lab.Update(c, boil.GetContextDB(), boil.Infer()); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update lab"})
 			return
 		}
 
