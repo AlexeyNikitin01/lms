@@ -12,4 +12,6 @@ func AppRouter(r *gin.RouterGroup, a *app.Lab) {
 	r.PUT(":id", updateLab(a))
 
 	r.GET("models/:id", getAirplaneModel(a))
+
+	r.GET("ais/:id", getAI(a))
 }

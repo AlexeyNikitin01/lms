@@ -50,3 +50,18 @@ func makeCacheKey(cols boil.Columns, nzDefaults []string) string {
 	strmangle.PutBuffer(buf)
 	return str
 }
+
+// Enum values for PriorityLevel
+const (
+	PriorityLevelLow    string = "low"
+	PriorityLevelMedium string = "medium"
+	PriorityLevelHigh   string = "high"
+)
+
+func AllPriorityLevel() []string {
+	return []string{
+		PriorityLevelLow,
+		PriorityLevelMedium,
+		PriorityLevelHigh,
+	}
+}

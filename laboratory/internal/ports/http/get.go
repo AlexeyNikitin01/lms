@@ -1,10 +1,12 @@
 package httpgin
 
 import (
+	"database/sql"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 
@@ -103,6 +105,91 @@ func getAirplaneModel(_ *app.Lab) gin.HandlerFunc {
 		}
 
 		// Возвращаем результат
+		c.JSON(http.StatusOK, response)
+	}
+}
+
+func getAI(a *app.Lab) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Получаем ID лекции из параметров URL
+		id := c.Param("id")
+
+		// Проверяем, что ID является числом
+		lectureID, err := strconv.Atoi(id)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid lecture ID"})
+			return
+		}
+
+		// Загружаем лекцию со всеми связанными данными
+		lecture, err := entity.LecturesAis(
+			qm.Where("id = ?", lectureID),
+			qm.Load(
+				qm.Rels(
+					entity.LecturesAiRels.LectureAnalysisResults,
+					entity.AnalysisResultRels.AnalysisDefectFindings,
+					entity.DefectFindingRels.DefectType,
+				),
+			),
+			qm.Load(
+				qm.Rels(
+					entity.LecturesAiRels.LectureAnalysisResults,
+					entity.AnalysisResultRels.AnalysisRecommendations,
+				),
+			),
+		).One(c, boil.GetContextDB())
+
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Lecture not found"})
+				return
+			}
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+			return
+		}
+
+		// Формируем ответ
+		response := gin.H{
+			"id":         lecture.ID,
+			"title":      lecture.Title,
+			"author":     lecture.Author,
+			"content":    lecture.Content,
+			"created_at": lecture.CreatedAt,
+			"analyses":   make([]gin.H, 0, len(lecture.R.LectureAnalysisResults)),
+		}
+
+		// Обрабатываем анализы
+		for _, analysis := range lecture.R.LectureAnalysisResults {
+			analysisData := gin.H{
+				"id":               analysis.ID,
+				"image_path":       analysis.ImagePath,
+				"analysis_date":    analysis.AnalysisDate,
+				"confidence_score": analysis.ConfidenceScore,
+				"defects":          make([]gin.H, 0, len(analysis.R.AnalysisDefectFindings)),
+				"recommendations":  make([]gin.H, 0, len(analysis.R.AnalysisRecommendations)),
+			}
+
+			// Обрабатываем дефекты
+			for _, df := range analysis.R.AnalysisDefectFindings {
+				analysisData["defects"] = append(analysisData["defects"].([]gin.H), gin.H{
+					"type":        df.R.DefectType.Name,
+					"probability": df.Probability,
+					"description": df.R.DefectType.Description,
+					"severity":    df.Severity,
+				})
+			}
+
+			// Обрабатываем рекомендации
+			for _, rec := range analysis.R.AnalysisRecommendations {
+				analysisData["recommendations"] = append(analysisData["recommendations"].([]gin.H), gin.H{
+					"text":     rec.RecommendationText,
+					"priority": rec.Priority,
+				})
+			}
+
+			response["analyses"] = append(response["analyses"].([]gin.H), analysisData)
+		}
+
 		c.JSON(http.StatusOK, response)
 	}
 }

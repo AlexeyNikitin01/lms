@@ -4,13 +4,31 @@
 package entity
 
 var TableNames = struct {
-	AirplaneMaterials string
-	AirplaneModels    string
-	Labs              string
-	SchemaMigrations  string
+	AiLectures               string
+	AiModels                 string
+	AirplaneMaterialLectures string
+	AirplaneMaterials        string
+	AirplaneModels           string
+	AnalysisResults          string
+	DefectFindings           string
+	DefectTypes              string
+	Labs                     string
+	LecturesAi               string
+	MaterialAnalysisResults  string
+	Recommendations          string
+	SchemaMigrations         string
 }{
-	AirplaneMaterials: "airplane_materials",
-	AirplaneModels:    "airplane_models",
-	Labs:              "labs",
-	SchemaMigrations:  "schema_migrations",
+	AiLectures:               "ai_lectures",
+	AiModels:                 "ai_models",
+	AirplaneMaterialLectures: "airplane_material_lectures",
+	AirplaneMaterials:        "airplane_materials",
+	AirplaneModels:           "airplane_models",
+	AnalysisResults:          "analysis_results",
+	DefectFindings:           "defect_findings",
+	DefectTypes:              "defect_types",
+	Labs:                     "labs",
+	LecturesAi:               "lectures_ai",
+	MaterialAnalysisResults:  "material_analysis_results",
+	Recommendations:          "recommendations",
+	SchemaMigrations:         "schema_migrations",
 }

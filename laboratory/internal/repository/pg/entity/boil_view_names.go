@@ -4,4 +4,7 @@
 package entity
 
 var ViewNames = struct {
-}{}
+	LectureAnalysisView string
+}{
+	LectureAnalysisView: "lecture_analysis_view",
+}

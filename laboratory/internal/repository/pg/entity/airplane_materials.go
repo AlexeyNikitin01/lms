@@ -69,29 +69,6 @@ var AirplaneMaterialTableColumns = struct {
 
 // Generated where
 
-type whereHelperint struct{ field string }
-
-func (w whereHelperint) EQ(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperint) NEQ(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperint) LT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperint) LTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperint) GT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperint) GTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperint) IN(slice []int) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
-}
-func (w whereHelperint) NIN(slice []int) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
-}
-
 type whereHelpernull_Int struct{ field string }
 
 func (w whereHelpernull_Int) EQ(x null.Int) qm.QueryMod {
@@ -129,93 +106,6 @@ func (w whereHelpernull_Int) NIN(slice []int) qm.QueryMod {
 
 func (w whereHelpernull_Int) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
 func (w whereHelpernull_Int) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
-
-type whereHelperstring struct{ field string }
-
-func (w whereHelperstring) EQ(x string) qm.QueryMod      { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperstring) NEQ(x string) qm.QueryMod     { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperstring) LT(x string) qm.QueryMod      { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperstring) LTE(x string) qm.QueryMod     { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperstring) GT(x string) qm.QueryMod      { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperstring) GTE(x string) qm.QueryMod     { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperstring) LIKE(x string) qm.QueryMod    { return qm.Where(w.field+" LIKE ?", x) }
-func (w whereHelperstring) NLIKE(x string) qm.QueryMod   { return qm.Where(w.field+" NOT LIKE ?", x) }
-func (w whereHelperstring) ILIKE(x string) qm.QueryMod   { return qm.Where(w.field+" ILIKE ?", x) }
-func (w whereHelperstring) NILIKE(x string) qm.QueryMod  { return qm.Where(w.field+" NOT ILIKE ?", x) }
-func (w whereHelperstring) SIMILAR(x string) qm.QueryMod { return qm.Where(w.field+" SIMILAR TO ?", x) }
-func (w whereHelperstring) NSIMILAR(x string) qm.QueryMod {
-	return qm.Where(w.field+" NOT SIMILAR TO ?", x)
-}
-func (w whereHelperstring) IN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
-}
-func (w whereHelperstring) NIN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
-}
-
-type whereHelpernull_String struct{ field string }
-
-func (w whereHelpernull_String) EQ(x null.String) qm.QueryMod {
-	return qmhelper.WhereNullEQ(w.field, false, x)
-}
-func (w whereHelpernull_String) NEQ(x null.String) qm.QueryMod {
-	return qmhelper.WhereNullEQ(w.field, true, x)
-}
-func (w whereHelpernull_String) LT(x null.String) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LT, x)
-}
-func (w whereHelpernull_String) LTE(x null.String) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LTE, x)
-}
-func (w whereHelpernull_String) GT(x null.String) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GT, x)
-}
-func (w whereHelpernull_String) GTE(x null.String) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GTE, x)
-}
-func (w whereHelpernull_String) LIKE(x null.String) qm.QueryMod {
-	return qm.Where(w.field+" LIKE ?", x)
-}
-func (w whereHelpernull_String) NLIKE(x null.String) qm.QueryMod {
-	return qm.Where(w.field+" NOT LIKE ?", x)
-}
-func (w whereHelpernull_String) ILIKE(x null.String) qm.QueryMod {
-	return qm.Where(w.field+" ILIKE ?", x)
-}
-func (w whereHelpernull_String) NILIKE(x null.String) qm.QueryMod {
-	return qm.Where(w.field+" NOT ILIKE ?", x)
-}
-func (w whereHelpernull_String) SIMILAR(x null.String) qm.QueryMod {
-	return qm.Where(w.field+" SIMILAR TO ?", x)
-}
-func (w whereHelpernull_String) NSIMILAR(x null.String) qm.QueryMod {
-	return qm.Where(w.field+" NOT SIMILAR TO ?", x)
-}
-func (w whereHelpernull_String) IN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
-}
-func (w whereHelpernull_String) NIN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
-}
-
-func (w whereHelpernull_String) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
-func (w whereHelpernull_String) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
 type whereHelpernull_Time struct{ field string }
 
@@ -259,14 +149,17 @@ var AirplaneMaterialWhere = struct {
 
 // AirplaneMaterialRels is where relationship names are stored.
 var AirplaneMaterialRels = struct {
-	AirplaneModel string
+	AirplaneModel     string
+	LectureAiLectures string
 }{
-	AirplaneModel: "AirplaneModel",
+	AirplaneModel:     "AirplaneModel",
+	LectureAiLectures: "LectureAiLectures",
 }
 
 // airplaneMaterialR is where relationships are stored.
 type airplaneMaterialR struct {
-	AirplaneModel *AirplaneModel `boil:"AirplaneModel" json:"AirplaneModel" toml:"AirplaneModel" yaml:"AirplaneModel"`
+	AirplaneModel     *AirplaneModel `boil:"AirplaneModel" json:"AirplaneModel" toml:"AirplaneModel" yaml:"AirplaneModel"`
+	LectureAiLectures AiLectureSlice `boil:"LectureAiLectures" json:"LectureAiLectures" toml:"LectureAiLectures" yaml:"LectureAiLectures"`
 }
 
 // NewStruct creates a new relationship struct
@@ -279,6 +172,13 @@ func (r *airplaneMaterialR) GetAirplaneModel() *AirplaneModel {
 		return nil
 	}
 	return r.AirplaneModel
+}
+
+func (r *airplaneMaterialR) GetLectureAiLectures() AiLectureSlice {
+	if r == nil {
+		return nil
+	}
+	return r.LectureAiLectures
 }
 
 // airplaneMaterialL is where Load methods for each relationship are stored.
@@ -608,6 +508,21 @@ func (o *AirplaneMaterial) AirplaneModel(mods ...qm.QueryMod) airplaneModelQuery
 	return AirplaneModels(queryMods...)
 }
 
+// LectureAiLectures retrieves all the ai_lecture's AiLectures with an executor via id column.
+func (o *AirplaneMaterial) LectureAiLectures(mods ...qm.QueryMod) aiLectureQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.InnerJoin("\"airplane_material_lectures\" on \"ai_lectures\".\"id\" = \"airplane_material_lectures\".\"lecture_id\""),
+		qm.Where("\"airplane_material_lectures\".\"airplane_material_id\"=?", o.ID),
+	)
+
+	return AiLectures(queryMods...)
+}
+
 // LoadAirplaneModel allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for an N-1 relationship.
 func (airplaneMaterialL) LoadAirplaneModel(ctx context.Context, e boil.ContextExecutor, singular bool, maybeAirplaneMaterial interface{}, mods queries.Applicator) error {
@@ -732,6 +647,136 @@ func (airplaneMaterialL) LoadAirplaneModel(ctx context.Context, e boil.ContextEx
 	return nil
 }
 
+// LoadLectureAiLectures allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (airplaneMaterialL) LoadLectureAiLectures(ctx context.Context, e boil.ContextExecutor, singular bool, maybeAirplaneMaterial interface{}, mods queries.Applicator) error {
+	var slice []*AirplaneMaterial
+	var object *AirplaneMaterial
+
+	if singular {
+		var ok bool
+		object, ok = maybeAirplaneMaterial.(*AirplaneMaterial)
+		if !ok {
+			object = new(AirplaneMaterial)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeAirplaneMaterial)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeAirplaneMaterial))
+			}
+		}
+	} else {
+		s, ok := maybeAirplaneMaterial.(*[]*AirplaneMaterial)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeAirplaneMaterial)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeAirplaneMaterial))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &airplaneMaterialR{}
+		}
+		args[object.ID] = struct{}{}
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &airplaneMaterialR{}
+			}
+			args[obj.ID] = struct{}{}
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.Select("\"ai_lectures\".\"id\", \"ai_lectures\".\"title\", \"ai_lectures\".\"content\", \"ai_lectures\".\"author\", \"ai_lectures\".\"created_at\", \"ai_lectures\".\"updated_at\", \"a\".\"airplane_material_id\""),
+		qm.From("\"ai_lectures\""),
+		qm.InnerJoin("\"airplane_material_lectures\" as \"a\" on \"ai_lectures\".\"id\" = \"a\".\"lecture_id\""),
+		qm.WhereIn("\"a\".\"airplane_material_id\" in ?", argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load ai_lectures")
+	}
+
+	var resultSlice []*AiLecture
+
+	var localJoinCols []int
+	for results.Next() {
+		one := new(AiLecture)
+		var localJoinCol int
+
+		err = results.Scan(&one.ID, &one.Title, &one.Content, &one.Author, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
+		if err != nil {
+			return errors.Wrap(err, "failed to scan eager loaded results for ai_lectures")
+		}
+		if err = results.Err(); err != nil {
+			return errors.Wrap(err, "failed to plebian-bind eager loaded slice ai_lectures")
+		}
+
+		resultSlice = append(resultSlice, one)
+		localJoinCols = append(localJoinCols, localJoinCol)
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on ai_lectures")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for ai_lectures")
+	}
+
+	if len(aiLectureAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.LectureAiLectures = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &aiLectureR{}
+			}
+			foreign.R.AirplaneMaterials = append(foreign.R.AirplaneMaterials, object)
+		}
+		return nil
+	}
+
+	for i, foreign := range resultSlice {
+		localJoinCol := localJoinCols[i]
+		for _, local := range slice {
+			if local.ID == localJoinCol {
+				local.R.LectureAiLectures = append(local.R.LectureAiLectures, foreign)
+				if foreign.R == nil {
+					foreign.R = &aiLectureR{}
+				}
+				foreign.R.AirplaneMaterials = append(foreign.R.AirplaneMaterials, local)
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
 // SetAirplaneModel of the airplaneMaterial to the related item.
 // Sets o.R.AirplaneModel to related.
 // Adds o to related.R.AirplaneMaterials.
@@ -810,6 +855,151 @@ func (o *AirplaneMaterial) RemoveAirplaneModel(ctx context.Context, exec boil.Co
 		break
 	}
 	return nil
+}
+
+// AddLectureAiLectures adds the given related objects to the existing relationships
+// of the airplane_material, optionally inserting them as new records.
+// Appends related to o.R.LectureAiLectures.
+// Sets related.R.AirplaneMaterials appropriately.
+func (o *AirplaneMaterial) AddLectureAiLectures(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*AiLecture) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		}
+	}
+
+	for _, rel := range related {
+		query := "insert into \"airplane_material_lectures\" (\"airplane_material_id\", \"lecture_id\") values ($1, $2)"
+		values := []interface{}{o.ID, rel.ID}
+
+		if boil.IsDebug(ctx) {
+			writer := boil.DebugWriterFrom(ctx)
+			fmt.Fprintln(writer, query)
+			fmt.Fprintln(writer, values)
+		}
+		_, err = exec.ExecContext(ctx, query, values...)
+		if err != nil {
+			return errors.Wrap(err, "failed to insert into join table")
+		}
+	}
+	if o.R == nil {
+		o.R = &airplaneMaterialR{
+			LectureAiLectures: related,
+		}
+	} else {
+		o.R.LectureAiLectures = append(o.R.LectureAiLectures, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &aiLectureR{
+				AirplaneMaterials: AirplaneMaterialSlice{o},
+			}
+		} else {
+			rel.R.AirplaneMaterials = append(rel.R.AirplaneMaterials, o)
+		}
+	}
+	return nil
+}
+
+// SetLectureAiLectures removes all previously related items of the
+// airplane_material replacing them completely with the passed
+// in related items, optionally inserting them as new records.
+// Sets o.R.AirplaneMaterials's LectureAiLectures accordingly.
+// Replaces o.R.LectureAiLectures with related.
+// Sets related.R.AirplaneMaterials's LectureAiLectures accordingly.
+func (o *AirplaneMaterial) SetLectureAiLectures(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*AiLecture) error {
+	query := "delete from \"airplane_material_lectures\" where \"airplane_material_id\" = $1"
+	values := []interface{}{o.ID}
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, query)
+		fmt.Fprintln(writer, values)
+	}
+	_, err := exec.ExecContext(ctx, query, values...)
+	if err != nil {
+		return errors.Wrap(err, "failed to remove relationships before set")
+	}
+
+	removeLectureAiLecturesFromAirplaneMaterialsSlice(o, related)
+	if o.R != nil {
+		o.R.LectureAiLectures = nil
+	}
+
+	return o.AddLectureAiLectures(ctx, exec, insert, related...)
+}
+
+// RemoveLectureAiLectures relationships from objects passed in.
+// Removes related items from R.LectureAiLectures (uses pointer comparison, removal does not keep order)
+// Sets related.R.AirplaneMaterials.
+func (o *AirplaneMaterial) RemoveLectureAiLectures(ctx context.Context, exec boil.ContextExecutor, related ...*AiLecture) error {
+	if len(related) == 0 {
+		return nil
+	}
+
+	var err error
+	query := fmt.Sprintf(
+		"delete from \"airplane_material_lectures\" where \"airplane_material_id\" = $1 and \"lecture_id\" in (%s)",
+		strmangle.Placeholders(dialect.UseIndexPlaceholders, len(related), 2, 1),
+	)
+	values := []interface{}{o.ID}
+	for _, rel := range related {
+		values = append(values, rel.ID)
+	}
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, query)
+		fmt.Fprintln(writer, values)
+	}
+	_, err = exec.ExecContext(ctx, query, values...)
+	if err != nil {
+		return errors.Wrap(err, "failed to remove relationships before set")
+	}
+	removeLectureAiLecturesFromAirplaneMaterialsSlice(o, related)
+	if o.R == nil {
+		return nil
+	}
+
+	for _, rel := range related {
+		for i, ri := range o.R.LectureAiLectures {
+			if rel != ri {
+				continue
+			}
+
+			ln := len(o.R.LectureAiLectures)
+			if ln > 1 && i < ln-1 {
+				o.R.LectureAiLectures[i] = o.R.LectureAiLectures[ln-1]
+			}
+			o.R.LectureAiLectures = o.R.LectureAiLectures[:ln-1]
+			break
+		}
+	}
+
+	return nil
+}
+
+func removeLectureAiLecturesFromAirplaneMaterialsSlice(o *AirplaneMaterial, related []*AiLecture) {
+	for _, rel := range related {
+		if rel.R == nil {
+			continue
+		}
+		for i, ri := range rel.R.AirplaneMaterials {
+			if o.ID != ri.ID {
+				continue
+			}
+
+			ln := len(rel.R.AirplaneMaterials)
+			if ln > 1 && i < ln-1 {
+				rel.R.AirplaneMaterials[i] = rel.R.AirplaneMaterials[ln-1]
+			}
+			rel.R.AirplaneMaterials = rel.R.AirplaneMaterials[:ln-1]
+			break
+		}
+	}
 }
 
 // AirplaneMaterials retrieves all the records using an executor.

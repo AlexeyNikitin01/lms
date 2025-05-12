@@ -102,15 +102,26 @@ var LabWhere = struct {
 
 // LabRels is where relationship names are stored.
 var LabRels = struct {
-}{}
+	MaterialAnalysisResults string
+}{
+	MaterialAnalysisResults: "MaterialAnalysisResults",
+}
 
 // labR is where relationships are stored.
 type labR struct {
+	MaterialAnalysisResults MaterialAnalysisResultSlice `boil:"MaterialAnalysisResults" json:"MaterialAnalysisResults" toml:"MaterialAnalysisResults" yaml:"MaterialAnalysisResults"`
 }
 
 // NewStruct creates a new relationship struct
 func (*labR) NewStruct() *labR {
 	return &labR{}
+}
+
+func (r *labR) GetMaterialAnalysisResults() MaterialAnalysisResultSlice {
+	if r == nil {
+		return nil
+	}
+	return r.MaterialAnalysisResults
 }
 
 // labL is where Load methods for each relationship are stored.
@@ -427,6 +438,260 @@ func (q labQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, 
 	}
 
 	return count > 0, nil
+}
+
+// MaterialAnalysisResults retrieves all the material_analysis_result's MaterialAnalysisResults with an executor.
+func (o *Lab) MaterialAnalysisResults(mods ...qm.QueryMod) materialAnalysisResultQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"material_analysis_results\".\"lab_id\"=?", o.ID),
+	)
+
+	return MaterialAnalysisResults(queryMods...)
+}
+
+// LoadMaterialAnalysisResults allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (labL) LoadMaterialAnalysisResults(ctx context.Context, e boil.ContextExecutor, singular bool, maybeLab interface{}, mods queries.Applicator) error {
+	var slice []*Lab
+	var object *Lab
+
+	if singular {
+		var ok bool
+		object, ok = maybeLab.(*Lab)
+		if !ok {
+			object = new(Lab)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeLab)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeLab))
+			}
+		}
+	} else {
+		s, ok := maybeLab.(*[]*Lab)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeLab)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeLab))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &labR{}
+		}
+		args[object.ID] = struct{}{}
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &labR{}
+			}
+			args[obj.ID] = struct{}{}
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.From(`material_analysis_results`),
+		qm.WhereIn(`material_analysis_results.lab_id in ?`, argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load material_analysis_results")
+	}
+
+	var resultSlice []*MaterialAnalysisResult
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice material_analysis_results")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on material_analysis_results")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for material_analysis_results")
+	}
+
+	if len(materialAnalysisResultAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.MaterialAnalysisResults = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &materialAnalysisResultR{}
+			}
+			foreign.R.Lab = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if queries.Equal(local.ID, foreign.LabID) {
+				local.R.MaterialAnalysisResults = append(local.R.MaterialAnalysisResults, foreign)
+				if foreign.R == nil {
+					foreign.R = &materialAnalysisResultR{}
+				}
+				foreign.R.Lab = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// AddMaterialAnalysisResults adds the given related objects to the existing relationships
+// of the lab, optionally inserting them as new records.
+// Appends related to o.R.MaterialAnalysisResults.
+// Sets related.R.Lab appropriately.
+func (o *Lab) AddMaterialAnalysisResults(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*MaterialAnalysisResult) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			queries.Assign(&rel.LabID, o.ID)
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"material_analysis_results\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"lab_id"}),
+				strmangle.WhereClause("\"", "\"", 2, materialAnalysisResultPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			queries.Assign(&rel.LabID, o.ID)
+		}
+	}
+
+	if o.R == nil {
+		o.R = &labR{
+			MaterialAnalysisResults: related,
+		}
+	} else {
+		o.R.MaterialAnalysisResults = append(o.R.MaterialAnalysisResults, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &materialAnalysisResultR{
+				Lab: o,
+			}
+		} else {
+			rel.R.Lab = o
+		}
+	}
+	return nil
+}
+
+// SetMaterialAnalysisResults removes all previously related items of the
+// lab replacing them completely with the passed
+// in related items, optionally inserting them as new records.
+// Sets o.R.Lab's MaterialAnalysisResults accordingly.
+// Replaces o.R.MaterialAnalysisResults with related.
+// Sets related.R.Lab's MaterialAnalysisResults accordingly.
+func (o *Lab) SetMaterialAnalysisResults(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*MaterialAnalysisResult) error {
+	query := "update \"material_analysis_results\" set \"lab_id\" = null where \"lab_id\" = $1"
+	values := []interface{}{o.ID}
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, query)
+		fmt.Fprintln(writer, values)
+	}
+	_, err := exec.ExecContext(ctx, query, values...)
+	if err != nil {
+		return errors.Wrap(err, "failed to remove relationships before set")
+	}
+
+	if o.R != nil {
+		for _, rel := range o.R.MaterialAnalysisResults {
+			queries.SetScanner(&rel.LabID, nil)
+			if rel.R == nil {
+				continue
+			}
+
+			rel.R.Lab = nil
+		}
+		o.R.MaterialAnalysisResults = nil
+	}
+
+	return o.AddMaterialAnalysisResults(ctx, exec, insert, related...)
+}
+
+// RemoveMaterialAnalysisResults relationships from objects passed in.
+// Removes related items from R.MaterialAnalysisResults (uses pointer comparison, removal does not keep order)
+// Sets related.R.Lab.
+func (o *Lab) RemoveMaterialAnalysisResults(ctx context.Context, exec boil.ContextExecutor, related ...*MaterialAnalysisResult) error {
+	if len(related) == 0 {
+		return nil
+	}
+
+	var err error
+	for _, rel := range related {
+		queries.SetScanner(&rel.LabID, nil)
+		if rel.R != nil {
+			rel.R.Lab = nil
+		}
+		if _, err = rel.Update(ctx, exec, boil.Whitelist("lab_id")); err != nil {
+			return err
+		}
+	}
+	if o.R == nil {
+		return nil
+	}
+
+	for _, rel := range related {
+		for i, ri := range o.R.MaterialAnalysisResults {
+			if rel != ri {
+				continue
+			}
+
+			ln := len(o.R.MaterialAnalysisResults)
+			if ln > 1 && i < ln-1 {
+				o.R.MaterialAnalysisResults[i] = o.R.MaterialAnalysisResults[ln-1]
+			}
+			o.R.MaterialAnalysisResults = o.R.MaterialAnalysisResults[:ln-1]
+			break
+		}
+	}
+
+	return nil
 }
 
 // Labs retrieves all the records using an executor.
